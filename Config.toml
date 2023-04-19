@@ -1,5 +1,6 @@
 [sources.fanza]
-source = {name = "fanza", detail_url = ""}
+name = "fanza"
+detail_url = ""
 expr_number = ""
 expr_title = ""
 expr_studio = ""
@@ -18,3 +19,4 @@ expr_trailer = ""
 expr_actorphoto = ""
 expr_uncensored = ""
 expr_uservotes = ""
+expr_userrating = ""

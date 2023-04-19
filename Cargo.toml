@@ -8,5 +8,6 @@ edition = "2021"
 [dependencies]
 confy = "0.5.1"
 lazy_static = "1.4.0"
+serde = { version = "1.0.160", features = ["derive"] }
 serde_derive = "1.0.160"
-tokio = "1.27.0"
+tokio = { version = "1.27.0", features = ["full"] }

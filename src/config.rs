@@ -1,43 +1,42 @@
+use std::{
+    sync::{Arc, RwLock},
+};
 use std::collections::HashMap;
 use std::path::PathBuf;
+
 use confy::ConfyError;
 use lazy_static::lazy_static;
-
-#[derive(Serialize, Deserialize, Debug, Default, Clone)]
-pub struct Parser {
-    pub source: Source,
-    pub expr_number: &'static str,
-    pub expr_title: &'static str,
-    pub expr_studio: &'static str,
-    pub expr_runtime: &'static str,
-    pub expr_release: &'static str,
-    pub expr_outline: &'static str,
-    pub expr_director: &'static str,
-    pub expr_actor: &'static str,
-    pub expr_tags: &'static str,
-    pub expr_label: &'static str,
-    pub expr_series: &'static str,
-    pub expr_cover: &'static str,
-    pub expr_smallcover: &'static str,
-    pub expr_extrafanart: &'static str,
-    pub expr_trailer: &'static str,
-    pub expr_actorphoto: &'static str,
-    pub expr_uncensored: &'static str,
-    pub expr_userrating: &'static str,
-    pub expr_uservotes: &'static str,
-}
-
-#[derive(Serialize, Deserialize, Debug, Default, Clone)]
-pub struct Source {
-    pub name: String,
-    pub detail_url: String,
-}
+use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
 pub struct AppConfig {
     pub sources: HashMap<String, Parser>,
 }
 
+#[derive(Serialize, Deserialize, Debug, Default, Clone)]
+pub struct Parser {
+    pub name: String,
+    pub detail_url: String,
+    pub expr_number: String,
+    pub expr_title: String,
+    pub expr_studio: String,
+    pub expr_runtime: String,
+    pub expr_release: String,
+    pub expr_outline: String,
+    pub expr_director: String,
+    pub expr_actor: String,
+    pub expr_tags: String,
+    pub expr_label: String,
+    pub expr_series: String,
+    pub expr_cover: String,
+    pub expr_smallcover: String,
+    pub expr_extrafanart: String,
+    pub expr_trailer: String,
+    pub expr_actorphoto: String,
+    pub expr_uncensored: String,
+    pub expr_userrating: String,
+    pub expr_uservotes: String,
+}
 lazy_static! {
     pub static ref CONFIG: Arc<RwLock<AppConfig>> = Arc::new(RwLock::new(AppConfig::default()));
 }
