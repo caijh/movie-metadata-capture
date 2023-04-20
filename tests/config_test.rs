@@ -4,9 +4,9 @@ mod tests {
 
     #[tokio::test]
     async fn test_load_config_file() {
-        load_config_file("./Config.toml").await.expect("TODO: panic message");
+        load_config_file("./Config.toml").await.expect("Fail to load Config.toml");
         let config = get_app_config();
         let sources = &config.sources;
-        assert!(sources.len() > 0, "Failed to create test folder!");
+        assert!(sources.len() > 0, "Failed parse sources!");
     }
 }

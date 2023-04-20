@@ -10,7 +10,17 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
 pub struct AppConfig {
+    pub proxy: Proxy,
     pub sources: HashMap<String, Parser>,
+}
+
+#[derive(Serialize, Deserialize, Debug, Default, Clone)]
+pub struct Proxy {
+    pub switch: bool,
+    pub proxy: String,
+    pub timeout: u16,
+    pub retry: u8,
+    pub ca_cert_file: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
