@@ -18,7 +18,7 @@ pub struct AppConfig {
 pub struct Proxy {
     pub switch: bool,
     pub proxy: String,
-    pub timeout: u16,
+    pub timeout: u64,
     pub retry: u8,
     pub ca_cert_file: Option<String>,
 }

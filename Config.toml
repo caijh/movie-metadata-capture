@@ -1,3 +1,10 @@
+[proxy]
+switch = true
+proxy = "socks5://127.0.0.1:10808"
+timeout = 20
+retry = 3
+cacert_file = ""
+
 [sources.fanza]
 name = "fanza"
 detail_url = ""
@@ -20,3 +27,5 @@ expr_actorphoto = ""
 expr_uncensored = ""
 expr_uservotes = ""
 expr_userrating = ""
+
+
