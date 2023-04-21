@@ -27,7 +27,7 @@ expr_tags = "//td[contains(text(),'ジャンル：')]/following-sibling::td/a/te
 expr_label = "//td[contains(text(),'レーベル：')]/following-sibling::td/a/text()"
 expr_series = "//td[contains(text(),'シリーズ：')]/following-sibling::td/a/text()"
 expr_cover = '//a[@id="$cover_number"]/@href'
-expr_smallcover = ""
+expr_small_cover = ""
 expr_extrafanart = '//a[@name="sample-image"]/img/@src'
 expr_trailer = ""
 expr_actorphoto = ""

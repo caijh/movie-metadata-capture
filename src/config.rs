@@ -47,7 +47,7 @@ pub struct Parser {
     pub expr_label: String,
     pub expr_series: String,
     pub expr_cover: String,
-    pub expr_smallcover: String,
+    pub expr_small_cover: String,
     pub expr_extrafanart: String,
     pub expr_trailer: String,
     pub expr_actorphoto: String,

@@ -113,7 +113,7 @@ impl Parser {
         println!("{}", expr_cover);
         let cover = evaluate_xpath_node(document.root(), &expr_cover).unwrap();
         let cover_small =
-            evaluate_xpath_node(document.root(), self.expr_smallcover.as_str()).unwrap();
+            evaluate_xpath_node(document.root(), self.expr_small_cover.as_str()).unwrap();
 
         let extra_fanart =
             evaluate_xpath_node(document.root(), self.expr_extrafanart.as_str()).unwrap();
