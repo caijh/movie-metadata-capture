@@ -5,6 +5,12 @@ timeout = 20
 retry = 3
 cacert_file = ""
 
+[translate]
+switch = true
+service_url = ""
+access_key = ""
+region = ""
+
 [sources.fanza]
 name = "fanza"
 detail_url = [""]

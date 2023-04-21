@@ -1,8 +1,6 @@
-use std::{
-    sync::{Arc, RwLock},
-};
 use std::collections::HashMap;
 use std::path::PathBuf;
+use std::sync::{Arc, RwLock};
 
 use confy::ConfyError;
 use lazy_static::lazy_static;
@@ -11,6 +9,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
 pub struct AppConfig {
     pub proxy: Proxy,
+    pub translate: Translate,
     pub sources: HashMap<String, Parser>,
 }
 
@@ -21,6 +20,14 @@ pub struct Proxy {
     pub timeout: u64,
     pub retry: u8,
     pub ca_cert_file: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Debug, Default, Clone)]
+pub struct Translate {
+    pub switch: bool,
+    pub service_url: String,
+    pub access_key: String,
+    pub region: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
