@@ -33,6 +33,7 @@ pub struct Translate {
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
 pub struct Parser {
     pub name: String,
+    pub age_check: Option<AgeCheck>,
     pub detail_url: Vec<String>,
     pub expr_number: String,
     pub expr_title: String,
@@ -54,6 +55,13 @@ pub struct Parser {
     pub expr_userrating: String,
     pub expr_uservotes: String,
 }
+
+#[derive(Serialize, Deserialize, Debug, Default, Clone)]
+pub struct AgeCheck {
+    pub url: String,
+    pub target_name: String,
+}
+
 lazy_static! {
     pub static ref CONFIG: Arc<RwLock<AppConfig>> = Arc::new(RwLock::new(AppConfig::default()));
 }
