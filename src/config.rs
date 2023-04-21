@@ -11,6 +11,7 @@ pub struct AppConfig {
     pub proxy: Proxy,
     pub translate: Translate,
     pub sources: HashMap<String, Parser>,
+    pub debug_mode: DebugMode,
 }
 
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
@@ -30,6 +31,10 @@ pub struct Translate {
     pub region: Option<String>,
 }
 
+#[derive(Serialize, Deserialize, Debug, Default, Clone)]
+pub struct DebugMode {
+    pub switch: bool,
+}
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
 pub struct Parser {
     pub name: String,

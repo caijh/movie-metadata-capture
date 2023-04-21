@@ -5,6 +5,9 @@ timeout = 20
 retry = 3
 cacert_file = ""
 
+[debug_mode]
+switch = false
+
 [translate]
 switch = true
 service_url = ""
