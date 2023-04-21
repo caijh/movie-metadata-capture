@@ -1,3 +1,4 @@
-pub mod config;
-pub mod request;
 pub mod azure_translator;
+pub mod config;
+pub mod parser;
+pub mod request;
