@@ -26,7 +26,7 @@ pub struct Proxy {
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
 pub struct Parser {
     pub name: String,
-    pub detail_url: String,
+    pub detail_url: Vec<String>,
     pub expr_number: String,
     pub expr_title: String,
     pub expr_studio: String,

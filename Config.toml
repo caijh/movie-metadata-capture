@@ -7,7 +7,7 @@ cacert_file = ""
 
 [sources.fanza]
 name = "fanza"
-detail_url = ""
+detail_url = [""]
 expr_number = ""
 expr_title = ""
 expr_studio = ""
