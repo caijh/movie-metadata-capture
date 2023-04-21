@@ -1,3 +1,4 @@
+use std::time::Duration;
 use std::{
     error::Error,
     fs::{create_dir_all, File},
@@ -5,12 +6,11 @@ use std::{
     path::PathBuf,
     sync::Arc,
 };
-use std::time::Duration;
 
+use crate::config;
 use lazy_static::lazy_static;
 use reqwest::{Client, Proxy, Url};
 use tokio::sync::RwLock;
-use crate::config;
 
 pub struct Request {
     client: Client,
@@ -30,7 +30,9 @@ lazy_static! {
 pub async fn set_proxy(proxy: &config::Proxy) -> Result<(), Box<dyn Error>> {
     let timeout = proxy.timeout;
     let proxy = Proxy::all(&proxy.proxy).unwrap();
-    let client = Client::builder().proxy(proxy).cookie_store(true).connect_timeout(Duration::from_secs(timeout)).build().unwrap();
+    let client = Client::builder()
+        .user_agent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.133 Safari/537.36")
+        .proxy(proxy).cookie_store(true).connect_timeout(Duration::from_secs(timeout)).build().unwrap();
     let req_clone = REQUEST.clone();
     let mut request = req_clone.write().await;
     request.client = client;
@@ -70,8 +72,7 @@ pub async fn parallel_download_files(
         })
         .collect::<Vec<_>>();
 
-    let results: Vec<Result<PathBuf, Box<dyn Error>>> =
-        futures::future::join_all(tasks).await;
+    let results: Vec<Result<PathBuf, Box<dyn Error>>> = futures::future::join_all(tasks).await;
     results
 }
 
