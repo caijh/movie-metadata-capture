@@ -57,7 +57,9 @@ impl Scraping {
         } else {
             self.check_sources(sources, file_number)
         };
-        println!("{:?}", _sources);
+        if self.debug {
+            println!("[+]sources {:?}", _sources);
+        }
         for source in _sources {
             match self.parsers.get(source.as_str()) {
                 Some(parser) => {
@@ -65,7 +67,6 @@ impl Scraping {
                         println!("[+]select {}", source);
                     }
                     movie = parser.search(file_number).await;
-                    println!("{:?}", movie);
                     if self.get_data_state(&movie) {
                         if self.debug {
                             println!(
