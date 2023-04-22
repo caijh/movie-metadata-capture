@@ -49,12 +49,13 @@ pub struct Parser {
     pub detail_url: Vec<String>,
     pub expr_number: String,
     pub expr_title: String,
+    pub expr_actor_name: String,
+    pub expr_actor_photo: String,
     pub expr_studio: String,
     pub expr_runtime: String,
     pub expr_release: String,
     pub expr_outline: String,
     pub expr_director: String,
-    pub expr_actor: String,
     pub expr_tags: String,
     pub expr_label: String,
     pub expr_series: String,
@@ -62,7 +63,6 @@ pub struct Parser {
     pub expr_small_cover: String,
     pub expr_extrafanart: String,
     pub expr_trailer: String,
-    pub expr_actorphoto: String,
     pub expr_uncensored: String,
     pub expr_userrating: String,
     pub expr_uservotes: String,
@@ -116,7 +116,6 @@ pub struct Common {
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
 pub struct Extrafanart {
     pub switch: bool,
-    pub parallel_download: usize,
     pub extrafanart_folder: String,
 }
 lazy_static! {

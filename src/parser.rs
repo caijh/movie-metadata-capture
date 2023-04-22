@@ -27,7 +27,8 @@ pub struct Movie {
     pub thumb: String,
     pub fanart: String,
     pub extrafanart: Vec<String>,
-    pub actors: Vec<Actor>,
+    pub actor_name: Vec<String>,
+    pub actor_photo: Vec<String>,
     pub maker: String,
     pub label: String,
     pub tag: Vec<String>,
@@ -97,14 +98,20 @@ impl Parser {
         let runtime = evaluate_xpath_node(document.root(), self.expr_runtime.as_str()).unwrap();
         let outline = evaluate_xpath_node(document.root(), self.expr_outline.as_str()).unwrap();
         let director = evaluate_xpath_node(document.root(), self.expr_director.as_str()).unwrap();
-        let actors = evaluate_xpath_node(document.root(), self.expr_actor.as_str()).unwrap();
-        let actors: Vec<Actor> = match actors {
-            sxd_xpath::Value::Nodeset(nodes) => nodes
-                .iter()
-                .map(|node| Actor {
-                    name: node.string_value(),
-                })
-                .collect(),
+        let actor_name =
+            evaluate_xpath_node(document.root(), self.expr_actor_name.as_str()).unwrap();
+        let actor_name: Vec<String> = match actor_name {
+            sxd_xpath::Value::Nodeset(nodes) => {
+                nodes.iter().map(|node| node.string_value()).collect()
+            }
+            _ => Vec::new(),
+        };
+        let actor_photo =
+            evaluate_xpath_node(document.root(), self.expr_actor_photo.as_str()).unwrap();
+        let actor_photo: Vec<String> = match actor_photo {
+            sxd_xpath::Value::Nodeset(nodes) => {
+                nodes.iter().map(|node| node.string_value()).collect()
+            }
             _ => Vec::new(),
         };
         let expr_cover = self
@@ -155,7 +162,7 @@ impl Parser {
         Some(Movie {
             number: number.to_string(),
             title: title.string(),
-            original_title: "".to_string(),
+            original_title: title.string(),
             sorttitle: "".to_string(),
             customrating: "".to_string(),
             mpaa: "".to_string(),
@@ -171,7 +178,8 @@ impl Parser {
             thumb: "".to_string(),
             fanart: "".to_string(),
             extrafanart: extra_fanart,
-            actors,
+            actor_name,
+            actor_photo,
             maker: "".to_string(),
             label: label.string(),
             tag: tags,

@@ -1,9 +1,10 @@
 use crate::config::AppConfig;
 use crate::files::file_exit_and_not_empty;
-use crate::request::download_file;
+use crate::request::{download_file, parallel_download_files};
 use crate::scraping::Scraping;
 use serde_json::Value;
 use std::error::Error;
+use std::ops::Not;
 use std::path::{Path, PathBuf};
 use std::ptr::drop_in_place;
 use std::{fs, result};
@@ -270,5 +271,53 @@ async fn extra_fanart_download_one_by_one(
                 config.proxy.retry
             );
         }
+    }
+}
+
+pub async fn download_actor_photo(
+    actors: Vec<(String, String)>,
+    dir: &str,
+    number: &str,
+    config: &AppConfig,
+) {
+    if actors.is_empty() || dir.is_empty() {
+        return;
+    }
+    let save_path = Path::new(dir);
+    if !save_path.is_dir() {
+        return;
+    }
+    let actors_dir = save_path.join(".actors");
+    let download_only_missing_images = config.common.download_only_missing_images;
+    let mut dn_list = Vec::new();
+    for (actor_name, url) in actors.iter() {
+        if url.is_empty().not() {
+            let pic_full_path = actors_dir.join(format!("{}{}", actor_name, image_ext(Some(url))));
+            if download_only_missing_images && file_exit_and_not_empty(&pic_full_path) {
+                continue;
+            }
+            dn_list.push((url.to_owned(), pic_full_path));
+        }
+    }
+    if dn_list.is_empty() {
+        return;
+    }
+    let result = parallel_download_files(dn_list).await;
+    let mut failed = 0;
+    for (_i, r) in result.iter().enumerate() {
+        if r.is_err() {
+            failed += 1;
+        }
+    }
+    if failed > 0 {
+        println!(
+            "[-]Failed downloaded {}/{} actor photo for [{}] to '{}', you may retry run mode 3 later.",
+            failed,
+            result.len(),
+            number,
+            actors_dir.display()
+        );
+    } else {
+        println!("[+]Successfully downloaded {} actor photo.", result.len());
     }
 }

@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod tests {
     use movie_metadata_capture::config::{get_app_config, load_config_file};
-    use movie_metadata_capture::core::extrafanart_download;
+    use movie_metadata_capture::core::{download_actor_photo, extrafanart_download};
     use movie_metadata_capture::request::set_proxy;
     use movie_metadata_capture::scraping::Scraping;
 
@@ -21,5 +21,13 @@ mod tests {
         assert_eq!("ka9oae232", movie.number);
         let extra_fanart = movie.extrafanart;
         extrafanart_download(extra_fanart, ".", &config).await;
+
+        let actor_name = movie.actor_name;
+        let actor_photo = movie.actor_photo;
+        let joined_vec: Vec<(String, String)> = actor_name
+            .into_iter()
+            .zip(actor_photo.into_iter())
+            .collect();
+        download_actor_photo(joined_vec, ".", "ka9oae232", &config).await;
     }
 }
