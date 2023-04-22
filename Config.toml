@@ -14,6 +14,9 @@ naming_rule = 'number+"-"+title'
 max_title_len = 50
 image_naming_with_number = false
 
+[uncensored]
+uncensored_prefix = "PT-,S2M,BT,LAF,SMD,SMBD,SM3D2DBD,SKY-,SKYHD,CWP,CWDV,CWBD,CW3D2DBD,MKD,MKBD,MXBD,MK3D2DBD,MCB3DBD,MCBD,RHJ,MMDV"
+
 [translate]
 switch = true
 engine = "azure"
