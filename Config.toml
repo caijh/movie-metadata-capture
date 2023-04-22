@@ -23,6 +23,9 @@ sleep = 3
 switch = true
 extrafanart_folder = "extrafanart"
 
+[actor_photo]
+download_for_kodi = false
+
 [proxy]
 switch = true
 proxy = "socks5://127.0.0.1:10808"

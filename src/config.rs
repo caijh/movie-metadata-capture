@@ -17,6 +17,7 @@ pub struct AppConfig {
     pub uncensored: Uncensored,
     pub debug_mode: DebugMode,
     pub extrafanart: Extrafanart,
+    pub actor_photo: ActorPhoto,
 }
 
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
@@ -118,6 +119,12 @@ pub struct Extrafanart {
     pub switch: bool,
     pub extrafanart_folder: String,
 }
+
+#[derive(Serialize, Deserialize, Debug, Default, Clone)]
+pub struct ActorPhoto {
+    pub download_for_kodi: bool,
+}
+
 lazy_static! {
     pub static ref CONFIG: Arc<RwLock<AppConfig>> = Arc::new(RwLock::new(AppConfig::default()));
 }
