@@ -1,3 +1,23 @@
+[common]
+main_mode = 1
+source_folder = "./"
+failed_output_folder = "failed"
+success_output_folder = "./"
+link_mode = 0
+scan_hardlink = false
+failed_move = false
+auto_exit = false
+multi_threading = false
+actor_gender = "female"
+del_empty_folder = false
+nfo_skip_days = 30
+ignore_failed_list = false
+download_only_missing_images = true
+mapping_table_validity = 7
+jellyfin = false
+actor_only_tag = false
+sleep = 3
+
 [proxy]
 switch = true
 proxy = "socks5://127.0.0.1:10808"
@@ -18,7 +38,7 @@ image_naming_with_number = false
 uncensored_prefix = "PT-,S2M,BT,LAF,SMD,SMBD,SM3D2DBD,SKY-,SKYHD,CWP,CWDV,CWBD,CW3D2DBD,MKD,MKBD,MXBD,MK3D2DBD,MCB3DBD,MCBD,RHJ,MMDV"
 
 [translate]
-switch = true
+switch = false
 engine = "azure"
 service_url = "https://api.cognitive.microsofttranslator.com/translate?api-version=3.0"
 access_key = ""
