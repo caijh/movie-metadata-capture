@@ -12,6 +12,7 @@ pub struct AppConfig {
     pub translate: Translate,
     pub sources: HashMap<String, Parser>,
     pub priority: Priority,
+    pub name_rule: NameRule,
     pub debug_mode: DebugMode,
 }
 
@@ -67,6 +68,14 @@ pub struct Parser {
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
 pub struct Priority {
     pub website: String,
+}
+
+#[derive(Serialize, Deserialize, Debug, Default, Clone)]
+pub struct NameRule {
+    pub location_rule: String,
+    pub naming_rule: String,
+    pub max_title_len: usize,
+    pub image_naming_with_number: bool,
 }
 
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
