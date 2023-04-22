@@ -18,6 +18,11 @@ jellyfin = false
 actor_only_tag = false
 sleep = 3
 
+# 剧照
+[extrafanart]
+switch = true
+extrafanart_folder = "extrafanart"
+
 [proxy]
 switch = true
 proxy = "socks5://127.0.0.1:10808"
@@ -64,7 +69,7 @@ expr_tags = "//td[contains(text(),'ジャンル：')]/following-sibling::td/a/te
 expr_label = "//td[contains(text(),'レーベル：')]/following-sibling::td/a/text()"
 expr_series = "//td[contains(text(),'シリーズ：')]/following-sibling::td/a/text()"
 expr_cover = '//a[@id="$cover_number"]/@href'
-expr_small_cover = ""
+expr_small_cover = '//a[@id="$cover_number"]/img/@src'
 expr_extrafanart = '//a[@name="sample-image"]/img/@src'
 expr_trailer = ""
 expr_actorphoto = ""

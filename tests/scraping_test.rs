@@ -1,6 +1,7 @@
 #[cfg(test)]
 mod tests {
     use movie_metadata_capture::config::{get_app_config, load_config_file};
+    use movie_metadata_capture::core::extrafanart_download;
     use movie_metadata_capture::request::set_proxy;
     use movie_metadata_capture::scraping::Scraping;
 
@@ -16,6 +17,9 @@ mod tests {
         let movie = scraping.search("ka9oae232", None, None).await;
         println!("{:?}", movie);
         assert!(movie.is_some());
-        assert_eq!("ka9oae232", movie.unwrap().number);
+        let movie = movie.unwrap();
+        assert_eq!("ka9oae232", movie.number);
+        let extra_fanart = movie.extrafanart;
+        extrafanart_download(extra_fanart, ".", &config).await;
     }
 }

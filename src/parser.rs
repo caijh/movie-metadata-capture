@@ -111,8 +111,10 @@ impl Parser {
             .expr_cover
             .replace("$cover_number", number.to_string().as_str());
         let cover = evaluate_xpath_node(document.root(), &expr_cover).unwrap();
-        let cover_small =
-            evaluate_xpath_node(document.root(), self.expr_small_cover.as_str()).unwrap();
+        let expr_small_cover = self
+            .expr_small_cover
+            .replace("$cover_number", number.to_string().as_str());
+        let cover_small = evaluate_xpath_node(document.root(), &expr_small_cover).unwrap();
 
         let extra_fanart =
             evaluate_xpath_node(document.root(), self.expr_extrafanart.as_str()).unwrap();
