@@ -3,9 +3,9 @@ use serde_derive::{Deserialize, Serialize};
 use crate::request::client;
 
 pub struct AzureTranslator {
-    service_url: String,
-    access_key: String,
-    region: Option<String>,
+    pub service_url: String,
+    pub access_key: String,
+    pub region: Option<String>,
 }
 
 #[derive(Debug, Serialize)]
@@ -22,7 +22,6 @@ struct AzureResponse {
 struct Translation {
     text: String,
 }
-
 
 impl AzureTranslator {
     pub fn new(service_url: String, access_key: String, region: Option<String>) -> AzureTranslator {
@@ -51,16 +50,16 @@ impl AzureTranslator {
             .header("Ocp-Apim-Subscription-Region", region)
             .query(&params)
             .body(request_body)
-            .send().await.unwrap();
+            .send()
+            .await
+            .unwrap();
         match response.text().await {
             Ok(text) => {
                 let json_data: Vec<AzureResponse> = serde_json::from_str(&text).unwrap();
                 let translation = &json_data[0].translations[0].text;
                 Some(translation.to_string())
             }
-            Err(_) => {
-                None
-            }
+            Err(_) => None,
         }
     }
 }

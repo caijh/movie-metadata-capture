@@ -12,7 +12,7 @@ use serde::{Deserialize, Serialize};
 pub struct Movie {
     pub number: String,
     pub title: String,
-    pub originaltitle: String,
+    pub original_title: String,
     pub sorttitle: String,
     pub customrating: String,
     pub mpaa: String,
@@ -79,7 +79,7 @@ impl Parser {
                 let document = package.as_document();
                 return self.parse_to_movie(&document, detail_url);
             } else {
-                println!("[-] fail to get html content from {}", url);
+                println!("[-]fail to get html content from {}", url);
             }
         }
         None
@@ -110,7 +110,6 @@ impl Parser {
         let expr_cover = self
             .expr_cover
             .replace("$cover_number", number.to_string().as_str());
-        println!("{}", expr_cover);
         let cover = evaluate_xpath_node(document.root(), &expr_cover).unwrap();
         let cover_small =
             evaluate_xpath_node(document.root(), self.expr_small_cover.as_str()).unwrap();
@@ -154,7 +153,7 @@ impl Parser {
         Some(Movie {
             number: number.to_string(),
             title: title.string(),
-            originaltitle: "".to_string(),
+            original_title: "".to_string(),
             sorttitle: "".to_string(),
             customrating: "".to_string(),
             mpaa: "".to_string(),
@@ -162,7 +161,7 @@ impl Parser {
             series: series.string(),
             studio: studio.string(),
             year: year.unwrap_or_default(),
-            outline: outline.string(),
+            outline: outline.string().replace("\n", "").trim().to_string(),
             plot: "".to_string(),
             runtime: runtime.string(),
             director: director.string(),

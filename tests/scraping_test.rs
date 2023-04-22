@@ -11,7 +11,8 @@ mod tests {
         if config.proxy.switch {
             set_proxy(&config.proxy).await.expect("fail to set proxy");
         }
-        let mut scraping = Scraping::new();
+        let config = get_app_config();
+        let mut scraping = Scraping::new(&config);
         let movie = scraping.search("ka9oae232", None, None).await;
         println!("{:?}", movie);
         assert!(movie.is_some());

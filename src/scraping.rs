@@ -1,9 +1,11 @@
 use std::collections::HashMap;
 use std::ops::Not;
 
+use crate::azure_translator::AzureTranslator;
 use regex::Regex;
+use serde_json::Value;
 
-use crate::config::{get_app_config, Parser};
+use crate::config::{AppConfig, Parser, Translate};
 use crate::parser::Movie;
 
 #[derive(Default)]
@@ -12,6 +14,7 @@ pub struct Scraping {
     parsers: HashMap<String, Parser>,
     specified_source: Option<String>,
     debug: bool,
+    translate: Translate,
 }
 
 fn replace_sources_item(sources: &mut Vec<&str>, index: usize, key: &str) {
@@ -23,16 +26,17 @@ fn replace_sources_item(sources: &mut Vec<&str>, index: usize, key: &str) {
 }
 
 impl Scraping {
-    pub fn new() -> Self {
-        let app_config = get_app_config();
-        let debug_mode = &app_config.debug_mode.switch;
-        let sources: Vec<String> = app_config.sources.keys().cloned().collect();
-        let parsers = app_config.sources.to_owned();
+    pub fn new(config: &AppConfig) -> Self {
+        let debug = config.debug_mode.switch;
+        let sources: Vec<String> = config.sources.keys().cloned().collect();
+        let parsers = config.sources.to_owned();
+        let translate = config.translate.clone();
         Scraping {
-            debug: debug_mode.clone(),
+            debug,
             sources,
             specified_source: None,
             parsers,
+            translate,
         }
     }
 
@@ -46,7 +50,46 @@ impl Scraping {
         let sources = sources.unwrap_or_default();
         let sources: Vec<&str> = sources.split(",").filter(|s| s.is_empty().not()).collect();
 
-        self.search_movie(file_number, sources).await
+        let movie = self.search_movie(file_number, sources).await;
+
+        match movie {
+            Some(mut movie) => {
+                if self.translate.switch {
+                    let json = serde_json::to_string(&movie).unwrap();
+                    let json: Value = serde_json::from_str(json.as_str()).unwrap();
+                    let translate_values: Vec<&str> = self.translate.values.split(",").collect();
+                    for translate_value in translate_values {
+                        if translate_value.is_empty() {
+                            continue;
+                        }
+                        let text = json
+                            .get(translate_value)
+                            .unwrap()
+                            .as_str()
+                            .unwrap_or_default();
+                        let t = if self.translate.engine == "azure" {
+                            let translator = AzureTranslator {
+                                service_url: self.translate.service_url.to_string(),
+                                access_key: self.translate.access_key.to_string(),
+                                region: self.translate.region.clone(),
+                            };
+                            translator.translate(text, "ja", "zh-Hans").await
+                        } else {
+                            None
+                        };
+                        if t.is_some() {
+                            match translate_value {
+                                "title" => movie.title = t.unwrap(),
+                                "outline" => movie.outline = t.unwrap(),
+                                _ => {}
+                            };
+                        }
+                    }
+                }
+                Some(movie)
+            }
+            None => None,
+        }
     }
 
     async fn search_movie(&mut self, file_number: &str, sources: Vec<&str>) -> Option<Movie> {
