@@ -10,9 +10,11 @@ switch = false
 
 [translate]
 switch = true
-service_url = ""
+engine = "azure"
+service_url = "https://api.cognitive.microsofttranslator.com/translate?api-version=3.0"
 access_key = ""
-region = ""
+region = "japaneast"
+values = "title,outline"
 
 [priority]
 website = "fanza,javbus,airav,jav321,xcity,mgstage,fc2,avsox,dlsite,carib,madou,mv91,getchu,javdb,gcolle"

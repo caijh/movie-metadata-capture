@@ -27,9 +27,11 @@ pub struct Proxy {
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
 pub struct Translate {
     pub switch: bool,
+    pub engine: String,
     pub service_url: String,
     pub access_key: String,
     pub region: Option<String>,
+    pub values: String,
 }
 
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
