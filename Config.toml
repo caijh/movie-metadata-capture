@@ -14,6 +14,9 @@ service_url = ""
 access_key = ""
 region = ""
 
+[priority]
+website = "fanza,javbus,airav,jav321,xcity,mgstage,fc2,avsox,dlsite,carib,madou,mv91,getchu,javdb,gcolle"
+
 [sources.fanza]
 name = "fanza"
 age_check = { url = "https://www.dmm.co.jp/age_check/=/declared=yes/", target_name = "rurl" }
