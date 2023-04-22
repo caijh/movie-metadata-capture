@@ -1,14 +1,15 @@
 use crate::config::AppConfig;
-use crate::files::file_exit_and_not_empty;
+use crate::files::{create_soft_link, file_exit_and_not_empty};
 use crate::request::{download_file, parallel_download_files};
 use crate::scraping::Scraping;
-use serde_json::Value;
+
 use std::error::Error;
+use std::fs::hard_link;
+
 use std::ops::Not;
 use std::path::{Path, PathBuf};
-use std::ptr::drop_in_place;
-use std::{fs, result};
-use urlencoding::encode;
+
+use std::fs;
 
 pub async fn core_main(
     file_path: &str,
@@ -320,4 +321,59 @@ pub async fn download_actor_photo(
     } else {
         println!("[+]Successfully downloaded {} actor photo.", result.len());
     }
+}
+
+pub fn paste_file_to_folder(
+    filepath: &str,
+    dir: &str,
+    number: &str,
+    leak_word: &str,
+    c_word: &str,
+    hack_word: &str,
+    config: &AppConfig,
+) -> Result<(), Box<dyn Error>> {
+    let file_path = Path::new(filepath);
+    let file_extension = file_path
+        .extension()
+        .and_then(|ext| ext.to_str())
+        .unwrap_or("");
+    let target_path = Path::new(dir).join(format!(
+        "{}{}{}{}{}{}",
+        number,
+        leak_word,
+        c_word,
+        hack_word,
+        ".".to_string(),
+        file_extension
+    ));
+    // 任何情况下都不要覆盖，以免遭遇数据源或者引擎错误导致所有文件得到同一个number，逐一
+    // 同名覆盖致使全部文件损失且不可追回的最坏情况
+    if target_path.exists() {
+        return Err("File Exists on destination path, we will never overwriting.".into());
+    }
+    let link_mode = config.common.link_mode;
+    // 如果link_mode 1: 建立软链接 2: 硬链接优先、无法建立硬链接再尝试软链接。
+    // 移除原先soft_link=2的功能代码，因默认记录日志，已经可追溯文件来源
+    let mut soft_link = false;
+    let target_path_clone = target_path.clone();
+    if link_mode == 2 {
+        // 跨卷或跨盘符无法建立硬链接导致异常，回落到建立软链接
+        let metadata_result = hard_link(file_path, target_path);
+        if metadata_result.is_err() {
+            soft_link = true;
+        }
+    }
+    if link_mode == 1 || soft_link {
+        let file_rel_path = file_path.strip_prefix(dir).ok().and_then(|p| p.to_str());
+        if file_rel_path.is_some() {
+            let symlink_result =
+                create_soft_link(Path::new(file_rel_path.unwrap()), &target_path_clone);
+            if symlink_result.is_err() {
+                create_soft_link(file_path, &target_path_clone).unwrap();
+            }
+        }
+    } else {
+        fs::rename(filepath, &target_path_clone)?;
+    }
+    Ok(())
 }

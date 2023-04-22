@@ -1,7 +1,9 @@
 #[cfg(test)]
 mod tests {
     use movie_metadata_capture::config::{get_app_config, load_config_file};
-    use movie_metadata_capture::core::{download_actor_photo, extrafanart_download};
+    use movie_metadata_capture::core::{
+        download_actor_photo, extrafanart_download, paste_file_to_folder,
+    };
     use movie_metadata_capture::request::set_proxy;
     use movie_metadata_capture::scraping::Scraping;
 
@@ -29,5 +31,16 @@ mod tests {
             .zip(actor_photo.into_iter())
             .collect();
         download_actor_photo(joined_vec, ".", "ka9oae232", &config).await;
+
+        paste_file_to_folder(
+            "./extrafanart/extrafanart-1.jpg",
+            ".",
+            "ka9oae232",
+            "",
+            "",
+            "",
+            &config,
+        )
+        .unwrap();
     }
 }
