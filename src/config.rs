@@ -11,6 +11,7 @@ pub struct AppConfig {
     pub proxy: Proxy,
     pub translate: Translate,
     pub sources: HashMap<String, Parser>,
+    pub priority: Priority,
     pub debug_mode: DebugMode,
 }
 
@@ -59,6 +60,11 @@ pub struct Parser {
     pub expr_uncensored: String,
     pub expr_userrating: String,
     pub expr_uservotes: String,
+}
+
+#[derive(Serialize, Deserialize, Debug, Default, Clone)]
+pub struct Priority {
+    pub website: String,
 }
 
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
