@@ -19,6 +19,7 @@ pub struct AppConfig {
     pub extrafanart: Extrafanart,
     pub actor_photo: ActorPhoto,
     pub face: Face,
+    pub media: Media,
 }
 
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
@@ -130,6 +131,12 @@ pub struct ActorPhoto {
 pub struct Face {
     pub locations_model: String,
     pub aspect_ratio: f32,
+}
+
+#[derive(Serialize, Deserialize, Debug, Default, Clone)]
+pub struct Media {
+    pub media_type: String,
+    pub sub_type: String,
 }
 
 lazy_static! {

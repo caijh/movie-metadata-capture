@@ -49,6 +49,12 @@ image_naming_with_number = false
 [uncensored]
 uncensored_prefix = "PT-,S2M,BT,LAF,SMD,SMBD,SM3D2DBD,SKY-,SKYHD,CWP,CWDV,CWBD,CW3D2DBD,MKD,MKBD,MXBD,MK3D2DBD,MCB3DBD,MCBD,RHJ,MMDV"
 
+[media]
+# 影片后缀
+media_type = ".mp4,.avi,.rmvb,.wmv,.mov,.mkv,.flv,.ts,.webm,.iso,.mpg,.m4v"
+# 字幕后缀
+sub_type = ".smi,.srt,.idx,.sub,.sup,.psb,.ssa,.ass,.usf,.xss,.ssf,.rt,.lrc,.sbv,.vtt,.ttml"
+
 [translate]
 switch = false
 engine = "azure"
