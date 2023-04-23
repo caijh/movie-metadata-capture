@@ -18,6 +18,7 @@ pub struct AppConfig {
     pub debug_mode: DebugMode,
     pub extrafanart: Extrafanart,
     pub actor_photo: ActorPhoto,
+    pub face: Face,
 }
 
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
@@ -123,6 +124,12 @@ pub struct Extrafanart {
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
 pub struct ActorPhoto {
     pub download_for_kodi: bool,
+}
+
+#[derive(Serialize, Deserialize, Debug, Default, Clone)]
+pub struct Face {
+    pub locations_model: String,
+    pub aspect_ratio: f32,
 }
 
 lazy_static! {

@@ -2,7 +2,8 @@
 mod tests {
     use movie_metadata_capture::config::{get_app_config, load_config_file};
     use movie_metadata_capture::core::{
-        download_actor_photo, extrafanart_download, paste_file_to_folder,
+        cut_image, download_actor_photo, download_cover, download_extra_fanart,
+        download_small_cover, paste_file_to_folder,
     };
     use movie_metadata_capture::request::set_proxy;
     use movie_metadata_capture::scraping::Scraping;
@@ -22,7 +23,10 @@ mod tests {
         let movie = movie.unwrap();
         assert_eq!("ka9oae232", movie.number);
         let extra_fanart = movie.extrafanart;
-        extrafanart_download(extra_fanart, ".", &config).await;
+
+        download_small_cover(&movie.cover_small, ".", "./poster.jpg", &config).await;
+
+        download_cover(&movie.cover, ".", "./thumb.jpg", "./fanart.jpg", &config).await;
 
         let actor_name = movie.actor_name;
         let actor_photo = movie.actor_photo;
@@ -32,15 +36,19 @@ mod tests {
             .collect();
         download_actor_photo(joined_vec, ".", "ka9oae232", &config).await;
 
-        paste_file_to_folder(
-            "./extrafanart/extrafanart-1.jpg",
-            ".",
-            "ka9oae232",
-            "",
-            "",
-            "",
-            &config,
-        )
-        .unwrap();
+        download_extra_fanart(extra_fanart, ".", &config).await;
+
+        cut_image(&config, ".", "./thumb.jpg", "./poster.jpg");
+
+        // paste_file_to_folder(
+        //     "./extrafanart/extrafanart-1.jpg",
+        //     ".",
+        //     "ka9oae232",
+        //     "",
+        //     "",
+        //     "",
+        //     &config,
+        // )
+        // .unwrap();
     }
 }

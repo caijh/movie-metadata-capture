@@ -9,6 +9,10 @@ use std::fs::hard_link;
 use std::ops::Not;
 use std::path::{Path, PathBuf};
 
+use dlib_face_recognition::{
+    FaceDetector, FaceDetectorCnn, FaceDetectorTrait, FaceLocations, ImageMatrix,
+};
+use image::{open, DynamicImage};
 use std::fs;
 
 pub async fn core_main(
@@ -140,6 +144,9 @@ pub async fn download_small_cover(
     filename: &str,
     config: &AppConfig,
 ) {
+    if cover_small_url.is_empty() {
+        return;
+    }
     let full_filepath = Path::new(dir).join(filename);
     if config.common.download_only_missing_images && file_exit_and_not_empty(&full_filepath) {
         return;
@@ -226,7 +233,7 @@ pub async fn download_file_with_filename(
 
     is_success
 }
-pub async fn extrafanart_download(extrafanart: Vec<String>, dir: &str, config: &AppConfig) {
+pub async fn download_extra_fanart(extrafanart: Vec<String>, dir: &str, config: &AppConfig) {
     let tm_start = std::time::Instant::now();
     let tasks = extrafanart
         .into_iter()
@@ -376,4 +383,163 @@ pub fn paste_file_to_folder(
         fs::rename(filepath, &target_path_clone)?;
     }
     Ok(())
+}
+
+pub fn cut_image(config: &AppConfig, dir: &str, thumb_path: &str, poster_path: &str) {
+    let full_path_thumb = Path::new(dir).join(thumb_path);
+    let full_path_poster = Path::new(dir).join(poster_path);
+    if config.common.download_only_missing_images && file_exit_and_not_empty(&full_path_poster) {
+        return;
+    }
+
+    let img_result = open(&full_path_thumb);
+    let filename = full_path_thumb.file_name().unwrap().to_str().unwrap();
+    if let Ok(mut img) = img_result {
+        let (width, height) = (img.width(), img.height());
+        println!("{:?}", (width, height));
+        let poster_image = if (width as f64 / height as f64) > (2.0 / 3.0) {
+            // 如果宽度大于2
+            let s = face_crop_width(&img, filename, width, height, config);
+            img.crop(s.0, s.1, s.2, s.3)
+        } else if (width as f64 / height as f64) < (2.0 / 3.0) {
+            let s = face_crop_height(&img, filename, width, height, config);
+            img.crop(s.0, s.1, s.2, s.3)
+        } else {
+            img
+        };
+        if let Err(e) = poster_image.save(&full_path_poster) {
+            eprintln!("[-]Cover cut failed! {:?}", e);
+        } else {
+            println!(
+                "[+]Image Cutted! {}",
+                full_path_poster.file_name().unwrap().to_string_lossy()
+            );
+        }
+    } else if let Err(e) = img_result {
+        eprintln!("[-]Image open failed! {:?}", e);
+    }
+}
+
+fn face_crop_width(
+    image: &DynamicImage,
+    filename: &str,
+    width: u32,
+    height: u32,
+    config: &AppConfig,
+) -> (u32, u32, u32, u32) {
+    let aspect_ratio = config.face.aspect_ratio;
+    // 新宽度是高度的2/3
+    let crop_width_half = height / 3;
+    let locations_model = config.face.locations_model.clone();
+    let locations_model = locations_model
+        .split(',')
+        .filter(|x| !x.is_empty())
+        .to_owned();
+
+    for model in locations_model {
+        if let Some((center, _top)) = face_center(&image, filename, model) {
+            if center < crop_width_half {
+                return (0, 0, crop_width_half * aspect_ratio as u32, height);
+            }
+            let crop_left = center - crop_width_half;
+            let crop_right = center + crop_width_half;
+            if crop_right > width {
+                return (
+                    width - crop_width_half * aspect_ratio as u32,
+                    0,
+                    width,
+                    height,
+                );
+            }
+            return (crop_left, 0, crop_right, height);
+        }
+    }
+
+    println!("[-]Not found face!   {}", filename);
+    // 默认靠右切
+    (
+        width - crop_width_half * aspect_ratio as u32,
+        0,
+        width,
+        height,
+    )
+}
+
+fn face_crop_height(
+    image: &DynamicImage,
+    filename: &str,
+    width: u32,
+    height: u32,
+    config: &AppConfig,
+) -> (u32, u32, u32, u32) {
+    let crop_height = (width as f32 * 3.0 / 2.0).round() as u32;
+
+    let locations_model = config.face.locations_model.clone();
+    let locations_model: Vec<&str> = locations_model
+        .split(',')
+        .filter(|x| !x.is_empty())
+        .collect();
+
+    for model in locations_model {
+        if let Some((_center, top)) = face_center(&image, filename, model) {
+            // 如果找到就跳出循环
+            if top > 0 {
+                // 头部靠上
+                let crop_top = top;
+                let crop_bottom = crop_height + top;
+
+                if crop_bottom > height {
+                    return (0, 0, width, crop_height);
+                }
+                return (0, crop_top, width, crop_bottom);
+            }
+        }
+    }
+
+    println!("[-]Not found face!   {}", filename);
+    // 默认从顶部向下切割
+    (0, 0, width, crop_height)
+}
+
+fn face_center(image: &DynamicImage, filename: &str, model: &str) -> Option<(u32, u32)> {
+    let rgb_image = image.to_rgb8();
+    match model {
+        "hog" => {
+            println!("[-]Model {} found face {}", model, filename);
+            let matrix = ImageMatrix::from_image(&rgb_image);
+            let detector = FaceDetector::default();
+            let locations = detector.face_locations(&matrix);
+
+            // Get the center of each detected face
+            get_face_center(locations)
+        }
+        "cnn" => {
+            println!("[-]Model {} found face {}", model, filename);
+            let matrix = ImageMatrix::from_image(&rgb_image);
+            let detector = FaceDetectorCnn::default().unwrap();
+            let locations = detector.face_locations(&matrix);
+
+            // Get the center of each detected face
+            get_face_center(locations)
+        }
+        _ => None,
+    }
+}
+
+fn get_face_center(locations: FaceLocations) -> Option<(u32, u32)> {
+    let face_centers: Vec<(u32, u32)> = locations
+        .iter()
+        .map(|detection| {
+            let center_x = detection.left + (detection.right - detection.left) / 2;
+            let center_y = detection.top + (detection.top - detection.bottom) / 2;
+            (center_x as u32, center_y as u32)
+        })
+        .collect();
+
+    if face_centers.is_empty() {
+        None
+    } else {
+        let face_center = face_centers.get(0).unwrap().to_owned();
+        Some(face_center)
+    }
 }
