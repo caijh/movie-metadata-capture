@@ -697,11 +697,11 @@ fn write_nfo_file(
         .write(true)
         .create(true)
         .truncate(true)
-        .open(nfo_path)?;
+        .open(&nfo_path)?;
 
     // Write the XML string to the file
     file.write_all(xml.as_bytes())?;
-    println!("[+]Wrote!  {}", nfo_path.to_string_lossy());
+    println!("[+]Wrote!  {}", &nfo_path.to_string_lossy());
     Ok(())
 }
 
