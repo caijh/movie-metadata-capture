@@ -3,7 +3,7 @@ mod tests {
     use movie_metadata_capture::config::{get_app_config, load_config_file};
     use movie_metadata_capture::core::{
         cut_image, download_actor_photo, download_cover, download_extra_fanart,
-        download_small_cover, paste_file_to_folder,
+        download_small_cover, move_subtitles, paste_file_to_folder,
     };
     use movie_metadata_capture::request::set_proxy;
     use movie_metadata_capture::scraping::Scraping;
@@ -28,27 +28,22 @@ mod tests {
 
         download_cover(&movie.cover, ".", "./thumb.jpg", "./fanart.jpg", &config).await;
 
-        let actor_name = movie.actor_name;
-        let actor_photo = movie.actor_photo;
-        let joined_vec: Vec<(String, String)> = actor_name
-            .into_iter()
-            .zip(actor_photo.into_iter())
-            .collect();
-        download_actor_photo(joined_vec, ".", "ka9oae232", &config).await;
+        download_actor_photo(&movie.actor, ".", "ka9oae232", &config).await;
 
         download_extra_fanart(extra_fanart, ".", &config).await;
 
         cut_image(&config, ".", "./thumb.jpg", "./poster.jpg");
 
-        // paste_file_to_folder(
-        //     "./extrafanart/extrafanart-1.jpg",
-        //     ".",
-        //     "ka9oae232",
-        //     "",
-        //     "",
-        //     "",
-        //     &config,
-        // )
-        // .unwrap();
+        paste_file_to_folder(
+            "./extrafanart/extrafanart-1.jpg",
+            ".",
+            "ka9oae232",
+            "",
+            "",
+            "",
+            &config,
+        )
+        .unwrap();
+        move_subtitles("xxx.mp4", ".", "ka9oae232", "", "", "", &config).unwrap();
     }
 }

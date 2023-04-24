@@ -112,8 +112,6 @@ pub struct Common {
     pub ignore_failed_list: bool,
     pub download_only_missing_images: bool,
     pub mapping_table_validity: u64,
-    pub jellyfin: bool,
-    pub actor_only_tag: bool,
     pub sleep: u8,
 }
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]

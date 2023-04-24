@@ -4,16 +4,21 @@ use crate::request::{download_file, parallel_download_files};
 use crate::scraping::Scraping;
 
 use std::error::Error;
-use std::fs::hard_link;
+use std::fs::{hard_link, OpenOptions};
 
 use std::ops::Not;
 use std::path::{Path, PathBuf};
 
+use crate::parser::Movie;
 use dlib_face_recognition::{
     FaceDetector, FaceDetectorCnn, FaceDetectorTrait, FaceLocations, ImageMatrix,
 };
+use futures::SinkExt;
 use image::{open, DynamicImage};
+use quick_xml::se::to_string;
+use serde::Serialize;
 use std::fs;
+use std::io::Write;
 
 pub async fn core_main(
     file_path: &str,
@@ -190,15 +195,13 @@ pub async fn download_cover(
         "[+]Image Downloaded! {}",
         full_thumb_path.file_name().unwrap().to_string_lossy()
     );
-    if !config.common.jellyfin {
-        let full_fanart_path = PathBuf::from(dir).join(fanart_file_name);
-        match fs::copy(&full_thumb_path, &full_fanart_path) {
-            Ok(_) => {}
-            Err(e) => {
-                eprintln!("[-]Failed to copy thumbnail to fanart: {:?}", e);
-            }
-        };
-    }
+    let full_fanart_path = PathBuf::from(dir).join(fanart_file_name);
+    match fs::copy(&full_thumb_path, &full_fanart_path) {
+        Ok(_) => {}
+        Err(e) => {
+            eprintln!("[-]Failed to copy thumbnail to fanart: {:?}", e);
+        }
+    };
 }
 pub async fn download_file_with_filename(
     url: &str,
@@ -283,7 +286,7 @@ async fn extra_fanart_download_one_by_one(
 }
 
 pub async fn download_actor_photo(
-    actors: Vec<(String, String)>,
+    actors: &Vec<(String, String)>,
     dir: &str,
     number: &str,
     config: &AppConfig,
@@ -539,7 +542,212 @@ fn get_face_center(locations: FaceLocations) -> Option<(u32, u32)> {
     if face_centers.is_empty() {
         None
     } else {
-        let face_center = face_centers.get(0).unwrap().to_owned();
+        let face_center: (u32, u32) = face_centers.get(0).unwrap().to_owned();
         Some(face_center)
     }
+}
+
+pub fn move_subtitles(
+    filepath: &str,
+    dir: &str,
+    number: &str,
+    leak_word: &str,
+    c_word: &str,
+    hack_word: &str,
+    config: &AppConfig,
+) -> Result<bool, Box<dyn Error>> {
+    let file_path = Path::new(filepath);
+    let mut is_success = false;
+    let sub_res = &config.media.sub_type;
+    let link_mode = config.common.main_mode;
+
+    for entry in fs::read_dir(file_path.parent().unwrap())? {
+        let sub_file = entry?.path();
+        if sub_file.is_file()
+            && sub_res.contains(
+                &sub_file
+                    .extension()
+                    .and_then(|ext| ext.to_str())
+                    .unwrap_or("")
+                    .to_lowercase(),
+            )
+        {
+            if file_path
+                .file_stem()
+                .and_then(|stem| stem.to_str())
+                .unwrap_or("")
+                .to_lowercase()
+                != sub_file
+                    .file_stem()
+                    .and_then(|stem| stem.to_str())
+                    .unwrap_or("")
+                    .to_lowercase()
+            {
+                continue;
+            }
+            let sub_target_path = Path::new(dir).join(format!(
+                "{}{}{}{}{}",
+                number,
+                leak_word,
+                c_word,
+                hack_word,
+                sub_file
+                    .extension()
+                    .and_then(|ext| ext.to_str())
+                    .unwrap_or("")
+            ));
+
+            if link_mode == 1 || link_mode == 2 {
+                fs::copy(&sub_file, &sub_target_path)?;
+                println!("[+]Sub Copied! {}", sub_target_path.to_string_lossy());
+                is_success = true;
+            } else {
+                fs::rename(&sub_file, &sub_target_path)?;
+                println!("[+] Sub Moved!  {:?}", sub_target_path);
+                is_success = true;
+            }
+
+            if is_success {
+                break;
+            }
+        }
+    }
+    Ok(is_success)
+}
+
+fn write_nfo_file(
+    config: &AppConfig,
+    movie: &Movie,
+    dir: &str,
+    leak_word: &str,
+    c_word: &str,
+    part: &str,
+    filepath: &str,
+    hack_word: &str,
+    _4k: bool,
+    thumb_path: &str,
+    poster_path: &str,
+    fanart_path: &str,
+) -> Result<(), Box<dyn Error>> {
+    let nfo_path = if config.common.link_mode == 3 {
+        Path::new(&filepath).with_extension("nfo")
+    } else {
+        Path::new(&dir).join(format!(
+            "{}{}{}{}{}.nfo",
+            movie.number, part, leak_word, c_word, hack_word
+        ))
+    };
+    let _path = Path::new(dir);
+    fs::create_dir_all(_path).unwrap();
+
+    let title = config
+        .name_rule
+        .naming_rule
+        .replace("$number", &movie.number)
+        .replace("$title", &movie.title);
+    let actor = movie
+        .actor
+        .iter()
+        .map(|(name, thumb)| Actor {
+            name: name.to_string(),
+            thumb: thumb.to_string(),
+        })
+        .collect();
+
+    let tag = movie
+        .tag
+        .iter()
+        .map(|tag| Tag {
+            content: tag.to_string(),
+        })
+        .collect();
+    let nfo = MovieNFO {
+        title: title.clone(),
+        original_title: movie.title.clone(),
+        sort_title: title.clone(),
+        customrating: "JP-18+".to_string(),
+        mpaa: "JP-18+".to_string(),
+        set: movie.series.clone(),
+        studio: movie.studio.clone(),
+        year: movie.year.clone(),
+        outline: movie.outline.clone(),
+        plot: movie.plot.clone(),
+        runtime: movie.runtime.clone(),
+        director: movie.director.clone(),
+        poster: poster_path.to_string(),
+        thumb: thumb_path.to_string(),
+        fanart: fanart_path.to_string(),
+        actors: actor,
+        maker: movie.studio.clone(),
+        label: movie.label.clone(),
+        tag,
+        num: movie.number.clone(),
+        premiered: movie.release.clone(),
+        releasedate: movie.release.clone(),
+        release: movie.release.clone(),
+        rating: movie.userrating.clone(),
+        cover: movie.cover.clone(),
+        trailer: "".to_string(),
+        website: movie.website.clone(),
+    };
+
+    // write movie to nfo file
+    let xml = to_string(&nfo).unwrap();
+    let mut file = OpenOptions::new()
+        .write(true)
+        .create(true)
+        .truncate(true)
+        .open(nfo_path)?;
+
+    // Write the XML string to the file
+    file.write_all(xml.as_bytes())?;
+    println!("[+]Wrote!  {}", nfo_path.to_string_lossy());
+    Ok(())
+}
+
+#[derive(Serialize)]
+#[serde(rename = "movie")]
+struct MovieNFO {
+    title: String,
+    #[serde(rename = "originaltitle")]
+    original_title: String,
+    #[serde(rename = "sorttitle")]
+    sort_title: String,
+    customrating: String,
+    mpaa: String,
+    set: String,
+    studio: String,
+    year: String,
+    outline: String,
+    plot: String,
+    runtime: String,
+    director: String,
+    poster: String,
+    thumb: String,
+    fanart: String,
+    #[serde(rename = "actor")]
+    actors: Vec<Actor>,
+    maker: String,
+    label: String,
+    #[serde(rename = "tag")]
+    tag: Vec<Tag>,
+    num: String,
+    premiered: String,
+    releasedate: String,
+    release: String,
+    rating: String,
+    cover: String,
+    trailer: String,
+    website: String,
+}
+#[derive(Serialize)]
+struct Actor {
+    name: String,
+    thumb: String,
+}
+
+#[derive(Serialize)]
+struct Tag {
+    #[serde(rename = "$value")]
+    content: String,
 }

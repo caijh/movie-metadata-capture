@@ -14,8 +14,6 @@ nfo_skip_days = 30
 ignore_failed_list = false
 download_only_missing_images = true
 mapping_table_validity = 7
-jellyfin = false
-actor_only_tag = false
 sleep = 3
 
 # 剧照
@@ -42,7 +40,7 @@ switch = false
 
 [name_rule]
 location_rule = 'actor+"/"+number'
-naming_rule = 'number+"-"+title'
+naming_rule = '$number-$title'
 max_title_len = 50
 image_naming_with_number = false
 
