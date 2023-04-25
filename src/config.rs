@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::env;
 use std::path::PathBuf;
 use std::sync::{Arc, RwLock};
 
@@ -141,16 +142,66 @@ lazy_static! {
     pub static ref CONFIG: Arc<RwLock<AppConfig>> = Arc::new(RwLock::new(AppConfig::default()));
 }
 
-pub async fn load_config_file(file: &str) -> Result<(), ConfyError> {
-    let config_file_path = PathBuf::from(file);
-    let cfg = confy::load_path::<AppConfig>(config_file_path)?;
+impl AppConfig {
+    pub async fn load_config_file(file: &str) -> Result<(), ConfyError> {
+        let config_file_path = PathBuf::from(file);
+        let cfg = confy::load_path::<AppConfig>(config_file_path)?;
 
-    let config_clone = CONFIG.clone();
-    let mut config = config_clone.write().unwrap();
-    *config = cfg;
-    Ok(())
-}
+        let config_clone = CONFIG.clone();
+        let mut config = config_clone.write().unwrap();
+        *config = cfg;
+        Ok(())
+    }
 
-pub fn get_app_config() -> std::sync::RwLockReadGuard<'static, AppConfig> {
-    CONFIG.read().unwrap()
+    pub fn get_app_config() -> std::sync::RwLockReadGuard<'static, AppConfig> {
+        CONFIG.read().unwrap()
+    }
+
+    pub fn print_config_and_args(&self) {
+        // Print debug status
+        if self.debug_mode.switch {
+            println!("[+]Enable debug");
+        }
+
+        // Print link mode
+        match self.common.link_mode {
+            1 | 2 => {
+                let i = self.common.link_mode - 1;
+                println!("[!]Enable {} link", ["soft", "hard"].get(i).unwrap())
+            }
+            _ => {}
+        }
+
+        // Print command-line arguments
+        let args: Vec<String> = env::args().collect();
+        if args.len() > 1 {
+            println!("[!]CmdLine: {}", args[1..].join(" "));
+        }
+
+        // Print main working mode
+        let main_mode = self.common.main_mode;
+
+        let multi_threading = if self.common.multi_threading {
+            ", multi_threading on"
+        } else {
+            ""
+        };
+        let nfo_skip_days = if self.common.nfo_skip_days > 0 {
+            "".to_string()
+        } else {
+            format!(", nfo_skip_days={}", self.common.nfo_skip_days)
+        };
+        println!(
+            "{}",
+            format_args!(
+                "[+]Main Working mode ## {}: {} ##{}{}",
+                main_mode,
+                ["Scraping", "Organizing", "Scraping in analysis folder"]
+                    .get(main_mode - 1)
+                    .unwrap(),
+                multi_threading,
+                nfo_skip_days,
+            )
+        );
+    }
 }
