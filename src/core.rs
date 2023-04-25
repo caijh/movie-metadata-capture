@@ -751,3 +751,46 @@ struct Tag {
     #[serde(rename = "$value")]
     content: String,
 }
+
+pub async fn create_data_and_move_with_custom_number(
+    file_path: &str,
+    custom_number: &str,
+    specified_source: Option<String>,
+    config: &AppConfig,
+) -> Result<(), Box<dyn Error>> {
+    let file_name = Path::new(file_path).file_name().unwrap().to_str().unwrap();
+
+    println!(
+        "[!] [{}] As Number Processing for '{}'",
+        custom_number, file_path
+    );
+    if !custom_number.is_empty() {
+        match core_main(file_path, custom_number, None, specified_source, &config).await {
+            Ok(r) => r,
+            Err(err) => {
+                eprintln!("[-] [{}] ERROR:", file_path);
+                eprintln!("[-] {}", err);
+
+                if config.common.link_mode > 0 {
+                    let link_path =
+                        Path::new(config.common.failed_output_folder.as_str()).join(file_name);
+                    match create_soft_link(Path::new(file_path), &link_path) {
+                        Ok(_) => println!("[-]Link {} to failed folder", file_path),
+                        Err(err) => eprintln!("[!] Error while creating symlink - {}", err),
+                    };
+                } else {
+                    let move_path =
+                        Path::new(config.common.failed_output_folder.as_str()).join(file_name);
+                    match fs::rename(file_path, &move_path) {
+                        Ok(_) => println!("[-] Move [{}] to failed folder", file_path),
+                        Err(err) => eprintln!("[!] Error while moving file - {}", err),
+                    };
+                }
+            }
+        }
+    } else {
+        println!("[-] number empty ERROR");
+    }
+    println!("[*]======================================================");
+    Ok(())
+}
