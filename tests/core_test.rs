@@ -1,17 +1,17 @@
 #[cfg(test)]
 mod tests {
-    use movie_metadata_capture::config::{get_app_config, load_config_file};
+    use movie_metadata_capture::config::AppConfig;
     use movie_metadata_capture::core::{download_cover, download_small_cover};
     use movie_metadata_capture::request::set_proxy;
     use std::path::Path;
 
     #[tokio::test]
     async fn download_small_cover_test() {
-        load_config_file("./Config.toml")
+        AppConfig::load_config_file("./Config.toml")
             .await
             .expect("Fail to load config");
 
-        let config = get_app_config();
+        let config = AppConfig::get_app_config();
         if config.proxy.switch {
             set_proxy(&config.proxy).await.expect("Fail to set proxy");
         }
@@ -27,11 +27,11 @@ mod tests {
 
     #[tokio::test]
     async fn download_cover_test() {
-        load_config_file("./Config.toml")
+        AppConfig::load_config_file("./Config.toml")
             .await
             .expect("Fail to load config");
 
-        let config = get_app_config();
+        let config = AppConfig::get_app_config();
         if config.proxy.switch {
             set_proxy(&config.proxy).await.expect("Fail to set proxy");
         }

@@ -2,6 +2,7 @@ use crate::config::AppConfig;
 use crate::files::{create_soft_link, file_exit_and_not_empty};
 use crate::request::{download_file, parallel_download_files};
 use crate::scraping::Scraping;
+use std::collections::HashSet;
 
 use std::error::Error;
 use std::fs::{hard_link, OpenOptions};
@@ -19,6 +20,8 @@ use quick_xml::se::to_string;
 use serde::Serialize;
 use std::fs;
 use std::io::Write;
+
+use walkdir::WalkDir;
 
 pub async fn core_main(
     file_path: &str,
@@ -793,4 +796,31 @@ pub async fn create_data_and_move_with_custom_number(
     }
     println!("[*]======================================================");
     Ok(())
+}
+
+fn movie_lists(cfg: &AppConfig, folder_path: &Path) -> Vec<&'static str> {
+    if !folder_path.is_dir() {
+        println!("[-]Source folder not found!");
+        return Vec::new();
+    }
+
+    let media_type = &cfg.media.media_type.to_lowercase();
+    let file_types: HashSet<&str> = media_type.split(",").collect();
+    let mut total_movies: Vec<&str> = Vec::new();
+
+    for entry in WalkDir::new(folder_path) {
+        let entry = entry.unwrap();
+        let path = entry.path();
+
+        if entry.file_type().is_file()
+            && path.extension().map_or(false, |ext| {
+                file_types.contains(ext.to_str().unwrap().to_lowercase().as_str())
+            })
+        {
+            // Do something with the media file, e.g. print its path
+            total_movies.push(path.to_str().unwrap());
+        }
+    }
+
+    total_movies
 }

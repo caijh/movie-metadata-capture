@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-    use movie_metadata_capture::config::{get_app_config, load_config_file};
+    use movie_metadata_capture::config::AppConfig;
     use movie_metadata_capture::core::{
         cut_image, download_actor_photo, download_cover, download_extra_fanart,
         download_small_cover, move_subtitles, paste_file_to_folder,
@@ -10,12 +10,12 @@ mod tests {
 
     #[tokio::test]
     async fn test_scraping_movie() {
-        load_config_file("./Config.toml").await.expect("");
-        let config = get_app_config();
+        AppConfig::load_config_file("./Config.toml").await.expect("");
+        let config = AppConfig::get_app_config();
         if config.proxy.switch {
             set_proxy(&config.proxy).await.expect("fail to set proxy");
         }
-        let config = get_app_config();
+        let config = AppConfig::get_app_config();
         let mut scraping = Scraping::new(&config);
         let movie = scraping.search("ka9oae232", None, None).await;
         println!("{:?}", movie);
