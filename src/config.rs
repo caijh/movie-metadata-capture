@@ -1,7 +1,7 @@
 use std::collections::HashMap;
-use std::env;
 use std::path::PathBuf;
 use std::sync::{Arc, RwLock};
+use std::{env, fs, io};
 
 use confy::ConfyError;
 use lazy_static::lazy_static;
@@ -203,5 +203,20 @@ impl AppConfig {
                 nfo_skip_days,
             )
         );
+    }
+
+    pub async fn create_failed_folder(&self) -> io::Result<()> {
+        let failed_folder = &self.common.failed_output_folder;
+        match fs::create_dir_all(failed_folder) {
+            Ok(_) => Ok(()),
+            Err(error) if error.kind() == io::ErrorKind::AlreadyExists => Ok(()),
+            Err(error) => {
+                println!(
+                    "[-]Fatal error! Can not make folder '{}': {}",
+                    failed_folder, error
+                );
+                Err(error)
+            }
+        }
     }
 }

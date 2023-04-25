@@ -17,6 +17,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         return Err("[-] Main mode must be 1 or 2 or 3!".into());
     }
 
+    config.create_failed_folder().await?;
+
     Ok(())
 }
 
