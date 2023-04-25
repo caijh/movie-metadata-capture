@@ -1,8 +1,9 @@
 use std::collections::HashMap;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::sync::{Arc, RwLock};
 use std::{env, fs, io};
 
+use crate::files::rm_empty_folder;
 use confy::ConfyError;
 use lazy_static::lazy_static;
 use serde::{Deserialize, Serialize};
@@ -218,5 +219,12 @@ impl AppConfig {
                 Err(error)
             }
         }
+    }
+
+    pub async fn delete_empty_folder(&self) -> Result<(), io::Error> {
+        rm_empty_folder(self.common.success_output_folder.as_str()).await?;
+        rm_empty_folder(self.common.source_folder.as_str()).await?;
+        rm_empty_folder(self.common.failed_output_folder.as_str()).await?;
+        Ok(())
     }
 }

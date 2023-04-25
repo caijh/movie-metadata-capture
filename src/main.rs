@@ -19,6 +19,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     config.create_failed_folder().await?;
 
+    config.delete_empty_folder().await?;
+
     Ok(())
 }
 

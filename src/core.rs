@@ -13,7 +13,7 @@ use crate::parser::Movie;
 use dlib_face_recognition::{
     FaceDetector, FaceDetectorCnn, FaceDetectorTrait, FaceLocations, ImageMatrix,
 };
-use futures::SinkExt;
+
 use image::{open, DynamicImage};
 use quick_xml::se::to_string;
 use serde::Serialize;
