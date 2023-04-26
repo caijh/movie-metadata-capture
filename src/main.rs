@@ -1,8 +1,20 @@
+use chrono::Local;
 use clap::{arg, Parser};
+use indicatif::ProgressBar;
 use movie_metadata_capture::config::AppConfig;
+use movie_metadata_capture::core::{
+    core_main, create_data_and_move_with_custom_number, move_failed_folder, movie_lists,
+};
+use movie_metadata_capture::number_parser::get_number;
+use rand::Rng;
+use std::error::Error;
+use std::ops::Not;
+use std::path::Path;
+use std::time::Duration;
+use std::{thread, time};
 
 #[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
+async fn main() -> Result<(), Box<dyn Error>> {
     let args: Args = Args::parse();
 
     let config_path = args.config_path.unwrap_or("./config.toml".to_string());
@@ -19,7 +31,83 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     config.create_failed_folder().await?;
 
+    let start_time = time::Instant::now();
+    println!(
+        "[+]Start at {}",
+        Local::now().format("%Y-%m-%d %H:%M:%S").to_string()
+    );
+
+    let single_file_path = args.single_file_path.unwrap_or_default();
+    if !single_file_path.is_empty() {
+        println!("[+]==================== Single File =====================");
+        let custom_number = if args.custom_number.is_none() {
+            get_number(single_file_path.as_str()).unwrap()
+        } else {
+            args.custom_number.unwrap_or_default()
+        };
+        create_data_and_move_with_custom_number(
+            single_file_path.as_str(),
+            &custom_number,
+            args.specified_source,
+            &config,
+        )
+        .await?;
+    } else {
+        let folder_path = if config.common.source_folder.is_empty() {
+            Path::new(&config.common.source_folder)
+        } else {
+            Path::new(".")
+        };
+        let movie_list = movie_lists(&config, folder_path);
+
+        let movie_count = movie_list.len();
+        println!("[+]Find {} movies.", movie_count);
+        println!("[*]======================================================");
+        let bar = ProgressBar::new(movie_count as u64);
+        for movie_path in movie_list {
+            create_data_and_move(movie_path.as_str(), &config).await?;
+            bar.inc(1);
+            let mut rng = rand::thread_rng();
+            let sleep_seconds = rng.gen_range(config.common.sleep..config.common.sleep + 2);
+            thread::sleep(Duration::from_secs(sleep_seconds));
+        }
+        bar.finish();
+    }
+
     config.delete_empty_folder().await?;
+
+    let end_time = time::Instant::now();
+    let total_time = end_time.duration_since(start_time);
+    let total_time_str = format!("{}", total_time.as_secs_f32());
+    println!(
+        "[+]Running time {} End at {}",
+        total_time_str,
+        Local::now().format("%Y-%m-%d %H:%M:%S").to_string()
+    );
+
+    println!("[+]All finished!!!");
+
+    Ok(())
+}
+
+async fn create_data_and_move(movie_path: &str, config: &AppConfig) -> Result<(), Box<dyn Error>> {
+    let n_number = get_number(movie_path);
+    let movie_path = Path::new(movie_path).canonicalize().unwrap();
+    let movie_path_str = movie_path.to_string_lossy();
+    let movie_path_str = movie_path_str.as_ref();
+    let n_number = n_number.unwrap_or_default();
+    println!(
+        "[!] [{}] As Number Processing for '{}'",
+        n_number,
+        movie_path.to_string_lossy()
+    );
+    if n_number.is_empty().not() {
+        core_main(&movie_path_str, n_number.as_str(), None, None, config).await?;
+    } else {
+        println!("[-] number empty error");
+        move_failed_folder(movie_path_str, config);
+    }
+    println!("[*]======================================================");
 
     Ok(())
 }
@@ -37,13 +125,5 @@ pub struct Args {
     pub custom_number: Option<String>,
 
     #[arg(long, required = false)]
-    pub regexstr: Option<String>,
-
-    #[arg(long, required = false)]
-    pub log_dir: Option<String>,
-
-    #[arg(long, required = false)]
     pub specified_source: Option<String>,
-    #[arg(long, required = false)]
-    pub specified_url: Option<String>,
 }

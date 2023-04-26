@@ -114,7 +114,7 @@ pub struct Common {
     pub ignore_failed_list: bool,
     pub download_only_missing_images: bool,
     pub mapping_table_validity: u64,
-    pub sleep: u8,
+    pub sleep: u64,
 }
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
 pub struct Extrafanart {

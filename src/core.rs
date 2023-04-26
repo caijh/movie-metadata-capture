@@ -15,6 +15,7 @@ use dlib_face_recognition::{
     FaceDetector, FaceDetectorCnn, FaceDetectorTrait, FaceLocations, ImageMatrix,
 };
 
+use chrono::Local;
 use image::{open, DynamicImage};
 use quick_xml::se::to_string;
 use serde::Serialize;
@@ -36,7 +37,7 @@ pub async fn core_main(
         .await;
 
     if movie.is_none() {
-        // move_failed_folder(file_path, &config);
+        move_failed_folder(file_path, &config);
         return Ok(());
     }
     let movie = movie.unwrap();
@@ -798,15 +799,15 @@ pub async fn create_data_and_move_with_custom_number(
     Ok(())
 }
 
-fn movie_lists(cfg: &AppConfig, folder_path: &Path) -> Vec<&'static str> {
+pub fn movie_lists(config: &AppConfig, folder_path: &Path) -> Vec<String> {
     if !folder_path.is_dir() {
         println!("[-]Source folder not found!");
         return Vec::new();
     }
 
-    let media_type = &cfg.media.media_type.to_lowercase();
+    let media_type = &config.media.media_type.to_lowercase();
     let file_types: HashSet<&str> = media_type.split(",").collect();
-    let mut total_movies: Vec<&str> = Vec::new();
+    let mut total_movies: Vec<String> = Vec::new();
 
     for entry in WalkDir::new(folder_path) {
         let entry = entry.unwrap();
@@ -818,9 +819,64 @@ fn movie_lists(cfg: &AppConfig, folder_path: &Path) -> Vec<&'static str> {
             })
         {
             // Do something with the media file, e.g. print its path
-            total_movies.push(path.to_str().unwrap());
+            let movie = path.to_str().unwrap();
+            total_movies.push(movie.to_string());
         }
     }
 
     total_movies
+}
+
+pub fn move_failed_folder(filepath: &str, conf: &AppConfig) {
+    let failed_folder = conf.common.failed_output_folder.as_str();
+    let link_mode = conf.common.link_mode;
+
+    // 模式3或软连接，改为维护一个失败列表，启动扫描时加载用于排除该路径，以免反复处理
+    // 原先的创建软连接到失败目录，并不直观，不方便找到失败文件位置，不如直接记录该文件路径
+    if conf.common.main_mode == 3 || link_mode > 0 {
+        let ftxt = std::path::PathBuf::from(failed_folder).join("failed_list.txt");
+        println!("-Add to Failed List file, see '{}'", ftxt.display());
+        if let Err(e) = fs::write(ftxt, filepath.to_owned() + "\n") {
+            eprintln!("-Failed to write failed file to list: {}", e);
+        }
+    } else if conf.common.failed_move && (link_mode == 0) {
+        let mut failed_name = std::path::PathBuf::from(failed_folder);
+        failed_name.push(Path::new(filepath).file_name().unwrap_or_default());
+        let mtxt =
+            std::path::PathBuf::from(failed_folder).join("where_was_i_before_being_moved.txt");
+        println!("-Move to Failed output folder, see '{}'", mtxt.display());
+        if let Err(e) = fs::create_dir_all(mtxt.parent().unwrap()) {
+            eprintln!(
+                "-Failed to create parent directory of 'where_was_i_before_being_moved.txt': {}",
+                e
+            );
+        }
+        if let Ok(mut wwibbmt) = std::fs::OpenOptions::new()
+            .append(true)
+            .create(true)
+            .open(&mtxt)
+        {
+            let tmstr = Local::now().format("%Y-%m-%d %H:%M").to_string();
+            if let Err(e) = writeln!(
+                wwibbmt,
+                "{} FROM[{}]TO[{}]",
+                tmstr,
+                filepath,
+                failed_name.display()
+            ) {
+                eprintln!(
+                    "-Failed to write 'where_was_i_before_being_moved.txt': {}",
+                    e
+                );
+            }
+        } else {
+            eprintln!("-Failed to open 'where_was_i_before_being_moved.txt'.");
+        }
+        match std::fs::rename(filepath, &failed_name) {
+            Ok(_) => {}
+            Err(e) => {
+                eprintln!("-File Moving to FailedFolder unsuccessful: {}", e);
+            }
+        }
+    }
 }
