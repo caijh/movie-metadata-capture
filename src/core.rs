@@ -41,22 +41,14 @@ pub async fn core_main(
         return Ok(());
     }
     let movie = movie.unwrap();
-    let number = movie.number.as_str();
+    let number = &movie.number;
     // =======================================================================判断-C,-CD后缀
-    let mut part = "";
-    let multi_part =
-        if let Some(cd_match) = regex::Regex::new(r"[-_]CD\d+").unwrap().find(file_path) {
-            part = cd_match.as_str().clone();
-            true
-        } else {
-            false
-        };
-    let mut cn_sub = regex::Regex::new(r"[-_]C(\.\w+$|-\w+)|\d+ch(\.\w+$|-\w+)")
+    let cn_sub = regex::Regex::new(r"[-_]C(\.\w+$|-\w+)|\d+ch(\.\w+$|-\w+)")
         .unwrap()
         .is_match(file_path)
         || file_path.contains("中文")
         || file_path.contains("字幕");
-    let c_word = "-C"; // 中文字幕影片后缀
+    let c_word = if cn_sub { "-C" } else { "" }; // 中文字幕影片后缀
 
     // 判断是否无码
     let uncensored = if movie.uncensored {
@@ -67,14 +59,14 @@ pub async fn core_main(
 
     let lower_path = file_path.to_lowercase();
     // 判断是否流出
-    let (leak, leak_word) = if lower_path.contains("流出") || lower_path.contains("uncensored") {
+    let (_leak, leak_word) = if lower_path.contains("流出") || lower_path.contains("uncensored") {
         (true, "-无码流出")
     } else {
         (false, "")
     };
 
     // 判断是否hack
-    let (hack, hack_word) = if lower_path.contains("hack") || lower_path.contains("破解") {
+    let (_hack, hack_word) = if lower_path.contains("hack") || lower_path.contains("破解") {
         (true, "-hack")
     } else {
         (false, "")
@@ -83,11 +75,11 @@ pub async fn core_main(
     // 判断是否4k
     let _4k = lower_path.contains("4k");
 
-    let cover = movie.cover;
+    let cover = &movie.cover;
     let ext = image_ext(Some(cover.as_str()));
-    let mut fanart_path = format!("fanart{}", ext);
-    let mut poster_path = format!("poster{}", ext);
     let mut thumb_path = format!("thumb{}", ext);
+    let mut poster_path = format!("poster{}", ext);
+    let mut fanart_path = format!("fanart{}", ext);
     if config.name_rule.image_naming_with_number {
         fanart_path = format!(
             "{}{}{}{}-fanart{}",
@@ -103,19 +95,107 @@ pub async fn core_main(
         );
     }
 
-    let mut number = String::from(number);
-    if multi_part {
-        number += "CD1"
-    }
-
     match config.common.main_mode {
-        1 => {}
+        1 => {
+            // 创建文件夹
+            let path = create_folder(&movie, config);
+            let path_str = path.to_string_lossy();
+            let dir = path_str.as_ref();
+
+            if movie.cover_small.is_empty().not() {
+                download_small_cover(&movie.cover_small, dir, &poster_path, config).await;
+            }
+            let cover = movie.cover.clone();
+            download_cover(&cover, dir, &thumb_path, &fanart_path, config).await;
+
+            if config.extrafanart.switch {
+                let extra_fanart = &movie.extrafanart;
+                download_extra_fanart(extra_fanart, dir, config).await;
+            }
+
+            download_actor_photo(&movie.actor, dir, &number, config).await;
+
+            if movie.cover_small.is_empty() {
+                cut_image(&config, dir, &thumb_path, &poster_path);
+            }
+
+            paste_file_to_folder(
+                file_path,
+                dir,
+                number.as_str(),
+                leak_word,
+                c_word,
+                hack_word,
+                config,
+            )
+            .await?;
+
+            write_nfo_file(
+                config,
+                &movie,
+                dir,
+                leak_word,
+                c_word,
+                hack_word,
+                _4k,
+                uncensored,
+                file_path,
+                &poster_path,
+                &poster_path,
+                &fanart_path,
+            )
+            .await?;
+        }
         2 => {}
         3 => {}
         _ => {}
     }
 
     Ok(())
+}
+
+fn create_folder(movie: &Movie, config: &AppConfig) -> PathBuf {
+    let success_folder = config.common.success_output_folder.as_str();
+    let actor_names = &movie
+        .actor
+        .iter()
+        .map(|(name, _)| name.to_string())
+        .collect::<Vec<String>>()
+        .join(", ");
+    let mut location_rule = config.name_rule.location_rule.clone();
+    if location_rule.contains("actor") {
+        let new_rule = if actor_names.len() > 50 {
+            location_rule.replace("$actor", "多人作品")
+        } else {
+            location_rule.replace("$actor", actor_names.as_str())
+        };
+        location_rule = new_rule;
+    }
+    let max_len = config.name_rule.max_title_len;
+    let title = &movie.title;
+    if config.name_rule.location_rule.contains("title") && title.len() > max_len {
+        let title = if title.len() > max_len {
+            &title[..max_len]
+        } else {
+            title.as_str()
+        };
+        let new_location_rule = location_rule.replace("$title", title);
+        location_rule = new_location_rule;
+    }
+    if location_rule.starts_with("/") {
+        location_rule = location_rule[1..].parse().unwrap();
+    }
+    let mut path = std::path::PathBuf::from(success_folder);
+    path.push(format!("./{}", location_rule.trim()));
+    if !path.exists() {
+        match fs::create_dir_all(&path) {
+            Ok(_) => {}
+            Err(_) => {
+                println!("[ERROR] Fatal error! Can not make folder '{:?}'", path);
+            }
+        }
+    }
+    return std::path::PathBuf::from(path);
 }
 
 fn is_uncensored(number: &str, config: &AppConfig) -> bool {
@@ -240,7 +320,7 @@ pub async fn download_file_with_filename(
 
     is_success
 }
-pub async fn download_extra_fanart(extrafanart: Vec<String>, dir: &str, config: &AppConfig) {
+pub async fn download_extra_fanart(extrafanart: &Vec<String>, dir: &str, config: &AppConfig) {
     let tm_start = std::time::Instant::now();
     let tasks = extrafanart
         .into_iter()
@@ -258,7 +338,7 @@ pub async fn download_extra_fanart(extrafanart: Vec<String>, dir: &str, config: 
 }
 
 async fn extra_fanart_download_one_by_one(
-    extrafanart_url: String,
+    extrafanart_url: &str,
     i: usize,
     dir: &str,
     config: &AppConfig,
@@ -273,7 +353,7 @@ async fn extra_fanart_download_one_by_one(
             break;
         }
         download_file_with_filename(
-            extrafanart_url.as_str(),
+            extrafanart_url,
             extrafanart_path.to_string_lossy().as_ref(),
             &jpg_filename,
             &config,
@@ -337,7 +417,7 @@ pub async fn download_actor_photo(
     }
 }
 
-pub fn paste_file_to_folder(
+pub async fn paste_file_to_folder(
     filepath: &str,
     dir: &str,
     number: &str,
@@ -619,16 +699,16 @@ pub fn move_subtitles(
     Ok(is_success)
 }
 
-fn write_nfo_file(
+async fn write_nfo_file(
     config: &AppConfig,
     movie: &Movie,
     dir: &str,
     leak_word: &str,
     c_word: &str,
-    part: &str,
-    filepath: &str,
     hack_word: &str,
     _4k: bool,
+    uncensored: bool,
+    filepath: &str,
     thumb_path: &str,
     poster_path: &str,
     fanart_path: &str,
@@ -637,8 +717,8 @@ fn write_nfo_file(
         Path::new(&filepath).with_extension("nfo")
     } else {
         Path::new(&dir).join(format!(
-            "{}{}{}{}{}.nfo",
-            movie.number, part, leak_word, c_word, hack_word
+            "{}{}{}{}.nfo",
+            movie.number, leak_word, c_word, hack_word
         ))
     };
     let _path = Path::new(dir);
@@ -658,13 +738,35 @@ fn write_nfo_file(
         })
         .collect();
 
-    let tag = movie
+    let mut tag: Vec<Tag> = movie
         .tag
         .iter()
         .map(|tag| Tag {
             content: tag.to_string(),
         })
         .collect();
+    if tag.is_empty() {
+        if c_word.is_empty().not() {
+            tag.push(Tag {
+                content: "中文字幕".to_string(),
+            })
+        }
+        if leak_word.is_empty().not() {
+            tag.push(Tag {
+                content: "流出".to_string(),
+            })
+        }
+        if hack_word.is_empty().not() {
+            tag.push(Tag {
+                content: "破解".to_string(),
+            })
+        }
+        if uncensored {
+            tag.push(Tag {
+                content: "无码".to_string(),
+            })
+        }
+    }
     let nfo = MovieNFO {
         title: title.clone(),
         original_title: movie.title.clone(),

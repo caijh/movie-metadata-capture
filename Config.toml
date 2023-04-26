@@ -39,7 +39,7 @@ cacert_file = ""
 switch = false
 
 [name_rule]
-location_rule = 'actor+"/"+number'
+location_rule = '$actor/$number'
 naming_rule = '$number-$title'
 max_title_len = 50
 image_naming_with_number = false
