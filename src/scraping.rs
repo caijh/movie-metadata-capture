@@ -118,6 +118,8 @@ impl Scraping {
                             );
                         }
                         break;
+                    } else {
+                        movie = None;
                     }
                 }
                 None => continue,

@@ -19,7 +19,6 @@ pub struct AppConfig {
     pub uncensored: Uncensored,
     pub debug_mode: DebugMode,
     pub extrafanart: Extrafanart,
-    pub actor_photo: ActorPhoto,
     pub face: Face,
     pub media: Media,
 }
@@ -123,11 +122,6 @@ pub struct Extrafanart {
 }
 
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
-pub struct ActorPhoto {
-    pub download_for_kodi: bool,
-}
-
-#[derive(Serialize, Deserialize, Debug, Default, Clone)]
 pub struct Face {
     pub locations_model: String,
     pub aspect_ratio: f32,
@@ -187,7 +181,7 @@ impl AppConfig {
         } else {
             ""
         };
-        let nfo_skip_days = if self.common.nfo_skip_days > 0 {
+        let nfo_skip_days = if self.common.nfo_skip_days == 0 {
             "".to_string()
         } else {
             format!(", nfo_skip_days={}", self.common.nfo_skip_days)

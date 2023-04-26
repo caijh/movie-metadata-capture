@@ -1,6 +1,6 @@
 [common]
 main_mode = 1
-source_folder = "./"
+source_folder = "F:\\temp\\viewed"
 failed_output_folder = "failed"
 success_output_folder = "successed"
 link_mode = 0
@@ -21,9 +21,6 @@ sleep = 3
 switch = true
 extrafanart_folder = "extrafanart"
 
-[actor_photo]
-download_for_kodi = false
-
 [face]
 locations_model = "hog"
 aspect_ratio = 2.12
@@ -36,7 +33,7 @@ retry = 3
 cacert_file = ""
 
 [debug_mode]
-switch = false
+switch = true
 
 [name_rule]
 location_rule = '$actor/$number'
@@ -67,7 +64,7 @@ website = "fanza,javbus,airav,jav321,xcity,mgstage,fc2,avsox,dlsite,carib,madou,
 [sources.fanza]
 name = "fanza"
 age_check = { url = "https://www.dmm.co.jp/age_check/=/declared=yes/", target_name = "rurl" }
-detail_url = ["https://www.dmm.co.jp/mono/dvd/-/detail/=/cid="]
+detail_url = ["https://www.dmm.co.jp/digital/videoa/-/detail/=/cid=", "https://www.dmm.co.jp/mono/dvd/-/detail/=/cid=", "https://www.dmm.co.jp/digital/anime/-/detail/=/cid=","https://www.dmm.co.jp/mono/anime/-/detail/=/cid=", "https://www.dmm.co.jp/digital/videoc/-/detail/=/cid=", "https://www.dmm.co.jp/digital/nikkatsu/-/detail/=/cid=","https://www.dmm.co.jp/rental/-/detail/=/cid="]
 expr_number = "//td[contains(text(),'品番：')]/following-sibling::td/text()"
 expr_title = "//*[starts-with(@id, 'title')]/text()"
 expr_actor_name = '//td[contains(text(),"出演者")]/following-sibling::td/span/a/text()'

@@ -6,6 +6,7 @@ use movie_metadata_capture::core::{
     core_main, create_data_and_move_with_custom_number, move_failed_folder, movie_lists,
 };
 use movie_metadata_capture::number_parser::get_number;
+use movie_metadata_capture::request::set_proxy;
 use rand::Rng;
 use std::error::Error;
 use std::ops::Not;
@@ -31,6 +32,10 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
     config.create_failed_folder().await?;
 
+    if config.proxy.switch {
+        set_proxy(&config.proxy).await?;
+    }
+
     let start_time = time::Instant::now();
     println!(
         "[+]Start at {}",
@@ -53,7 +58,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
         )
         .await?;
     } else {
-        let folder_path = if config.common.source_folder.is_empty() {
+        let folder_path = if config.common.source_folder.is_empty().not() {
             Path::new(&config.common.source_folder)
         } else {
             Path::new(".")
@@ -63,15 +68,12 @@ async fn main() -> Result<(), Box<dyn Error>> {
         let movie_count = movie_list.len();
         println!("[+]Find {} movies.", movie_count);
         println!("[*]======================================================");
-        let bar = ProgressBar::new(movie_count as u64);
         for movie_path in movie_list {
             create_data_and_move(movie_path.as_str(), &config).await?;
-            bar.inc(1);
             let mut rng = rand::thread_rng();
             let sleep_seconds = rng.gen_range(config.common.sleep..config.common.sleep + 2);
             thread::sleep(Duration::from_secs(sleep_seconds));
         }
-        bar.finish();
     }
 
     config.delete_empty_folder().await?;
@@ -92,7 +94,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
 async fn create_data_and_move(movie_path: &str, config: &AppConfig) -> Result<(), Box<dyn Error>> {
     let n_number = get_number(movie_path);
-    let movie_path = Path::new(movie_path).canonicalize().unwrap();
+    let movie_path = Path::new(movie_path);
     let movie_path_str = movie_path.to_string_lossy();
     let movie_path_str = movie_path_str.as_ref();
     let n_number = n_number.unwrap_or_default();

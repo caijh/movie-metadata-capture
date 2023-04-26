@@ -917,7 +917,8 @@ pub fn movie_lists(config: &AppConfig, folder_path: &Path) -> Vec<String> {
 
         if entry.file_type().is_file()
             && path.extension().map_or(false, |ext| {
-                file_types.contains(ext.to_str().unwrap().to_lowercase().as_str())
+                file_types
+                    .contains((".".to_string() + &ext.to_str().unwrap().to_lowercase()).as_str())
             })
         {
             // Do something with the media file, e.g. print its path
