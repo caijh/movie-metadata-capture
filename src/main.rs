@@ -1,6 +1,5 @@
 use chrono::Local;
 use clap::{arg, Parser};
-use indicatif::ProgressBar;
 use movie_metadata_capture::config::AppConfig;
 use movie_metadata_capture::core::{
     core_main, create_data_and_move_with_custom_number, move_failed_folder, movie_lists,
