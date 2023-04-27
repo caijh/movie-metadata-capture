@@ -6,6 +6,7 @@ use std::{env, fs, io};
 use crate::files::rm_empty_folder;
 use confy::ConfyError;
 use lazy_static::lazy_static;
+use regex::Regex;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
@@ -13,6 +14,7 @@ pub struct AppConfig {
     pub common: Common,
     pub proxy: Proxy,
     pub translate: Translate,
+    pub number_parser: Vec<NumberParser>,
     pub sources: HashMap<String, Parser>,
     pub priority: Priority,
     pub name_rule: NameRule,
@@ -49,6 +51,7 @@ pub struct DebugMode {
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
 pub struct Parser {
     pub name: String,
+    pub number_replace: Vec<NumberReplaceRule>,
     pub age_check: Option<AgeCheck>,
     pub detail_url: Vec<String>,
     pub expr_number: String,
@@ -70,6 +73,23 @@ pub struct Parser {
     pub expr_uncensored: String,
     pub expr_userrating: String,
     pub expr_uservotes: String,
+}
+
+#[derive(Serialize, Deserialize, Debug, Default, Clone)]
+pub struct NumberParser {
+    pub name: String,
+    pub regex: String,
+}
+
+impl NumberParser {
+    pub fn get_number(&self, filename: &str) -> Option<String> {
+        let re = Regex::new(&self.regex).unwrap();
+        if re.is_match(filename) {
+            let m = re.captures(filename).unwrap();
+            return Some(m.get(0).unwrap().as_str().to_string());
+        }
+        None
+    }
 }
 
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
@@ -131,6 +151,67 @@ pub struct Face {
 pub struct Media {
     pub media_type: String,
     pub sub_type: String,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct NumberReplaceRule {
+    pub name: String,
+    pub rule: Vec<Rule>,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct Rule {
+    pub action: String,
+    pub args: Vec<String>,
+}
+
+// 创建一个数据结构来管理多个操作
+pub struct StringFlow {
+    rules: Vec<Rule>,
+}
+
+impl StringFlow {
+    pub fn new() -> Self {
+        StringFlow { rules: vec![] }
+    }
+
+    pub fn add_rules(&mut self, rules: &Vec<Rule>) {
+        for rule in rules {
+            self.rules.push(rule.clone());
+        }
+    }
+
+    // 以规则处理字符串
+    pub fn process_string(&self, input_string: &str) -> String {
+        let mut result = String::from(input_string);
+
+        for rule in self.rules.iter() {
+            let action = rule.action.as_str();
+            match action {
+                "append" => {
+                    result.push_str(rule.args[0].as_str());
+                }
+                "replace" => {
+                    result = result.replace(rule.args[0].as_str(), rule.args[1].as_str());
+                }
+                "substring" => {
+                    let start = rule.args[0].parse::<usize>().unwrap();
+                    let end = rule.args[1].parse::<usize>().unwrap();
+                    result = result.chars().skip(start).take(end - start).collect();
+                }
+                "insert" => {
+                    let start = rule.args[0].parse::<usize>().unwrap();
+                    result.insert_str(start, rule.args[1].as_str());
+                }
+                "lowercase" => {
+                    result = result.to_lowercase();
+                }
+                _ => {}
+            }
+        }
+
+        result
+    }
 }
 
 lazy_static! {

@@ -110,12 +110,13 @@ impl Scraping {
                         println!("[+]select {}", source);
                     }
                     movie = parser.search(file_number).await;
-                    if self.get_data_state(&movie) {
+                    if movie.is_some() {
                         if self.debug {
                             println!(
                                 "[+]Find movie [{}] metadata on website '{}'",
                                 file_number, source
                             );
+                            println!("[+]Movie = {:?}", movie);
                         }
                         break;
                     } else {
@@ -175,19 +176,5 @@ impl Scraping {
             .filter(|&s| self.parsers.contains_key(s))
             .map(|s| s.to_string())
             .collect()
-    }
-
-    fn get_data_state(&self, movie: &Option<Movie>) -> bool {
-        if movie.is_none() {
-            return false;
-        }
-        let movie = movie.as_ref().unwrap();
-        let title = &movie.title;
-        let number = &movie.number;
-
-        if title.is_empty() || number.is_empty() {
-            return false;
-        }
-        true
     }
 }

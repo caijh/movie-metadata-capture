@@ -98,15 +98,18 @@ pub async fn core_main(
     match config.common.main_mode {
         1 => {
             // 创建文件夹
-            let path = create_folder(&movie, config);
+            let path = create_folder(&movie, config, custom_number);
             let path_str = path.to_string_lossy();
             let dir = path_str.as_ref();
 
             if movie.cover_small.is_empty().not() {
                 download_small_cover(&movie.cover_small, dir, &poster_path, config).await;
             }
+
             let cover = movie.cover.clone();
             download_cover(&cover, dir, &thumb_path, &fanart_path, config).await;
+
+            println!("download_cover");
 
             if config.extrafanart.switch {
                 let extra_fanart = &movie.extrafanart;
@@ -154,7 +157,7 @@ pub async fn core_main(
     Ok(())
 }
 
-fn create_folder(movie: &Movie, config: &AppConfig) -> PathBuf {
+fn create_folder(movie: &Movie, config: &AppConfig, custom_number: &str) -> PathBuf {
     let success_folder = config.common.success_output_folder.as_str();
     let actor_names = &movie
         .actor
@@ -162,8 +165,10 @@ fn create_folder(movie: &Movie, config: &AppConfig) -> PathBuf {
         .map(|(name, _)| name.to_string())
         .collect::<Vec<String>>()
         .join(", ");
+    println!("{:?}", actor_names);
     let mut location_rule = config.name_rule.location_rule.clone();
-    if location_rule.contains("actor") {
+
+    if location_rule.contains("$actor") {
         let new_rule = if actor_names.len() > 50 {
             location_rule.replace("$actor", "多人作品")
         } else {
@@ -182,11 +187,12 @@ fn create_folder(movie: &Movie, config: &AppConfig) -> PathBuf {
         let new_location_rule = location_rule.replace("$title", title);
         location_rule = new_location_rule;
     }
+    location_rule = location_rule.replace("$number", custom_number);
     if location_rule.starts_with("/") {
         location_rule = location_rule[1..].parse().unwrap();
     }
     let mut path = std::path::PathBuf::from(success_folder);
-    path.push(format!("./{}", location_rule.trim()));
+    path = path.join(location_rule.trim());
     if !path.exists() {
         match fs::create_dir_all(&path) {
             Ok(_) => {}
@@ -256,6 +262,9 @@ pub async fn download_cover(
     fanart_file_name: &str,
     config: &AppConfig,
 ) {
+    if cover_url.is_empty() {
+        return;
+    }
     let full_thumb_path = PathBuf::from(dir).join(thumb_file_name);
     if config.common.download_only_missing_images && file_exit_and_not_empty(&full_thumb_path) {
         return;

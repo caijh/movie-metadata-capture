@@ -1,3 +1,4 @@
+use crate::config::AppConfig;
 use lazy_static::lazy_static;
 use regex::Regex;
 use std::{collections::HashMap, path::Path};
@@ -155,12 +156,14 @@ lazy_static! {
     static ref G_SPAT: Regex = Regex::new(r"(?-i)^\w+\.(cc|com|net|me|club|jp|tv|xyz|biz|wiki|info|tw|us|de)@|^22-sht\.me|^((fhd|hd|sd|1080p|720p|4K)(-|_)|(-|_)(fhd|hd|sd|1080p|720p|4K|x264|x265|uncensored|leak))").unwrap();
 }
 
-pub fn get_number(file_path: &str) -> Option<String> {
+pub fn get_number(config: &AppConfig, file_path: &str) -> Option<String> {
     let base_name = Path::new(file_path).file_name().unwrap().to_str().unwrap();
 
-    // Try to extract number from filename using a dictionary lookup
-    if let Some(number) = get_number_by_dict(base_name) {
-        return Some(number);
+    for parser in config.number_parser.iter() {
+        let number = parser.get_number(file_path);
+        if number.is_some() {
+            return number;
+        }
     }
 
     // Try to extract number from filename based on common patterns

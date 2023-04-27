@@ -45,7 +45,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
     if !single_file_path.is_empty() {
         println!("[+]==================== Single File =====================");
         let custom_number = if args.custom_number.is_none() {
-            get_number(single_file_path.as_str()).unwrap()
+            get_number(&config, single_file_path.as_str()).unwrap()
         } else {
             args.custom_number.unwrap_or_default()
         };
@@ -92,13 +92,13 @@ async fn main() -> Result<(), Box<dyn Error>> {
 }
 
 async fn create_data_and_move(movie_path: &str, config: &AppConfig) -> Result<(), Box<dyn Error>> {
-    let n_number = get_number(movie_path);
+    let n_number = get_number(config,movie_path);
     let movie_path = Path::new(movie_path);
     let movie_path_str = movie_path.to_string_lossy();
     let movie_path_str = movie_path_str.as_ref();
     let n_number = n_number.unwrap_or_default();
     println!(
-        "[!] [{}] As Number Processing for '{}'",
+        "[!][{}] As Number Processing for '{}'",
         n_number,
         movie_path.to_string_lossy()
     );

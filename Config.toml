@@ -1,6 +1,6 @@
 [common]
 main_mode = 1
-source_folder = "F:\\temp\\viewed"
+source_folder = "F:\\temp\\viewed\\朝田ひまり"
 failed_output_folder = "failed"
 success_output_folder = "successed"
 link_mode = 0
@@ -61,6 +61,14 @@ values = "outline"
 [priority]
 website = "fanza,javbus,airav,jav321,xcity,mgstage,fc2,avsox,dlsite,carib,madou,mv91,getchu,javdb,gcolle"
 
+[[number_parser]]
+name = "rebd"
+regex = '(?i)\bREBD-?\d+'
+
+[[number_parser]]
+name = "fc2"
+regex = '(?i)\bFC2-(PPV-)?\d+'
+
 [sources.fanza]
 name = "fanza"
 age_check = { url = "https://www.dmm.co.jp/age_check/=/declared=yes/", target_name = "rurl" }
@@ -77,12 +85,40 @@ expr_director = "//td[contains(text(),'監督：')]/following-sibling::td/text()
 expr_tags = "//td[contains(text(),'ジャンル：')]/following-sibling::td/a/text()"
 expr_label = "//td[contains(text(),'レーベル：')]/following-sibling::td/a/text()"
 expr_series = "//td[contains(text(),'シリーズ：')]/following-sibling::td/a/text()"
-expr_cover = '//a[@id="$cover_number"]/@href'
-expr_small_cover = ''
+expr_cover = '//div[@class="tx10 pd-3 lh4"]/a/@href'
+expr_small_cover = '//div[@class="tx10 pd-3 lh4"]/a/img/@src'
 expr_extrafanart = '//a[@name="sample-image"]/img/@src'
 expr_trailer = ""
 expr_uncensored = ""
 expr_uservotes = ""
 expr_userrating = ""
+[[sources.fanza.number_replace]]
+name = "rebd"
+rule = [{action = "lowercase", args= []},{action = "replace", args = ["-", ""]}, {action = "insert", args = ["0", "h_346"]}]
 
 
+[sources.fc2]
+name = "fc2"
+detail_url = ["https://adult.contents.fc2.com/article/"]
+expr_number = '/html/head/title/text()'
+expr_title = "//*[starts-with(@id, 'title')]/text()"
+expr_actor_name = '//*[@id="top"]/div[1]/section[1]/div/section/div[2]/ul/li[3]/a/text()'
+expr_actor_photo = ''
+expr_studio = '//*[@id="top"]/div[1]/section[1]/div/section/div[2]/ul/li[3]/a/text()'
+expr_runtime = "//p[@class='items_article_info']/text()"
+expr_release = '//*[@id="top"]/div[1]/section[1]/div/section/div[2]/div[2]/p/text()'
+expr_outline = "//div[@class='mg-b20 lh4']//p/text()"
+expr_director = '//*[@id="top"]/div[1]/section[1]/div/section/div[2]/ul/li[3]/a/text()'
+expr_tags = "//a[@class='tag tagTag']/text()"
+expr_label = "//td[contains(text(),'レーベル：')]/following-sibling::td/a/text()"
+expr_series = "//td[contains(text(),'シリーズ：')]/following-sibling::td/a/text()"
+expr_cover = "//div[@class='items_article_MainitemThumb']/span/img/@src"
+expr_small_cover = ''
+expr_extrafanart = '//ul[@class="items_article_SampleImagesArea"]/li/a/@href'
+expr_trailer = ""
+expr_uncensored = ""
+expr_uservotes = ""
+expr_userrating = ""
+[[sources.fc2.number_replace]]
+name = "fc2"
+rule = []
