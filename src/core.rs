@@ -26,6 +26,7 @@ use walkdir::WalkDir;
 
 pub async fn core_main(
     file_path: &str,
+    number_prefix: &str,
     custom_number: &str,
     sources: Option<String>,
     specified_source: Option<String>,
@@ -33,7 +34,7 @@ pub async fn core_main(
 ) -> Result<(), Box<dyn Error>> {
     let mut scraping = Scraping::new(config);
     let movie = scraping
-        .search(custom_number, sources, specified_source)
+        .search(custom_number,number_prefix, sources, specified_source)
         .await;
 
     if movie.is_none() {
@@ -870,6 +871,7 @@ struct Tag {
 pub async fn create_data_and_move_with_custom_number(
     file_path: &str,
     custom_number: &str,
+    number_prefix: &str,
     specified_source: Option<String>,
     config: &AppConfig,
 ) -> Result<(), Box<dyn Error>> {
@@ -880,7 +882,7 @@ pub async fn create_data_and_move_with_custom_number(
         custom_number, file_path
     );
     if !custom_number.is_empty() {
-        match core_main(file_path, custom_number, None, specified_source, &config).await {
+        match core_main(file_path,number_prefix, custom_number, None, specified_source, &config).await {
             Ok(r) => r,
             Err(err) => {
                 eprintln!("[-] [{}] ERROR:", file_path);

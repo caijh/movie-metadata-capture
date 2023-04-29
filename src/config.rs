@@ -16,7 +16,6 @@ pub struct AppConfig {
     pub translate: Translate,
     pub number_parser: Vec<NumberParser>,
     pub sources: HashMap<String, Parser>,
-    pub priority: Priority,
     pub name_rule: NameRule,
     pub uncensored: Uncensored,
     pub debug_mode: DebugMode,
@@ -51,6 +50,7 @@ pub struct DebugMode {
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
 pub struct Parser {
     pub name: String,
+    pub number_prefix: Vec<String>,
     pub number_replace: Vec<NumberReplaceRule>,
     pub age_check: Option<AgeCheck>,
     pub detail_url: Vec<String>,
@@ -82,19 +82,14 @@ pub struct NumberParser {
 }
 
 impl NumberParser {
-    pub fn get_number(&self, filename: &str) -> Option<String> {
+    pub fn get_number(&self, filename: &str) -> Option<(String, String)> {
         let re = Regex::new(&self.regex).unwrap();
         if re.is_match(filename) {
             let m = re.captures(filename).unwrap();
-            return Some(m.get(0).unwrap().as_str().to_string());
+            return Some((m.get(0).unwrap().as_str().to_string(), self.name.to_owned()));
         }
         None
     }
-}
-
-#[derive(Serialize, Deserialize, Debug, Default, Clone)]
-pub struct Priority {
-    pub website: String,
 }
 
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]

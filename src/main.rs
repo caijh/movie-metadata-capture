@@ -44,14 +44,15 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let single_file_path = args.single_file_path.unwrap_or_default();
     if !single_file_path.is_empty() {
         println!("[+]==================== Single File =====================");
-        let custom_number = if args.custom_number.is_none() {
+        let (custom_number, number_prefix) = if args.custom_number.is_none() {
             get_number(&config, single_file_path.as_str()).unwrap()
         } else {
-            args.custom_number.unwrap_or_default()
+            (args.custom_number.unwrap_or_default(), "".to_string())
         };
         create_data_and_move_with_custom_number(
             single_file_path.as_str(),
-            &custom_number,
+            custom_number.as_str(),
+            number_prefix.as_str(),
             args.specified_source,
             &config,
         )
@@ -92,18 +93,17 @@ async fn main() -> Result<(), Box<dyn Error>> {
 }
 
 async fn create_data_and_move(movie_path: &str, config: &AppConfig) -> Result<(), Box<dyn Error>> {
-    let n_number = get_number(config,movie_path);
+    let (n_number, number_prefix) = get_number(config,movie_path).unwrap();
     let movie_path = Path::new(movie_path);
     let movie_path_str = movie_path.to_string_lossy();
     let movie_path_str = movie_path_str.as_ref();
-    let n_number = n_number.unwrap_or_default();
     println!(
         "[!][{}] As Number Processing for '{}'",
         n_number,
         movie_path.to_string_lossy()
     );
     if n_number.is_empty().not() {
-        core_main(&movie_path_str, n_number.as_str(), None, None, config).await?;
+        core_main(&movie_path_str, number_prefix.as_str(),n_number.as_str(), None, None, config).await?;
     } else {
         println!("[-] number empty error");
         move_failed_folder(movie_path_str, config);

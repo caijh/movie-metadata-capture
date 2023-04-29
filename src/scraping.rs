@@ -1,8 +1,9 @@
+
 use std::collections::HashMap;
 use std::ops::Not;
 
 use crate::azure_translator::AzureTranslator;
-use regex::Regex;
+
 use serde_json::Value;
 
 use crate::config::{AppConfig, Parser, Translate};
@@ -43,6 +44,7 @@ impl Scraping {
     pub async fn search(
         &mut self,
         file_number: &str,
+        number_prefix: &str,
         sources: Option<String>,
         specified_source: Option<String>,
     ) -> Option<Movie> {
@@ -50,7 +52,7 @@ impl Scraping {
         let sources = sources.unwrap_or_default();
         let sources: Vec<&str> = sources.split(",").filter(|s| s.is_empty().not()).collect();
 
-        let movie = self.search_movie(file_number, sources).await;
+        let movie = self.search_movie(file_number,number_prefix,sources).await;
 
         match movie {
             Some(mut movie) => {
@@ -92,13 +94,13 @@ impl Scraping {
         }
     }
 
-    async fn search_movie(&mut self, file_number: &str, sources: Vec<&str>) -> Option<Movie> {
+    async fn search_movie(&mut self, file_number: &str, number_prefix: &str,sources: Vec<&str>) -> Option<Movie> {
         let mut movie = None;
 
         let _sources: Vec<String> = if self.specified_source.is_some() {
             vec![self.specified_source.as_ref().unwrap().to_string()]
         } else {
-            self.check_sources(sources, file_number)
+            self.check_sources(sources, number_prefix)
         };
         if self.debug {
             println!("[+]sources {:?}", _sources);
@@ -135,41 +137,19 @@ impl Scraping {
         }
     }
 
-    fn check_sources(&self, sources: Vec<&str>, file_number: &str) -> Vec<String> {
+    fn check_sources(&self, sources: Vec<&str>, number_prefix: &str) -> Vec<String> {
         let mut _sources: Vec<&str> = if sources.is_empty() {
             self.sources.iter().map(|s| s.as_str()).collect()
         } else {
             sources
         };
-        let lo_file_number = file_number.to_lowercase();
-        if _sources.contains(&"carib")
-            && Regex::new(r"^\d{6}-\d{3}").unwrap().is_match(&file_number)
-        {
-            replace_sources_item(&mut _sources, 0, "carib")
-        } else if file_number.contains("item") || file_number.to_uppercase().contains("GETCHU") {
-            replace_sources_item(&mut _sources, 0, "getchu")
-        } else if lo_file_number.contains("rj")
-            || lo_file_number.contains("vj")
-            || Regex::new(r"[\u3040-\u309F\u30A0-\u30FF]+")
-                .unwrap()
-                .is_match(&file_number)
-        {
-            replace_sources_item(&mut _sources, 0, "getchu");
-            replace_sources_item(&mut _sources, 1, "dlsite")
-        } else if lo_file_number.contains("fc2") {
-            if _sources.contains(&"fc2") {
-                replace_sources_item(&mut _sources, 0, "fc2")
+        let parser = &self.parsers;
+
+        parser.into_iter().for_each(|(k, v)| {
+            if v.number_prefix.contains(&number_prefix.to_string()) {
+                replace_sources_item(&mut _sources, 0, k.as_str());
             }
-        } else if _sources.contains(&"mgstage")
-            && (Regex::new(r"\d+\D+").unwrap().is_match(&file_number)
-                || lo_file_number.contains("siro"))
-        {
-            replace_sources_item(&mut _sources, 0, "mgstage")
-        } else if _sources.contains(&"gcolle")
-            && Regex::new(r"\d{6}").unwrap().is_match(&file_number)
-        {
-            replace_sources_item(&mut _sources, 0, "gcolle")
-        }
+        });
 
         _sources
             .into_iter()

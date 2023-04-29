@@ -58,13 +58,9 @@ access_key = ""
 region = "japaneast"
 values = "outline"
 
-[priority]
-website = "fanza,javbus,airav,jav321,xcity,mgstage,fc2,avsox,dlsite,carib,madou,mv91,getchu,javdb,gcolle"
-
 [[number_parser]]
 name = "rebd"
 regex = '(?i)\bREBD-?\d+'
-
 [[number_parser]]
 name = "fc2"
 regex = '(?i)\bFC2-(PPV-)?\d+'
@@ -92,6 +88,7 @@ expr_trailer = ""
 expr_uncensored = ""
 expr_uservotes = ""
 expr_userrating = ""
+number_prefix = ["rebd", "oae"]
 [[sources.fanza.number_replace]]
 name = "rebd"
 rule = [{action = "lowercase", args= []},{action = "replace", args = ["-", ""]}, {action = "insert", args = ["0", "h_346"]}]
@@ -119,6 +116,7 @@ expr_trailer = ""
 expr_uncensored = ""
 expr_uservotes = ""
 expr_userrating = ""
+number_prefix = ["fc2"]
 [[sources.fc2.number_replace]]
 name = "fc2"
-rule = []
+rule = [{action = "lowercase", args= []}, {action = "replace", args:["ppv-", ""]}]

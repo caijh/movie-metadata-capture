@@ -30,7 +30,7 @@ mod tests {
 
         download_actor_photo(&movie.actor, ".", "ka9oae232", &config).await;
 
-        download_extra_fanart(extra_fanart, ".", &config).await;
+        download_extra_fanart(&extra_fanart, ".", &config).await;
 
         cut_image(&config, ".", "./thumb.jpg", "./poster.jpg");
 

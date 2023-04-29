@@ -1,6 +1,7 @@
 use crate::config::AppConfig;
 use lazy_static::lazy_static;
 use regex::Regex;
+use core::num;
 use std::{collections::HashMap, path::Path};
 
 fn md(filename: &str) -> String {
@@ -156,65 +157,23 @@ lazy_static! {
     static ref G_SPAT: Regex = Regex::new(r"(?-i)^\w+\.(cc|com|net|me|club|jp|tv|xyz|biz|wiki|info|tw|us|de)@|^22-sht\.me|^((fhd|hd|sd|1080p|720p|4K)(-|_)|(-|_)(fhd|hd|sd|1080p|720p|4K|x264|x265|uncensored|leak))").unwrap();
 }
 
-pub fn get_number(config: &AppConfig, file_path: &str) -> Option<String> {
+pub fn get_number(config: &AppConfig, file_path: &str) -> Option<(String, String)> {
     let base_name = Path::new(file_path).file_name().unwrap().to_str().unwrap();
+    let file_name = G_SPAT.replace_all(base_name, "").to_string();
 
     for parser in config.number_parser.iter() {
-        let number = parser.get_number(file_path);
+        let number = parser.get_number(&file_name);
         if number.is_some() {
             return number;
         }
     }
 
-    // Try to extract number from filename based on common patterns
-    if base_name.contains("字幕组")
-        || base_name.to_uppercase().contains("SUB")
-        || Regex::new(r"[\u{30a0}-\u{30ff}]")
-            .unwrap()
-            .is_match(base_name)
-    {
-        let mut file_name = G_SPAT.replace_all(base_name, "").to_string();
-        file_name = Regex::new(r"\[.*?]")
-            .unwrap()
-            .replace_all(&file_name, "")
-            .to_string();
-        file_name = file_name.replace(".chs", "").replace(".cht", "");
-        let file_number = Regex::new(r"(.+?)\.")
-            .unwrap()
-            .captures(&file_name)
-            .map(|c| c[1].to_string());
-        return file_number;
-    } else if base_name.contains('-') || base_name.contains('_') {
-        let file_name = G_SPAT.replace_all(base_name, "").to_string();
-        let mut file_number = Regex::new(r"\w+([-_])\d+")
-            .unwrap()
-            .captures(&file_name)
-            .or_else(|| Regex::new(r"\w+").unwrap().captures(&file_name))
-            .map(|c| c[0].to_string())?;
-        file_number = Regex::new(r"([-_])c$")
-            .unwrap()
-            .replace(&file_number, "")
-            .to_string();
-        if Regex::new(r"\d+ch$").unwrap().is_match(&file_number) {
-            file_number = file_number[..file_number.len() - 2].to_string();
-        }
-        return Some(file_number.to_uppercase());
-    } else {
-        // Try to extract number from filename based on FANZA CID
-        if let Some(number) = Regex::new(r"[a-zA-Z]+\.\d{2}\.\d{2}\.\d{2}")
-            .unwrap()
-            .find(base_name)
-            .map(|m| m.as_str().to_string())
-        {
-            return Some(number);
-        }
-
-        // Try to extract number from filename using regex
-        let re_pattern = Regex::new(r#"([^<>/\\|:"*?]+)\.\w+$"#).unwrap();
-        let file_name = re_pattern.captures(base_name).map(|c| c[1].to_string())?;
-        return Regex::new(r"(.+?)\.")
-            .unwrap()
-            .captures(&file_name)
-            .map(|c| c[1].to_string());
-    }
+    // Try to extract number from filename using regex
+    let re_pattern = Regex::new(r#"([^<>/\\|:"*?]+)\.\w+$"#).unwrap();
+    let file_name = re_pattern.captures(base_name).map(|c| c[1].to_string())?;
+    let number = Regex::new(r"(.+?)\.")
+        .unwrap()
+        .captures(&file_name)
+        .map(|c| c[1].to_string());
+    Some((number.unwrap_or_default(), "".to_string()))
 }
