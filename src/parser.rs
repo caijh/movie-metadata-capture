@@ -152,7 +152,13 @@ impl Parser {
             evaluate_xpath_node(document.root(), self.expr_extrafanart.as_str()).unwrap();
         let extra_fanart: Vec<String> = match extra_fanart {
             sxd_xpath::Value::Nodeset(nodes) => {
-                nodes.iter().map(|node| node.string_value()).collect()
+                if self.replace_extrafanart.is_some() {
+                    let mut string_flow = StringFlow::new();
+                    string_flow.add_rules(self.replace_extrafanart.as_ref().unwrap());
+                    nodes.iter().map(|node| string_flow.process_string(node.string_value().as_str())).collect()
+                } else {
+                    nodes.iter().map(|node| node.string_value()).collect()
+                }
             }
             _ => Vec::new(),
         };

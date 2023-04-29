@@ -339,7 +339,7 @@ pub async fn download_extra_fanart(extrafanart: &Vec<String>, dir: &str, config:
     futures::future::join_all(tasks).await;
     if config.debug_mode.switch {
         println!(
-            "[!]Extrafanart download one by one mode runtime {:.3}s",
+            "[!]Extrafanart downloaded runtime {:.3}s",
             tm_start.elapsed().as_secs_f64()
         );
     }

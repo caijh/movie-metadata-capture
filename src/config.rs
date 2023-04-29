@@ -1,3 +1,4 @@
+use core::num;
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, RwLock};
@@ -73,6 +74,7 @@ pub struct Parser {
     pub expr_uncensored: String,
     pub expr_userrating: String,
     pub expr_uservotes: String,
+    pub replace_extrafanart: Option<Vec<Rule>>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
@@ -195,7 +197,12 @@ impl StringFlow {
                     result = result.chars().skip(start).take(end - start).collect();
                 }
                 "insert" => {
-                    let start = rule.args[0].parse::<usize>().unwrap();
+                    let start = match rule.args[0].parse::<usize>() {
+                        Ok(number) => number,
+                        Err(_) => {
+                            result.find(&rule.args[0]).unwrap_or_else(|| 0)
+                        }
+                    };
                     result.insert_str(start, rule.args[1].as_str());
                 }
                 "lowercase" => {
