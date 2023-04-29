@@ -118,7 +118,6 @@ impl Parser {
             }
             _ => Vec::new(),
         };
-        println!("{:?}", actor_name);
         let actor_photo =
             evaluate_xpath_node(document.root(), self.expr_actor_photo.as_str()).unwrap();
         let actor_photo: Vec<String> = match actor_photo {

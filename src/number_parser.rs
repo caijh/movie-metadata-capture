@@ -1,7 +1,7 @@
 use crate::config::AppConfig;
 use lazy_static::lazy_static;
 use regex::Regex;
-use core::num;
+
 use std::path::Path;
 
 lazy_static! {
