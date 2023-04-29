@@ -164,7 +164,6 @@ fn create_folder(movie: &Movie, config: &AppConfig, custom_number: &str) -> Path
         .map(|(name, _)| name.to_string())
         .collect::<Vec<String>>()
         .join(", ");
-    println!("{:?}", actor_names);
     let mut location_rule = config.name_rule.location_rule.clone();
 
     if location_rule.contains("$actor") {
@@ -491,7 +490,6 @@ pub fn cut_image(config: &AppConfig, dir: &str, thumb_path: &str, poster_path: &
     let filename = full_path_thumb.file_name().unwrap().to_str().unwrap();
     if let Ok(mut img) = img_result {
         let (width, height) = (img.width(), img.height());
-        println!("{:?}", (width, height));
         let poster_image = if (width as f64 / height as f64) > (2.0 / 3.0) {
             // 如果宽度大于2
             let s = face_crop_width(&img, filename, width, height, config);
