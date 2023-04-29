@@ -110,8 +110,6 @@ pub async fn core_main(
             let cover = movie.cover.clone();
             download_cover(&cover, dir, &thumb_path, &fanart_path, config).await;
 
-            println!("download_cover");
-
             if config.extrafanart.switch {
                 let extra_fanart = &movie.extrafanart;
                 download_extra_fanart(extra_fanart, dir, config).await;

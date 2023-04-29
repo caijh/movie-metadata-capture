@@ -42,8 +42,7 @@ mod tests {
             "",
             "",
             &config,
-        )
-        .unwrap();
+        ).await.unwrap();
         move_subtitles("xxx.mp4", ".", "ka9oae232", "", "", "", &config).unwrap();
     }
 }
