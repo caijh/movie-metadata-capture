@@ -120,4 +120,4 @@ expr_userrating = ""
 number_prefix = ["fc2"]
 [[sources.fc2.number_replace]]
 name = "fc2"
-rule = [{action = "lowercase", args= []}, {action = "replace", args=["ppv-", ""]}]
+rule = [{action = "lowercase", args= []}, {action = "replace", args=["fc2-ppv-", ""]}, {action = "replace", args=["fc2-", ""]}]
