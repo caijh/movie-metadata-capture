@@ -65,6 +65,9 @@ regex = '(?i)\bFC2-?(PPV[-\s])?\d+'
 [[number_extractor]]
 name = "heyzo"
 regex = '(?i)\bheyzo[-\s]+\d+'
+[[number_extractor]]
+name = "carib"
+regex = '\d{6}(-|_)\d{3}'
 
 [sources.fanza]
 name = "fanza"
@@ -160,3 +163,34 @@ replace_actor_photo = []
 [[sources.javbus.number_search]]
 name = "heyzo"
 rule = [{action = "replace", args=[" ", "-"]}]
+
+[sources.carib]
+name = "carib"
+number_extractor = ["carib"]
+detail_url = ["https://www.caribbeancom.com/moviepages/"]
+expr_number = '/html/head/link[@hreflang="en-US"]/@href'
+expr_title = "//div[@class='movie-info section']/div[@class='heading']/h1[@itemprop='name']/text()"
+expr_actor_name = "//span[@class='spec-content']/a[@itemprop='actor']/span/text()"
+expr_actor_photo = ''
+expr_studio = ''
+expr_runtime = "//span[@class='spec-content']/span[@itemprop='duration']/text()"
+expr_release = "//li[2]/span[@class='spec-content']/text()"
+expr_outline = "//div[@class='movie-info section']/p[@itemprop='description']/text()"
+expr_director = ''
+expr_tags = "//span[@class='spec-content']/a[@itemprop='genre']/text()"
+expr_label = "//span[@class='spec-title'][contains(text(),'シリーズ')]/../span[@class='spec-content']/a/text()"
+expr_series = "//span[@class='spec-title'][contains(text(),'シリーズ')]/../span[@class='spec-content']/a/text()"
+expr_cover = '//div[@class="vjs-poster"]/@style'
+expr_small_cover = ''
+expr_extrafanart = "//*[@id='sampleexclude']/div[2]/div/div[@class='grid-item']/div/a/@href"
+expr_trailer = ""
+expr_uncensored = ''
+expr_uservotes = ''
+expr_userrating = ""
+replace_number = [{action= "substring", args = ["moviepages/", "/index.html"]}, {action="replace", args = ["moviepages/", ""]}]
+replace_cover = [{action = "substring", args = ["\"", "\""]}, {action = "insert", args = ["0", "https://www.caribbeancom.com"]}]
+replace_extrafanart = [{action = "insert", args = ["0", "https://www.caribbeancom.com"]}]
+replace_actor_photo = []
+[[sources.carib.number_search]]
+name = "carib"
+rule = [{action = "append", args=["/index.html"]}]
