@@ -2,18 +2,16 @@
 main_mode = 3
 source_folder = "./"
 failed_output_folder = "failed"
-success_output_folder = "./"
+success_output_folder = "success"
 link_mode = 0
 scan_hardlink = false
 failed_move = false
 auto_exit = false
-multi_threading = false
 actor_gender = "female"
 del_empty_folder = true
 nfo_skip_days = 30
 ignore_failed_list = false
 download_only_missing_images = true
-mapping_table_validity = 7
 sleep = 3
 
 # 剧照
@@ -33,7 +31,7 @@ retry = 3
 cacert_file = ""
 
 [debug_mode]
-switch = true
+switch = false
 
 [name_rule]
 location_rule = '$actor/$number'

@@ -126,13 +126,11 @@ pub struct Common {
     pub scan_hardlink: bool,
     pub failed_move: bool,
     pub auto_exit: bool,
-    pub multi_threading: bool,
     pub actor_gender: String,
     pub del_empty_folder: bool,
     pub nfo_skip_days: u8,
     pub ignore_failed_list: bool,
     pub download_only_missing_images: bool,
-    pub mapping_table_validity: u64,
     pub sleep: u64,
 }
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
@@ -272,11 +270,6 @@ impl AppConfig {
         // Print main working mode
         let main_mode = self.common.main_mode;
 
-        let multi_threading = if self.common.multi_threading {
-            ", multi_threading on"
-        } else {
-            ""
-        };
         let nfo_skip_days = if self.common.nfo_skip_days == 0 {
             "".to_string()
         } else {
@@ -285,12 +278,11 @@ impl AppConfig {
         println!(
             "{}",
             format_args!(
-                "[+]Main Working mode ## {}: {} ##{}{}",
+                "[+]Main Working mode ## {}: {} ##{}",
                 main_mode,
                 ["Scraping", "Organizing", "Scraping in analysis folder"]
                     .get(main_mode - 1)
                     .unwrap(),
-                multi_threading,
                 nfo_skip_days,
             )
         );
