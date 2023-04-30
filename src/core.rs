@@ -150,8 +150,62 @@ pub async fn core_main(
             )
             .await?;
         }
-        2 => {}
-        3 => {}
+        2 => {
+            // 创建文件夹
+            let path = create_folder(&movie, config, custom_number);
+            let path_str = path.to_string_lossy();
+            let dir = path_str.as_ref();
+            paste_file_to_folder(
+                file_path,
+                dir,
+                number.as_str(),
+                leak_word,
+                c_word,
+                hack_word,
+                config,
+            )
+            .await?;
+        }
+        3 => {
+            // 创建文件夹
+            let path = create_folder(&movie, config, custom_number);
+            let path_str = path.to_string_lossy();
+            let dir = path_str.as_ref();
+
+            if movie.cover_small.is_empty().not() {
+                download_small_cover(&movie.cover_small, dir, &poster_path, config).await;
+            }
+
+            let cover = movie.cover.clone();
+            download_cover(&cover, dir, &thumb_path, &fanart_path, config).await;
+
+            if config.extrafanart.switch {
+                let extra_fanart = &movie.extrafanart;
+                download_extra_fanart(extra_fanart, dir, config).await;
+            }
+
+            download_actor_photo(&movie.actor, dir, &number, config).await;
+
+            if movie.cover_small.is_empty() {
+                cut_image(&config, dir, &thumb_path, &poster_path);
+            }
+
+            write_nfo_file(
+                config,
+                &movie,
+                dir,
+                leak_word,
+                c_word,
+                hack_word,
+                _4k,
+                uncensored,
+                file_path,
+                &thumb_path,
+                &poster_path,
+                &fanart_path,
+            )
+            .await?;
+        }
         _ => {}
     }
 
@@ -452,7 +506,8 @@ pub async fn paste_file_to_folder(
     // 任何情况下都不要覆盖，以免遭遇数据源或者引擎错误导致所有文件得到同一个number，逐一
     // 同名覆盖致使全部文件损失且不可追回的最坏情况
     if target_path.exists() {
-        return Err("File Exists on destination path, we will never overwriting.".into());
+        print!("File Exists on destination path, we will never overwriting.");
+        return Ok(());
     }
     let link_mode = config.common.link_mode;
     // 如果link_mode 1: 建立软链接 2: 硬链接优先、无法建立硬链接再尝试软链接。
