@@ -1,8 +1,8 @@
 [common]
-main_mode = 1
-source_folder = "E:\\Downloads\\fc2"
+main_mode = 3
+source_folder = "./"
 failed_output_folder = "failed"
-success_output_folder = "E:\\Downloads"
+success_output_folder = "./"
 link_mode = 0
 scan_hardlink = false
 failed_move = false
