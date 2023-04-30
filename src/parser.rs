@@ -1,3 +1,5 @@
+
+
 use regex::Regex;
 use sxd_document::dom::Document;
 use sxd_xpath::Value::Boolean;
@@ -98,9 +100,15 @@ impl Parser {
         None
     }
     fn parse_to_movie(&self, document: &Document, detail_url: String) -> Option<Movie> {
-        let number = evaluate_xpath_node(document.root(), self.expr_number.as_str())
+        let mut number = evaluate_xpath_node(document.root(), self.expr_number.as_str())
             .unwrap()
             .string();
+        if self.replace_number.is_some() {
+            let mut string_flow = StringFlow::new();
+            string_flow.add_rules(self.replace_number.as_ref().unwrap());
+            number = string_flow.process_string(number.as_str());
+        }
+
         let title = evaluate_xpath_node(document.root(), self.expr_title.as_str()).unwrap();
         let studio = evaluate_xpath_node(document.root(), self.expr_studio.as_str()).unwrap();
         let release = evaluate_xpath_node(document.root(), self.expr_release.as_str()).unwrap();
@@ -155,7 +163,10 @@ impl Parser {
                 if self.replace_extrafanart.is_some() {
                     let mut string_flow = StringFlow::new();
                     string_flow.add_rules(self.replace_extrafanart.as_ref().unwrap());
-                    nodes.iter().map(|node| string_flow.process_string(node.string_value().as_str())).collect()
+                    nodes
+                        .iter()
+                        .map(|node| string_flow.process_string(node.string_value().as_str()))
+                        .collect()
                 } else {
                     nodes.iter().map(|node| node.string_value()).collect()
                 }

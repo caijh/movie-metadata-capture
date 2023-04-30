@@ -1,6 +1,6 @@
 [common]
 main_mode = 1
-source_folder = "E:\\Downloads\\REBD-712"
+source_folder = "E:\\Downloads\\fc2"
 failed_output_folder = "failed"
 success_output_folder = "E:\\Downloads"
 link_mode = 0
@@ -58,12 +58,12 @@ access_key = ""
 region = "japaneast"
 values = "outline"
 
-[[number_parser]]
+[[number_extractor]]
 name = "rebd"
 regex = '(?i)\bREBD-?\d+'
-[[number_parser]]
+[[number_extractor]]
 name = "fc2"
-regex = '(?i)\bFC2-(PPV-)?\d+'
+regex = '(?i)\bFC2-?(PPV[-\s])?\d+'
 
 [sources.fanza]
 name = "fanza"
@@ -89,6 +89,7 @@ expr_trailer = ""
 expr_uncensored = ""
 expr_uservotes = ""
 expr_userrating = ""
+replace_number = []
 replace_extrafanart = [{action = "insert", args = ["-","jp"]}]
 [[sources.fanza.number_replace]]
 name = "rebd"
@@ -97,11 +98,12 @@ rule = [{action = "lowercase", args= []},{action = "replace", args = ["-", ""]},
 
 [sources.fc2]
 name = "fc2"
+number_prefix = ["fc2"]
 detail_url = ["https://adult.contents.fc2.com/article/"]
 expr_number = '/html/head/title/text()'
-expr_title = "//*[starts-with(@id, 'title')]/text()"
+expr_title = '//*[@id="top"]/div[1]/section[1]/div/section/div[2]/h3/text()'
 expr_actor_name = '//*[@id="top"]/div[1]/section[1]/div/section/div[2]/ul/li[3]/a/text()'
-expr_actor_photo = ''
+expr_actor_photo = '//*[@id="top"]/div[1]/section[1]/div/section/div[1]/span/img/@src'
 expr_studio = '//*[@id="top"]/div[1]/section[1]/div/section/div[2]/ul/li[3]/a/text()'
 expr_runtime = "//p[@class='items_article_info']/text()"
 expr_release = '//*[@id="top"]/div[1]/section[1]/div/section/div[2]/div[2]/p/text()'
@@ -117,7 +119,8 @@ expr_trailer = ""
 expr_uncensored = ""
 expr_uservotes = ""
 expr_userrating = ""
-number_prefix = ["fc2"]
+replace_number = [{action = "substring", args = ["FC2", ""]}]
+replace_extrafanart = []
 [[sources.fc2.number_replace]]
 name = "fc2"
-rule = [{action = "lowercase", args= []}, {action = "replace", args=["fc2-ppv-", ""]}, {action = "replace", args=["fc2-", ""]}]
+rule = [{action = "lowercase", args= []}, {action = "replace", args=["fc2-ppv-", ""]}, {action = "replace", args=["fc2-", ""]}, {action = "replace", args=["fc2ppv ", ""]}, {action = "append", args = ["/"]}]

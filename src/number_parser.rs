@@ -12,7 +12,7 @@ pub fn get_number(config: &AppConfig, file_path: &str) -> Option<(String, String
     let base_name = Path::new(file_path).file_name().unwrap().to_str().unwrap();
     let file_name = G_SPAT.replace_all(base_name, "").to_string();
 
-    for parser in config.number_parser.iter() {
+    for parser in config.number_extractor.iter() {
         let number = parser.get_number(&file_name);
         if number.is_some() {
             return number;

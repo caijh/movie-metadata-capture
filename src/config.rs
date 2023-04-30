@@ -15,7 +15,7 @@ pub struct AppConfig {
     pub common: Common,
     pub proxy: Proxy,
     pub translate: Translate,
-    pub number_parser: Vec<NumberParser>,
+    pub number_extractor: Vec<NumberExtractor>,
     pub sources: HashMap<String, Parser>,
     pub name_rule: NameRule,
     pub uncensored: Uncensored,
@@ -74,16 +74,17 @@ pub struct Parser {
     pub expr_uncensored: String,
     pub expr_userrating: String,
     pub expr_uservotes: String,
+    pub replace_number: Option<Vec<Rule>>,
     pub replace_extrafanart: Option<Vec<Rule>>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
-pub struct NumberParser {
+pub struct NumberExtractor {
     pub name: String,
     pub regex: String,
 }
 
-impl NumberParser {
+impl NumberExtractor {
     pub fn get_number(&self, filename: &str) -> Option<(String, String)> {
         let re = Regex::new(&self.regex).unwrap();
         if re.is_match(filename) {
@@ -192,9 +193,19 @@ impl StringFlow {
                     result = result.replace(rule.args[0].as_str(), rule.args[1].as_str());
                 }
                 "substring" => {
-                    let start = rule.args[0].parse::<usize>().unwrap();
-                    let end = rule.args[1].parse::<usize>().unwrap();
-                    result = result.chars().skip(start).take(end - start).collect();
+                    let start = match rule.args[0].parse::<usize>() {
+                        Ok(number) => number,
+                        Err(_) => {
+                            result.find(&rule.args[0]).unwrap_or_else(|| 0)
+                        }
+                    };
+                    let end = match rule.args[1].parse::<usize>() {
+                        Ok(number) => number,
+                        Err(_) => {
+                            result.len()
+                        }
+                    };
+                    result = result[start..end].to_string();
                 }
                 "insert" => {
                     let start = match rule.args[0].parse::<usize>() {
