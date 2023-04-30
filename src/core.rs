@@ -20,9 +20,9 @@ use chrono::Local;
 use image::{open, DynamicImage};
 use quick_xml::se::to_string;
 use serde::Serialize;
-use xmlem::Document;
 use std::fs;
 use std::io::Write;
+use xmlem::Document;
 
 use walkdir::WalkDir;
 
@@ -36,7 +36,7 @@ pub async fn core_main(
 ) -> Result<(), Box<dyn Error>> {
     let mut scraping = Scraping::new(config);
     let movie = scraping
-        .search(custom_number,number_prefix, sources, specified_source)
+        .search(custom_number, number_prefix, sources, specified_source)
         .await;
 
     if movie.is_none() {
@@ -740,9 +740,16 @@ async fn write_nfo_file(
     let actor = movie
         .actor
         .iter()
-        .map(|(name, thumb)| Actor {
-            name: name.to_string(),
-            thumb: thumb.to_string(),
+        .map(|(name, thumb)| {
+            let thumb = if thumb.is_empty().not() {
+                format!(".actors/{}{}", name, image_ext(Some(thumb)))
+            } else {
+                thumb.to_owned()
+            };
+            Actor {
+                name: name.to_string(),
+                thumb: thumb.to_string(),
+            }
         })
         .collect();
 
@@ -800,7 +807,7 @@ async fn write_nfo_file(
         releasedate: movie.release.clone(),
         release: movie.release.clone(),
         rating: movie.userrating.clone(),
-        cover: movie.cover.clone(),
+        cover: thumb_path.to_string(),
         trailer: "".to_string(),
         website: movie.website.clone(),
     };
@@ -882,7 +889,16 @@ pub async fn create_data_and_move_with_custom_number(
         custom_number, file_path
     );
     if !custom_number.is_empty() {
-        match core_main(file_path,number_prefix, custom_number, None, specified_source, &config).await {
+        match core_main(
+            file_path,
+            number_prefix,
+            custom_number,
+            None,
+            specified_source,
+            &config,
+        )
+        .await
+        {
             Ok(r) => r,
             Err(err) => {
                 eprintln!("[-] [{}] ERROR:", file_path);
