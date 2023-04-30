@@ -58,7 +58,7 @@ values = "outline"
 
 [[number_extractor]]
 name = "rebd"
-regex = '(?i)\bREBD-?\d+'
+regex = '(?i)\b(h_346)?REBD-?\d+'
 [[number_extractor]]
 name = "fc2"
 regex = '(?i)\bFC2-?(PPV[-\s])?\d+'
@@ -93,7 +93,7 @@ replace_extrafanart = [{action = "insert", args = ["-","jp"]}]
 replace_actor_photo = []
 [[sources.fanza.number_search]]
 name = "rebd"
-rule = [{action = "lowercase", args= []},{action = "replace", args = ["-", ""]}, {action = "insert", args = ["0", "h_346"]}]
+rule = [{action = "lowercase", args= []},{action = "replace", args = ["-", ""]}, {action = "replace", args = ["h_346", ""]},{action = "insert", args = ["0", "h_346"]}]
 
 
 [sources.fc2]

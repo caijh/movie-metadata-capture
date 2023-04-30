@@ -101,7 +101,7 @@ pub async fn core_main(
     match config.common.main_mode {
         1 => {
             // 创建文件夹
-            let path = create_folder(&movie, config, custom_number);
+            let path = create_folder(&movie, config);
             let path_str = path.to_string_lossy();
             let dir = path_str.as_ref();
 
@@ -152,7 +152,7 @@ pub async fn core_main(
         }
         2 => {
             // 创建文件夹
-            let path = create_folder(&movie, config, custom_number);
+            let path = create_folder(&movie, config);
             let path_str = path.to_string_lossy();
             let dir = path_str.as_ref();
             paste_file_to_folder(
@@ -168,7 +168,7 @@ pub async fn core_main(
         }
         3 => {
             // 创建文件夹
-            let path = create_folder(&movie, config, custom_number);
+            let path = create_folder(&movie, config);
             let path_str = path.to_string_lossy();
             let dir = path_str.as_ref();
 
@@ -212,7 +212,7 @@ pub async fn core_main(
     Ok(())
 }
 
-fn create_folder(movie: &Movie, config: &AppConfig, custom_number: &str) -> PathBuf {
+fn create_folder(movie: &Movie, config: &AppConfig) -> PathBuf {
     let success_folder = config.common.success_output_folder.as_str();
     let actor_names = &movie
         .actor
@@ -241,7 +241,7 @@ fn create_folder(movie: &Movie, config: &AppConfig, custom_number: &str) -> Path
         let new_location_rule = location_rule.replace("$title", title);
         location_rule = new_location_rule;
     }
-    location_rule = location_rule.replace("$number", custom_number);
+    location_rule = location_rule.replace("$number", &movie.number);
     if location_rule.starts_with("/") {
         location_rule = location_rule[1..].parse().unwrap();
     }
