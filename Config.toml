@@ -92,6 +92,7 @@ expr_userrating = ""
 replace_number = []
 replace_cover = []
 replace_extrafanart = [{action = "insert", args = ["-","jp"]}]
+replace_actor_photo = []
 [[sources.fanza.number_search]]
 name = "rebd"
 rule = [{action = "lowercase", args= []},{action = "replace", args = ["-", ""]}, {action = "insert", args = ["0", "h_346"]}]
