@@ -33,7 +33,7 @@ retry = 3
 cacert_file = ""
 
 [debug_mode]
-switch = false
+switch = true
 
 [name_rule]
 location_rule = '$actor/$number'
@@ -90,6 +90,7 @@ expr_uncensored = ""
 expr_uservotes = ""
 expr_userrating = ""
 replace_number = []
+replace_cover = []
 replace_extrafanart = [{action = "insert", args = ["-","jp"]}]
 [[sources.fanza.number_search]]
 name = "rebd"
@@ -120,6 +121,7 @@ expr_uncensored = ""
 expr_uservotes = ""
 expr_userrating = ""
 replace_number = [{action = "substring", args = ["FC2", ""]}]
+replace_cover = [{action = "insert", args = ["0", "https:"]}]
 replace_extrafanart = []
 [[sources.fc2.number_search]]
 name = "fc2"

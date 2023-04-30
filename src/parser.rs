@@ -150,7 +150,13 @@ impl Parser {
         let expr_cover = self
             .expr_cover
             .replace("$cover_number", number.to_string().as_str());
-        let cover = evaluate_xpath_node(document.root(), &expr_cover).unwrap();
+        let mut cover = evaluate_xpath_node(document.root(), &expr_cover).unwrap().string();
+        if self.replace_cover.is_some() {
+            let mut string_flow = StringFlow::new();
+            string_flow.add_rules(self.replace_cover.as_ref().unwrap());
+            cover = string_flow.process_string(cover.as_str());
+        }
+
         let expr_small_cover = self
             .expr_small_cover
             .replace("$cover_number", number.to_string().as_str());
@@ -221,7 +227,7 @@ impl Parser {
             userrating: userrating.string(),
             criticrating: "".to_string(),
             ratings: Vec::new(),
-            cover: cover.string(),
+            cover,
             cover_small: cover_small.string(),
             trailer: trailer.string(),
             website: detail_url,
