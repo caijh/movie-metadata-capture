@@ -89,6 +89,10 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
     println!("[+]All finished!!!");
 
+    if config.common.auto_exit {
+        std::process::exit(0);
+    }
+
     Ok(())
 }
 
