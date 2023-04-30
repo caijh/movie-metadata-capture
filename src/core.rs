@@ -9,6 +9,7 @@ use std::fs::{hard_link, OpenOptions};
 
 use std::ops::Not;
 use std::path::{Path, PathBuf};
+use std::str::FromStr;
 
 use crate::parser::Movie;
 use dlib_face_recognition::{
@@ -19,6 +20,7 @@ use chrono::Local;
 use image::{open, DynamicImage};
 use quick_xml::se::to_string;
 use serde::Serialize;
+use xmlem::Document;
 use std::fs;
 use std::io::Write;
 
@@ -142,7 +144,7 @@ pub async fn core_main(
                 _4k,
                 uncensored,
                 file_path,
-                &poster_path,
+                &thumb_path,
                 &poster_path,
                 &fanart_path,
             )
@@ -805,12 +807,14 @@ async fn write_nfo_file(
 
     // write movie to nfo file
     let xml = to_string(&nfo).unwrap();
+    let doc = Document::from_str(&xml).unwrap();
+    let xml = doc.to_string_pretty();
+
     let mut file = OpenOptions::new()
         .write(true)
         .create(true)
         .truncate(true)
         .open(&nfo_path)?;
-
     // Write the XML string to the file
     file.write_all(xml.as_bytes())?;
     println!("[+]Wrote!  {}", &nfo_path.to_string_lossy());

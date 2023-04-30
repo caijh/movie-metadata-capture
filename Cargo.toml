@@ -28,3 +28,4 @@ tokio = { version = "1.27.0", features = ["full"] }
 url = "2.3.1"
 urlencoding = "2.1.2"
 walkdir = "2.3.3"
+xmlem = "0.2.3"
