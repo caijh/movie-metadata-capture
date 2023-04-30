@@ -55,8 +55,8 @@ impl Parser {
         let detail_urls = &self.detail_url;
         let age_check = &self.age_check;
         for _url in detail_urls {
-            let number_replace = self
-                .number_replace
+            let number_search = self
+                .number_search
                 .iter()
                 .filter(|x| {
                     number
@@ -65,12 +65,12 @@ impl Parser {
                 })
                 .last();
 
-            let number = if let Some(number_replace) = &number_replace {
-                let rules = &number_replace.rule;
+            let number = if let Some(number_search) = &number_search {
+                let rules = &number_search.rule;
                 let mut string_flow = StringFlow::new();
                 string_flow.add_rules(rules);
-                let changed_number = string_flow.process_string(number);
-                changed_number
+                let search_number = string_flow.process_string(number);
+                search_number
             } else {
                 number.to_owned()
             };

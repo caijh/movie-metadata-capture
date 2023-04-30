@@ -51,8 +51,8 @@ pub struct DebugMode {
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
 pub struct Parser {
     pub name: String,
-    pub number_prefix: Vec<String>,
-    pub number_replace: Vec<NumberReplaceRule>,
+    pub number_extractor: Vec<String>,
+    pub number_search: Vec<NumberSearch>,
     pub age_check: Option<AgeCheck>,
     pub detail_url: Vec<String>,
     pub expr_number: String,
@@ -152,7 +152,7 @@ pub struct Media {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct NumberReplaceRule {
+pub struct NumberSearch {
     pub name: String,
     pub rule: Vec<Rule>,
 }

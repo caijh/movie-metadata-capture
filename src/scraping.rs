@@ -146,7 +146,7 @@ impl Scraping {
         let parser = &self.parsers;
 
         parser.into_iter().for_each(|(k, v)| {
-            if v.number_prefix.contains(&number_prefix.to_string()) {
+            if v.number_extractor.contains(&number_prefix.to_string()) {
                 replace_sources_item(&mut _sources, 0, k.as_str());
             }
         });

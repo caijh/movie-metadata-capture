@@ -67,7 +67,7 @@ regex = '(?i)\bFC2-?(PPV[-\s])?\d+'
 
 [sources.fanza]
 name = "fanza"
-number_prefix = ["rebd", "oae"]
+number_extractor = ["rebd", "oae"]
 age_check = { url = "https://www.dmm.co.jp/age_check/=/declared=yes/", target_name = "rurl" }
 detail_url = ["https://www.dmm.co.jp/digital/videoa/-/detail/=/cid=", "https://www.dmm.co.jp/mono/dvd/-/detail/=/cid=", "https://www.dmm.co.jp/digital/anime/-/detail/=/cid=","https://www.dmm.co.jp/mono/anime/-/detail/=/cid=", "https://www.dmm.co.jp/digital/videoc/-/detail/=/cid=", "https://www.dmm.co.jp/digital/nikkatsu/-/detail/=/cid=","https://www.dmm.co.jp/rental/-/detail/=/cid="]
 expr_number = "//td[contains(text(),'品番：')]/following-sibling::td/text()"
@@ -91,14 +91,14 @@ expr_uservotes = ""
 expr_userrating = ""
 replace_number = []
 replace_extrafanart = [{action = "insert", args = ["-","jp"]}]
-[[sources.fanza.number_replace]]
+[[sources.fanza.number_search]]
 name = "rebd"
 rule = [{action = "lowercase", args= []},{action = "replace", args = ["-", ""]}, {action = "insert", args = ["0", "h_346"]}]
 
 
 [sources.fc2]
 name = "fc2"
-number_prefix = ["fc2"]
+number_extractor = ["fc2"]
 detail_url = ["https://adult.contents.fc2.com/article/"]
 expr_number = '/html/head/title/text()'
 expr_title = '//*[@id="top"]/div[1]/section[1]/div/section/div[2]/h3/text()'
@@ -121,6 +121,6 @@ expr_uservotes = ""
 expr_userrating = ""
 replace_number = [{action = "substring", args = ["FC2", ""]}]
 replace_extrafanart = []
-[[sources.fc2.number_replace]]
+[[sources.fc2.number_search]]
 name = "fc2"
 rule = [{action = "lowercase", args= []}, {action = "replace", args=["fc2-ppv-", ""]}, {action = "replace", args=["fc2-", ""]}, {action = "replace", args=["fc2ppv ", ""]}, {action = "append", args = ["/"]}]
