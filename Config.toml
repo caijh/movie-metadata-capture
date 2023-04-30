@@ -123,6 +123,7 @@ expr_userrating = ""
 replace_number = [{action = "substring", args = ["FC2", ""]}]
 replace_cover = [{action = "insert", args = ["0", "https:"]}]
 replace_extrafanart = []
+replace_actor_photo = [{action = "insert", args = ["0", "https:"]}]
 [[sources.fc2.number_search]]
 name = "fc2"
 rule = [{action = "lowercase", args= []}, {action = "replace", args=["fc2-ppv-", ""]}, {action = "replace", args=["fc2-", ""]}, {action = "replace", args=["fc2ppv ", ""]}, {action = "append", args = ["/"]}]

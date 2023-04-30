@@ -77,6 +77,7 @@ pub struct Parser {
     pub replace_number: Option<Vec<Rule>>,
     pub replace_cover: Option<Vec<Rule>>,
     pub replace_extrafanart: Option<Vec<Rule>>,
+    pub replace_actor_photo: Option<Vec<Rule>>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]

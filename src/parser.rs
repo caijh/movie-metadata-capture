@@ -130,7 +130,17 @@ impl Parser {
             evaluate_xpath_node(document.root(), self.expr_actor_photo.as_str()).unwrap();
         let actor_photo: Vec<String> = match actor_photo {
             sxd_xpath::Value::Nodeset(nodes) => {
-                nodes.iter().map(|node| node.string_value()).collect()
+                if self.replace_actor_photo.is_some() {
+                    let mut string_flow = StringFlow::new();
+                    string_flow.add_rules(self.replace_actor_photo.as_ref().unwrap());
+                    nodes
+                        .iter()
+                        .map(|node| string_flow.process_string(node.string_value().as_str()))
+                        .collect()
+                } else {
+                    nodes.iter().map(|node| node.string_value()).collect()
+                }
+
             }
             _ => Vec::new(),
         };
