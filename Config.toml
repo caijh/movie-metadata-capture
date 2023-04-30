@@ -136,8 +136,8 @@ number_extractor = ["heyzo"]
 detail_url = ["https://www.javbus.com/"]
 expr_number = '//div[@class="container"]/div[1]/div[2]/p[1]/span[2]/text()'
 expr_title = '//div[@class="container"]/h3/text()'
-expr_actor_name = '//div[@class="star-name"]/a'
-expr_actor_photo = '//div[@class="star-name"]/../a/img'
+expr_actor_name = '//div[@class="star-name"]/a/text()'
+expr_actor_photo = '//div[@class="star-name"]/../a/img/@src'
 expr_studio = '//span[contains(text(),"製作商:")]/../a/text()'
 expr_runtime = '/html/body/div[5]/div[1]/div[2]/p[3]/text()'
 expr_release = '/html/body/div[5]/div[1]/div[2]/p[2]/text()'
