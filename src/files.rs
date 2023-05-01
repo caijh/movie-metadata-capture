@@ -37,10 +37,11 @@ pub async fn rm_empty_folder(dir: &str) -> Result<(), io::Error> {
 
     // Remove all the empty directories
     for dir in empty_dirs {
+        let path = dir.to_string_lossy().to_string();
         match fs::remove_dir(dir) {
             Ok(_) => {}
             Err(_) => {
-                println!("[-]Failed to remove directory")
+                println!("[-]Failed to remove directory {}", path);
             }
         }
     }
