@@ -29,7 +29,7 @@ use crate::number_parser::get_number;
 
 pub async fn core_main(
     file_path: &str,
-    number_prefix: &str,
+    number_extractor: &str,
     custom_number: &str,
     sources: Option<String>,
     specified_source: Option<String>,
@@ -37,7 +37,7 @@ pub async fn core_main(
 ) -> Result<(), Box<dyn Error>> {
     let mut scraping = Scraping::new(config);
     let movie = scraping
-        .search(custom_number, number_prefix, sources, specified_source)
+        .search(custom_number, number_extractor, sources, specified_source)
         .await;
 
     if movie.is_none() {
@@ -1099,7 +1099,7 @@ pub fn move_failed_folder(filepath: &str, config: &AppConfig) {
 /// scraping_data_and_move_movie("path/to/movie.mp4", &config).await?;
 ///
 pub async fn scraping_data_and_move_movie(movie_path: &str, config: &AppConfig) -> Result<(), Box<dyn Error>> {
-    let (n_number, number_prefix) = get_number(config,movie_path).unwrap();
+    let (n_number, number_extractor) = get_number(config, movie_path).unwrap();
     let movie_path = Path::new(movie_path);
     let movie_path = movie_path.to_string_lossy();
     let movie_path = movie_path.as_ref();
@@ -1109,7 +1109,7 @@ pub async fn scraping_data_and_move_movie(movie_path: &str, config: &AppConfig) 
         movie_path
     );
     if n_number.is_empty().not() {
-        core_main(movie_path, number_prefix.as_str(),n_number.as_str(), None, None, config).await?;
+        core_main(movie_path, number_extractor.as_str(), n_number.as_str(), None, None, config).await?;
     } else {
         println!("[-] number empty error");
         move_failed_folder(movie_path, config);

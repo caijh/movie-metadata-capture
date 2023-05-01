@@ -1,4 +1,3 @@
-
 use std::collections::HashMap;
 use std::ops::Not;
 
@@ -35,58 +34,73 @@ impl Scraping {
 
     pub async fn search(
         &mut self,
-        file_number: &str,
-        number_prefix: &str,
+        number: &str,
+        number_extractor: &str,
         sources: Option<String>,
         specified_source: Option<String>,
     ) -> Option<Movie> {
-        self.specified_source = specified_source.map(|s| s);
+        self.specified_source = specified_source;
         let sources = sources.unwrap_or_default();
         let sources: Vec<&str> = sources.split(",").filter(|s| s.is_empty().not()).collect();
 
-        let movie = self.search_movie(file_number,number_prefix,sources).await;
+        let movie = self.search_movie(number, number_extractor, sources).await;
 
         match movie {
             Some(mut movie) => {
-                if self.translate.switch {
-                    let json = serde_json::to_string(&movie).unwrap();
-                    let json: Value = serde_json::from_str(json.as_str()).unwrap();
-                    let translate_values: Vec<&str> = self.translate.values.split(",").collect();
-                    for translate_value in translate_values {
-                        if translate_value.is_empty() {
-                            continue;
-                        }
-                        let text = json
-                            .get(translate_value)
-                            .unwrap()
-                            .as_str()
-                            .unwrap_or_default();
-                        let t = if self.translate.engine == "azure" {
-                            let translator = AzureTranslator {
-                                service_url: self.translate.service_url.to_string(),
-                                access_key: self.translate.access_key.to_string(),
-                                region: self.translate.region.clone(),
-                            };
-                            translator.translate(text, "ja", "zh-Hans").await
-                        } else {
-                            None
-                        };
-                        if t.is_some() {
-                            match translate_value {
-                                "title" => movie.title = t.unwrap(),
-                                "outline" => movie.outline = t.unwrap(),
-                                _ => {}
-                            };
-                        }
-                    }
-                }
+                movie = self.translate_movie(movie).await;
                 Some(movie)
             }
-            None => None,
+            None => {
+                None
+            }
         }
+
     }
 
-    async fn search_movie(&mut self, file_number: &str, number_prefix: &str,sources: Vec<&str>) -> Option<Movie> {
+    async fn translate_movie(&self, mut movie: Movie) -> Movie {
+        if !self.translate.switch {
+            return movie;
+        }
+
+        let json = serde_json::to_value(&movie).unwrap();
+        let translate_values: Vec<&str> = self.translate.values.split(',').collect();
+
+        for translate_value in translate_values {
+            if translate_value.is_empty() {
+                continue;
+            }
+
+            let text = json
+                .get(translate_value)
+                .and_then(Value::as_str)
+                .unwrap_or_default();
+
+            let t = match self.translate.engine.as_str() {
+                "azure" => {
+                    let translator = AzureTranslator {
+                        service_url: self.translate.service_url.to_string(),
+                        access_key: self.translate.access_key.to_string(),
+                        region: self.translate.region.clone(),
+                    };
+
+                    translator.translate(text, "ja", "zh-Hans").await
+                }
+                _ => None,
+            };
+
+            if let Some(t) = t {
+                match translate_value {
+                    "title" => movie.title = t,
+                    "outline" => movie.outline = t,
+                    _ => {}
+                }
+            }
+        }
+        movie
+    }
+
+
+    async fn search_movie(&mut self, file_number: &str, number_prefix: &str, sources: Vec<&str>) -> Option<Movie> {
         let mut movie = None;
 
         let _sources: Vec<String> = if self.specified_source.is_some() {
