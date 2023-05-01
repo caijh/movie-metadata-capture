@@ -94,21 +94,20 @@ async fn main() -> Result<(), Box<dyn Error>> {
 async fn create_data_and_move(movie_path: &str, config: &AppConfig) -> Result<(), Box<dyn Error>> {
     let (n_number, number_prefix) = get_number(config,movie_path).unwrap();
     let movie_path = Path::new(movie_path);
-    let movie_path_str = movie_path.to_string_lossy();
-    let movie_path_str = movie_path_str.as_ref();
+    let movie_path = movie_path.to_string_lossy();
+    let movie_path = movie_path.as_ref();
     println!(
         "[!][{}] As Number Processing for '{}'",
         n_number,
-        movie_path.to_string_lossy()
+        movie_path
     );
     if n_number.is_empty().not() {
-        core_main(&movie_path_str, number_prefix.as_str(),n_number.as_str(), None, None, config).await?;
+        core_main(movie_path, number_prefix.as_str(),n_number.as_str(), None, None, config).await?;
     } else {
         println!("[-] number empty error");
-        move_failed_folder(movie_path_str, config);
+        move_failed_folder(movie_path, config);
     }
     println!("[*]======================================================");
-
     Ok(())
 }
 
