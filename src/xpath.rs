@@ -18,3 +18,11 @@ pub fn evaluate_xpath_node<'d>(node: impl Into<Node<'d>>, expr: &str) -> Result<
         .map_err(Into::into)
 }
 
+pub fn value_to_vec(value: Value) -> Vec<String> {
+    match value {
+        Value::Nodeset(nodes) => {
+            nodes.iter().map(|node| node.string_value()).collect()
+        }
+        _ => Vec::new(),
+    }
+}

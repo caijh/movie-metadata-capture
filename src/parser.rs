@@ -7,7 +7,7 @@ use url::Url;
 
 use crate::config::{Parser, StringFlow};
 use crate::request::get_html_content;
-use crate::xpath::evaluate_xpath_node;
+use crate::xpath::{evaluate_xpath_node, value_to_vec};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
@@ -125,12 +125,7 @@ impl Parser {
         let director = evaluate_xpath_node(document.root(), self.expr_director.as_str()).unwrap();
         let actor_name =
             evaluate_xpath_node(document.root(), self.expr_actor_name.as_str()).unwrap();
-        let actor_name: Vec<String> = match actor_name {
-            sxd_xpath::Value::Nodeset(nodes) => {
-                nodes.iter().map(|node| node.string_value()).collect()
-            }
-            _ => Vec::new(),
-        };
+        let actor_name: Vec<String> = value_to_vec(actor_name);
         let actor_photo =
             evaluate_xpath_node(document.root(), self.expr_actor_photo.as_str()).unwrap();
         let actor_photo: Vec<String> = match actor_photo {
@@ -196,12 +191,7 @@ impl Parser {
         };
         let trailer = evaluate_xpath_node(document.root(), self.expr_trailer.as_str()).unwrap();
         let tags = evaluate_xpath_node(document.root(), self.expr_tags.as_str()).unwrap();
-        let tags = match tags {
-            sxd_xpath::Value::Nodeset(nodes) => {
-                nodes.iter().map(|node| node.string_value()).collect()
-            }
-            _ => Vec::new(),
-        };
+        let tags = value_to_vec(tags);
         let label = evaluate_xpath_node(document.root(), self.expr_label.as_str()).unwrap();
         let series = evaluate_xpath_node(document.root(), self.expr_series.as_str()).unwrap();
         let userrating =
