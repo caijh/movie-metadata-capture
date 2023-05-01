@@ -89,6 +89,16 @@ pub struct NumberExtractor {
 }
 
 impl NumberExtractor {
+    /// Gets the number from a given filename based on a regex.
+    ///
+    /// # Arguments
+    ///
+    /// *  `filename`  - A string representing the filename.
+    ///
+    /// # Returns
+    ///
+    /// An Option of a tuple of strings containing the number and the name.
+    /// If the regex does not match the filename, None is returned.
     pub fn get_number(&self, filename: &str) -> Option<(String, String)> {
         let re = Regex::new(&self.regex).unwrap();
         if re.is_match(filename) {
