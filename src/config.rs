@@ -181,8 +181,12 @@ pub struct StringFlow {
 }
 
 impl StringFlow {
-    pub fn new() -> Self {
-        StringFlow { rules: vec![] }
+    pub fn new(rules: &Vec<Rule>) -> Self {
+        let mut _rules = Vec::new();
+        for rule in rules {
+            _rules.push(rule.clone());
+        }
+        StringFlow { rules: _rules }
     }
 
     pub fn add_rules(&mut self, rules: &Vec<Rule>) {

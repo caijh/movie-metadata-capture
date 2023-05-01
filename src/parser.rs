@@ -66,9 +66,7 @@ impl Parser {
                 .last();
 
             let number = if let Some(number_search) = &number_search {
-                let rules = &number_search.rule;
-                let mut string_flow = StringFlow::new();
-                string_flow.add_rules(rules);
+                let string_flow = StringFlow::new(&number_search.rule);
                 let search_number = string_flow.process_string(number);
                 search_number
             } else {
@@ -109,8 +107,7 @@ impl Parser {
             .unwrap()
             .string();
         if self.replace_number.is_some() {
-            let mut string_flow = StringFlow::new();
-            string_flow.add_rules(self.replace_number.as_ref().unwrap());
+            let string_flow = StringFlow::new(self.replace_number.as_ref().unwrap());
             number = string_flow.process_string(number.as_str());
         }
 
@@ -131,8 +128,7 @@ impl Parser {
         let actor_photo: Vec<String> = match actor_photo {
             sxd_xpath::Value::Nodeset(nodes) => {
                 if self.replace_actor_photo.is_some() {
-                    let mut string_flow = StringFlow::new();
-                    string_flow.add_rules(self.replace_actor_photo.as_ref().unwrap());
+                    let string_flow = StringFlow::new(self.replace_actor_photo.as_ref().unwrap());
                     nodes
                         .iter()
                         .map(|node| string_flow.process_string(node.string_value().as_str()))
@@ -162,8 +158,7 @@ impl Parser {
             .replace("$cover_number", number.to_string().as_str());
         let mut cover = evaluate_xpath_node(document.root(), &expr_cover).unwrap().string();
         if self.replace_cover.is_some() {
-            let mut string_flow = StringFlow::new();
-            string_flow.add_rules(self.replace_cover.as_ref().unwrap());
+            let string_flow = StringFlow::new(self.replace_cover.as_ref().unwrap());
             cover = string_flow.process_string(cover.as_str());
         }
 
@@ -177,8 +172,7 @@ impl Parser {
         let extra_fanart: Vec<String> = match extra_fanart {
             sxd_xpath::Value::Nodeset(nodes) => {
                 if self.replace_extra_fanart.is_some() {
-                    let mut string_flow = StringFlow::new();
-                    string_flow.add_rules(self.replace_extra_fanart.as_ref().unwrap());
+                    let string_flow = StringFlow::new(self.replace_extra_fanart.as_ref().unwrap());
                     nodes
                         .iter()
                         .map(|node| string_flow.process_string(node.string_value().as_str()))
