@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use std::ops::Not;
 
-use crate::azure_translator::AzureTranslator;
+use crate::translator::AzureTranslator;
 
 use serde_json::Value;
 

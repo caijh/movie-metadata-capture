@@ -1,4 +1,4 @@
-pub mod azure_translator;
+pub mod translator;
 pub mod config;
 pub mod core;
 pub mod files;

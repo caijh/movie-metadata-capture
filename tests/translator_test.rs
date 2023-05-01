@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-    use movie_metadata_capture::azure_translator::AzureTranslator;
+    use movie_metadata_capture::translator::AzureTranslator;
 
     #[tokio::test]
     async fn test_translate_with_valid_inputs() {
