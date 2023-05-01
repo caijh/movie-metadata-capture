@@ -983,6 +983,19 @@ pub async fn create_data_and_move_with_custom_number(
     Ok(())
 }
 
+/// Generates list of movies from a given folder.
+///
+/// This function takes config and folder path as input and searches for all the valid media files present in the folder.
+/// It returns a vector of strings which contains paths to the media files.
+///
+/// # Arguments
+///
+/// *  `config`  - the AppConfig struct containing source folder and media type
+/// *  `folder_path`  - The path of the source folder
+///
+/// # Returns
+///
+/// *  `Vec<String>`  - Vector of strings containing paths to the media files.
 pub fn movie_lists(config: &AppConfig, folder_path: &Path) -> Vec<String> {
     if !folder_path.is_dir() {
         println!("[-]Source folder not found!");
@@ -1003,7 +1016,6 @@ pub fn movie_lists(config: &AppConfig, folder_path: &Path) -> Vec<String> {
                     .contains((".".to_string() + &ext.to_str().unwrap().to_lowercase()).as_str())
             })
         {
-            // Do something with the media file, e.g. print its path
             let movie = path.to_str().unwrap();
             total_movies.push(movie.to_string());
         }
