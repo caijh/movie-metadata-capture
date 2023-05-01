@@ -5,7 +5,6 @@ use movie_metadata_capture::core::{
     core_main, create_data_and_move_with_custom_number, move_failed_folder, movie_lists,
 };
 use movie_metadata_capture::number_parser::get_number;
-use movie_metadata_capture::request::set_proxy;
 use rand::Rng;
 use std::error::Error;
 use std::ops::Not;
@@ -30,10 +29,6 @@ async fn main() -> Result<(), Box<dyn Error>> {
     }
 
     config.create_failed_folder().await?;
-
-    if config.proxy.switch {
-        set_proxy(&config.proxy).await?;
-    }
 
     let start_time = time::Instant::now();
     println!(

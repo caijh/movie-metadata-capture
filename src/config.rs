@@ -3,12 +3,14 @@ use std::collections::HashMap;
 use std::path::PathBuf;
 use std::sync::{Arc, RwLock};
 use std::{env, fs, io};
+use std::error::Error;
 
 use crate::files::rm_empty_folder;
-use confy::ConfyError;
+
 use lazy_static::lazy_static;
 use regex::Regex;
 use serde::{Deserialize, Serialize};
+use crate::request::set_proxy;
 
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
 pub struct AppConfig {
@@ -232,13 +234,18 @@ lazy_static! {
 }
 
 impl AppConfig {
-    pub async fn load_config_file(file: &str) -> Result<(), ConfyError> {
+    pub async fn load_config_file(file: &str) -> Result<(), Box<dyn Error>> {
         let config_file_path = PathBuf::from(file);
         let cfg = confy::load_path::<AppConfig>(config_file_path)?;
 
         let config_clone = CONFIG.clone();
         let mut config = config_clone.write().unwrap();
         *config = cfg;
+
+        if config.proxy.switch {
+            set_proxy(&config.proxy).await?;
+        }
+
         Ok(())
     }
 
