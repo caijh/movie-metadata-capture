@@ -17,7 +17,7 @@ use dlib_face_recognition::{
 };
 
 use chrono::Local;
-use image::{open, DynamicImage};
+use image::{DynamicImage, open};
 use quick_xml::se::to_string;
 use serde::Serialize;
 use std::fs;
@@ -25,6 +25,7 @@ use std::io::Write;
 use xmlem::Document;
 
 use walkdir::WalkDir;
+use crate::number_parser::get_number;
 
 pub async fn core_main(
     file_path: &str,
@@ -1076,4 +1077,43 @@ pub fn move_failed_folder(filepath: &str, conf: &AppConfig) {
             }
         }
     }
+}
+
+/// Scraping data and move movie function.
+///
+/// The parameters  `movie_path`  and  `config`  are used to get the movie number, and move the movie to the appropriate folder.
+/// The function checks if the movie number is not empty and if so, will process it and move the movie to the correct folder.
+/// If the movie number is empty, it will move the movie to the failed folder.
+///
+/// # Arguments
+///
+/// *  `movie_path`  - The path of the movie.
+/// *  `config`  - The application configuration.
+///
+/// # Returns
+///
+/// A  `Result<(), Box<dyn Error>>`
+///
+/// # Examples
+///
+/// scraping_data_and_move_movie("path/to/movie.mp4", &config).await?;
+///
+pub async fn scraping_data_and_move_movie(movie_path: &str, config: &AppConfig) -> Result<(), Box<dyn Error>> {
+    let (n_number, number_prefix) = get_number(config,movie_path).unwrap();
+    let movie_path = Path::new(movie_path);
+    let movie_path = movie_path.to_string_lossy();
+    let movie_path = movie_path.as_ref();
+    println!(
+        "[!][{}] As Number Processing for '{}'",
+        n_number,
+        movie_path
+    );
+    if n_number.is_empty().not() {
+        core_main(movie_path, number_prefix.as_str(),n_number.as_str(), None, None, config).await?;
+    } else {
+        println!("[-] number empty error");
+        move_failed_folder(movie_path, config);
+    }
+    println!("[*]======================================================");
+    Ok(())
 }

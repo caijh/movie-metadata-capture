@@ -1,9 +1,7 @@
 use chrono::Local;
 use clap::{arg, Parser};
 use movie_metadata_capture::config::AppConfig;
-use movie_metadata_capture::core::{
-    core_main, create_data_and_move_with_custom_number, move_failed_folder, movie_lists,
-};
+use movie_metadata_capture::core::{core_main, scraping_data_and_move_movie, create_data_and_move_with_custom_number, move_failed_folder, movie_lists};
 use movie_metadata_capture::number_parser::get_number;
 use rand::Rng;
 use std::error::Error;
@@ -64,7 +62,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
         println!("[+]Find {} movies.", movie_count);
         println!("[*]======================================================");
         for movie_path in movie_list {
-            create_data_and_move(movie_path.as_str(), &config).await?;
+            scraping_data_and_move_movie(movie_path.as_str(), &config).await?;
             let mut rng = rand::thread_rng();
             let sleep_seconds = rng.gen_range(config.common.sleep..config.common.sleep + 2);
             thread::sleep(Duration::from_secs(sleep_seconds));
@@ -88,26 +86,6 @@ async fn main() -> Result<(), Box<dyn Error>> {
         std::process::exit(0);
     }
 
-    Ok(())
-}
-
-async fn create_data_and_move(movie_path: &str, config: &AppConfig) -> Result<(), Box<dyn Error>> {
-    let (n_number, number_prefix) = get_number(config,movie_path).unwrap();
-    let movie_path = Path::new(movie_path);
-    let movie_path = movie_path.to_string_lossy();
-    let movie_path = movie_path.as_ref();
-    println!(
-        "[!][{}] As Number Processing for '{}'",
-        n_number,
-        movie_path
-    );
-    if n_number.is_empty().not() {
-        core_main(movie_path, number_prefix.as_str(),n_number.as_str(), None, None, config).await?;
-    } else {
-        println!("[-] number empty error");
-        move_failed_folder(movie_path, config);
-    }
-    println!("[*]======================================================");
     Ok(())
 }
 
