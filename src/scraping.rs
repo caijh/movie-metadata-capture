@@ -54,7 +54,6 @@ impl Scraping {
                 None
             }
         }
-
     }
 
     async fn translate_movie(&self, mut movie: Movie) -> Movie {
@@ -100,24 +99,24 @@ impl Scraping {
     }
 
 
-    async fn search_movie(&mut self, file_number: &str, number_prefix: &str, sources: Vec<&str>) -> Option<Movie> {
-        let mut movie = None;
-
+    async fn search_movie(&mut self, file_number: &str, number_extractor: &str, sources: Vec<&str>) -> Option<Movie> {
         let _sources: Vec<String> = if self.specified_source.is_some() {
             vec![self.specified_source.as_ref().unwrap().to_string()]
         } else {
-            self.get_reorder_sources(sources, number_prefix)
+            self.get_reorder_sources(sources, number_extractor)
         };
         if self.debug {
             println!("[+]sources {:?}", _sources);
         }
+
+        let mut movie = None;
         for source in _sources {
             match self.parsers.get(source.as_str()) {
                 Some(parser) => {
                     if self.debug {
                         println!("[+]select {}", source);
                     }
-                    movie = parser.search(file_number).await;
+                    movie = parser.search(file_number, self.debug).await;
                     if movie.is_some() {
                         if self.debug {
                             println!(
@@ -127,23 +126,18 @@ impl Scraping {
                             println!("[+]Movie = {:?}", movie);
                         }
                         break;
-                    } else {
-                        movie = None;
                     }
                 }
                 None => continue,
             };
         }
-        match movie {
-            Some(m) => Some(m),
-            None => {
-                println!("[-]Movie Number [{}] not found!", file_number);
-                None
-            }
+        if movie.is_none() {
+            println!("[-]Movie Number [{}] not found!", file_number);
         }
+        movie
     }
 
-    fn get_reorder_sources(&self, sources: Vec<&str>, number_prefix: &str) -> Vec<String> {
+    fn get_reorder_sources(&self, sources: Vec<&str>, number_extractor: &str) -> Vec<String> {
         let mut _sources: Vec<&str> = if sources.is_empty() {
             self.sources.iter().map(|s| s.as_str()).collect()
         } else {
@@ -152,7 +146,7 @@ impl Scraping {
         let parser = &self.parsers;
 
         parser.into_iter().for_each(|(k, v)| {
-            if v.number_extractor.contains(&number_prefix.to_string()) {
+            if v.number_extractor.contains(&number_extractor.to_string()) {
                 replace_sources_item(&mut _sources, 0, k.as_str());
             }
         });

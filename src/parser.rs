@@ -51,7 +51,7 @@ pub struct Rating {
 }
 
 impl Parser {
-    pub async fn search(&self, number: &str) -> Option<Movie> {
+    pub async fn search(&self, number: &str, debug: bool) -> Option<Movie> {
         let detail_urls = &self.detail_url;
         let age_check = &self.age_check;
         for _url in detail_urls {
@@ -85,16 +85,21 @@ impl Parser {
             } else {
                 Url::parse(&detail_url).unwrap()
             };
-            println!("[+]{}", url);
+            if debug {
+                println!("[+]{}", url);
+            }
             if let Ok(html) = get_html_content(url.as_str()).await {
                 let package = sxd_html::parse_html(html.as_str());
                 let document = package.as_document();
                 let movie = self.parse_to_movie(&document, detail_url);
                 if self.is_movie_valid(&movie) {
+                    if debug {
+                        println!("[+]{:?}", movie);
+                    }
                     return movie;
                 }
             } else {
-                println!("[-]fail to get html content from {}", url);
+                println!("[-]Fail to get html content from {}", url);
             }
         }
         None
