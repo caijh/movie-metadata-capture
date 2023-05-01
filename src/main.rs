@@ -1,7 +1,7 @@
 use chrono::Local;
 use clap::{arg, Parser};
 use movie_metadata_capture::config::AppConfig;
-use movie_metadata_capture::core::{core_main, scraping_data_and_move_movie, create_data_and_move_with_custom_number, move_failed_folder, movie_lists};
+use movie_metadata_capture::core::{scraping_data_and_move_movie, scraping_data_and_move_movie_with_custom_number, movie_lists};
 use movie_metadata_capture::number_parser::get_number;
 use rand::Rng;
 use std::error::Error;
@@ -42,7 +42,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
         } else {
             (args.custom_number.unwrap_or_default(), "".to_string())
         };
-        create_data_and_move_with_custom_number(
+        scraping_data_and_move_movie_with_custom_number(
             single_file_path.as_str(),
             custom_number.as_str(),
             number_prefix.as_str(),
