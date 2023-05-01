@@ -89,14 +89,14 @@ expr_label = "//td[contains(text(),'レーベル：')]/following-sibling::td/a/t
 expr_series = "//td[contains(text(),'シリーズ：')]/following-sibling::td/a/text()"
 expr_cover = '//div[@class="tx10 pd-3 lh4"]/a/@href'
 expr_small_cover = '//div[@class="tx10 pd-3 lh4"]/a/img/@src'
-expr_extrafanart = '//a[@name="sample-image"]/img/@src'
+expr_extra_fanart = '//a[@name="sample-image"]/img/@src'
 expr_trailer = ""
 expr_uncensored = ""
 expr_uservotes = ""
 expr_userrating = ""
 replace_number = []
 replace_cover = []
-replace_extrafanart = [{action = "insert", args = ["-","jp"]}]
+replace_extra_fanart = [{action = "insert", args = ["-","jp"]}]
 replace_actor_photo = []
 [[sources.fanza.number_search]]
 name = "rebd"
@@ -121,14 +121,14 @@ expr_label = "//td[contains(text(),'レーベル：')]/following-sibling::td/a/t
 expr_series = "//td[contains(text(),'シリーズ：')]/following-sibling::td/a/text()"
 expr_cover = "//div[@class='items_article_MainitemThumb']/span/img/@src"
 expr_small_cover = ''
-expr_extrafanart = '//ul[@class="items_article_SampleImagesArea"]/li/a/@href'
+expr_extra_fanart = '//ul[@class="items_article_SampleImagesArea"]/li/a/@href'
 expr_trailer = ""
 expr_uncensored = ""
 expr_uservotes = '//li[@class="items_article_StarA"]/a/span/text()'
 expr_userrating = ""
 replace_number = [{action = "substring", args = ["FC2", ""]}]
 replace_cover = [{action = "insert", args = ["0", "https:"]}]
-replace_extrafanart = []
+replace_extra_fanart = []
 replace_actor_photo = [{action = "insert", args = ["0", "https:"]}]
 [[sources.fc2.number_search]]
 name = "fc2"
@@ -152,14 +152,14 @@ expr_label = '//span[contains(text(),"系列:")]/../a/text()'
 expr_series = '//span[contains(text(),"系列:")]/../a/text()'
 expr_cover = '//a[@class="bigImage"]/@href'
 expr_small_cover = ''
-expr_extrafanart = '//div[@id="sample-waterfall"]/a/@href'
+expr_extra_fanart = '//div[@id="sample-waterfall"]/a/@href'
 expr_trailer = ""
 expr_uncensored = '//*[@id="navbar"]/ul[1]/li[@class="active"]/a[contains(@href,"uncensored")]'
 expr_uservotes = '//li[@class="items_article_StarA"]/a/span/text()'
 expr_userrating = ""
 replace_number = []
 replace_cover = [{action = "insert", args = ["0", "https://www.javbus.com/"]}]
-replace_extrafanart = [{action = "insert", args = ["0", "https://www.javbus.com/"]}]
+replace_extra_fanart = [{action = "insert", args = ["0", "https://www.javbus.com/"]}]
 replace_actor_photo = []
 [[sources.javbus.number_search]]
 name = "heyzo"
@@ -183,14 +183,14 @@ expr_label = "//span[@class='spec-title'][contains(text(),'シリーズ')]/../sp
 expr_series = "//span[@class='spec-title'][contains(text(),'シリーズ')]/../span[@class='spec-content']/a/text()"
 expr_cover = '//div[@class="vjs-poster"]/@style'
 expr_small_cover = ''
-expr_extrafanart = "//*[@id='sampleexclude']/div[2]/div/div[@class='grid-item']/div/a/@href"
+expr_extra_fanart = "//*[@id='sampleexclude']/div[2]/div/div[@class='grid-item']/div/a/@href"
 expr_trailer = ""
 expr_uncensored = ''
 expr_uservotes = ''
 expr_userrating = ""
 replace_number = [{action= "substring", args = ["moviepages/", "/index.html"]}, {action="replace", args = ["moviepages/", ""]}]
 replace_cover = [{action = "substring", args = ["\"", "\""]}, {action = "insert", args = ["0", "https://www.caribbeancom.com"]}]
-replace_extrafanart = [{action = "insert", args = ["0", "https://www.caribbeancom.com"]}]
+replace_extra_fanart = [{action = "insert", args = ["0", "https://www.caribbeancom.com"]}]
 replace_actor_photo = []
 [[sources.carib.number_search]]
 name = "carib"

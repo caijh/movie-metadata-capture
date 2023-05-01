@@ -20,7 +20,7 @@ pub struct Movie {
     pub plot: String,
     pub runtime: String,
     pub director: String,
-    pub extrafanart: Vec<String>,
+    pub extra_fanart: Vec<String>,
     pub actor: Vec<(String, String)>,
     pub label: String,
     pub tag: Vec<String>,
@@ -173,12 +173,12 @@ impl Parser {
         let cover_small = evaluate_xpath_node(document.root(), &expr_small_cover).unwrap();
 
         let extra_fanart =
-            evaluate_xpath_node(document.root(), self.expr_extrafanart.as_str()).unwrap();
+            evaluate_xpath_node(document.root(), self.expr_extra_fanart.as_str()).unwrap();
         let extra_fanart: Vec<String> = match extra_fanart {
             sxd_xpath::Value::Nodeset(nodes) => {
-                if self.replace_extrafanart.is_some() {
+                if self.replace_extra_fanart.is_some() {
                     let mut string_flow = StringFlow::new();
-                    string_flow.add_rules(self.replace_extrafanart.as_ref().unwrap());
+                    string_flow.add_rules(self.replace_extra_fanart.as_ref().unwrap());
                     nodes
                         .iter()
                         .map(|node| string_flow.process_string(node.string_value().as_str()))
@@ -222,7 +222,7 @@ impl Parser {
             plot: "".to_string(),
             runtime: runtime.string(),
             director: director.string(),
-            extrafanart: extra_fanart,
+            extra_fanart: extra_fanart,
             actor,
             label: label.string(),
             tag: tags,

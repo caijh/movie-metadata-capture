@@ -22,7 +22,7 @@ mod tests {
         assert!(movie.is_some());
         let movie = movie.unwrap();
         assert_eq!("ka9oae232", movie.number);
-        let extra_fanart = movie.extrafanart;
+        let extra_fanart = movie.extra_fanart;
 
         download_small_cover(&movie.cover_small, ".", "./poster.jpg", &config).await;
 

@@ -71,14 +71,14 @@ pub struct Parser {
     pub expr_series: String,
     pub expr_cover: String,
     pub expr_small_cover: String,
-    pub expr_extrafanart: String,
+    pub expr_extra_fanart: String,
     pub expr_trailer: String,
     pub expr_uncensored: String,
     pub expr_userrating: String,
     pub expr_uservotes: String,
     pub replace_number: Option<Vec<Rule>>,
     pub replace_cover: Option<Vec<Rule>>,
-    pub replace_extrafanart: Option<Vec<Rule>>,
+    pub replace_extra_fanart: Option<Vec<Rule>>,
     pub replace_actor_photo: Option<Vec<Rule>>,
 }
 

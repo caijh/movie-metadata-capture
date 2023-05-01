@@ -114,7 +114,7 @@ pub async fn core_main(
             download_cover(&cover, dir, &thumb_path, &fanart_path, config).await;
 
             if config.extrafanart.switch {
-                let extra_fanart = &movie.extrafanart;
+                let extra_fanart = &movie.extra_fanart;
                 download_extra_fanart(extra_fanart, dir, config).await;
             }
 
@@ -181,7 +181,7 @@ pub async fn core_main(
             download_cover(&cover, dir, &thumb_path, &fanart_path, config).await;
 
             if config.extrafanart.switch {
-                let extra_fanart = &movie.extrafanart;
+                let extra_fanart = &movie.extra_fanart;
                 download_extra_fanart(extra_fanart, dir, config).await;
             }
 
