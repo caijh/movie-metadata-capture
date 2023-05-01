@@ -5,9 +5,9 @@ use walkdir::WalkDir;
 pub fn file_exit_and_not_empty(filepath: &std::path::Path) -> bool {
     filepath.is_file()
         && filepath
-            .metadata()
-            .map(|meta| meta.len() > 0)
-            .unwrap_or(false)
+        .metadata()
+        .map(|meta| meta.len() > 0)
+        .unwrap_or(false)
 }
 
 #[cfg(unix)]
@@ -37,7 +37,12 @@ pub async fn rm_empty_folder(dir: &str) -> Result<(), io::Error> {
 
     // Remove all the empty directories
     for dir in empty_dirs {
-        fs::remove_dir(dir).expect("[-]Failed to remove directory");
+        match fs::remove_dir(dir) {
+            Ok(_) => {}
+            Err(_) => {
+                println!("[-]Failed to remove directory")
+            }
+        }
     }
 
     Ok(())
