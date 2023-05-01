@@ -1025,19 +1025,19 @@ pub fn movie_lists(config: &AppConfig, folder_path: &Path) -> Vec<String> {
     total_movies
 }
 
-pub fn move_failed_folder(filepath: &str, conf: &AppConfig) {
-    let failed_folder = conf.common.failed_output_folder.as_str();
-    let link_mode = conf.common.link_mode;
+pub fn move_failed_folder(filepath: &str, config: &AppConfig) {
+    let failed_folder = config.common.failed_output_folder.as_str();
+    let link_mode = config.common.link_mode;
 
     // 模式3或软连接，改为维护一个失败列表，启动扫描时加载用于排除该路径，以免反复处理
     // 原先的创建软连接到失败目录，并不直观，不方便找到失败文件位置，不如直接记录该文件路径
-    if conf.common.main_mode == 3 || link_mode > 0 {
+    if config.common.main_mode == 3 || link_mode > 0 {
         let ftxt = std::path::PathBuf::from(failed_folder).join("failed_list.txt");
         println!("-Add to Failed List file, see '{}'", ftxt.display());
         if let Err(e) = fs::write(ftxt, filepath.to_owned() + "\n") {
             eprintln!("-Failed to write failed file to list: {}", e);
         }
-    } else if conf.common.failed_move && (link_mode == 0) {
+    } else if config.common.failed_move && (link_mode == 0) {
         let mut failed_name = std::path::PathBuf::from(failed_folder);
         failed_name.push(Path::new(filepath).file_name().unwrap_or_default());
         let mtxt =
@@ -1070,7 +1070,7 @@ pub fn move_failed_folder(filepath: &str, conf: &AppConfig) {
         } else {
             eprintln!("-Failed to open 'where_was_i_before_being_moved.txt'.");
         }
-        match std::fs::rename(filepath, &failed_name) {
+        match fs::rename(filepath, &failed_name) {
             Ok(_) => {}
             Err(e) => {
                 eprintln!("-File Moving to FailedFolder unsuccessful: {}", e);

@@ -18,14 +18,6 @@ pub struct Scraping {
     translate: Translate,
 }
 
-fn replace_sources_item(sources: &mut Vec<&str>, index: usize, key: &str) {
-    let _index = sources.iter().position(|s| s.to_owned() == key).unwrap();
-    if _index > 0 {
-        let ele = sources.remove(_index);
-        sources.insert(index, ele);
-    }
-}
-
 impl Scraping {
     pub fn new(config: &AppConfig) -> Self {
         let debug = config.debug_mode.switch;
@@ -100,7 +92,7 @@ impl Scraping {
         let _sources: Vec<String> = if self.specified_source.is_some() {
             vec![self.specified_source.as_ref().unwrap().to_string()]
         } else {
-            self.check_sources(sources, number_prefix)
+            self.get_reorder_sources(sources, number_prefix)
         };
         if self.debug {
             println!("[+]sources {:?}", _sources);
@@ -137,7 +129,7 @@ impl Scraping {
         }
     }
 
-    fn check_sources(&self, sources: Vec<&str>, number_prefix: &str) -> Vec<String> {
+    fn get_reorder_sources(&self, sources: Vec<&str>, number_prefix: &str) -> Vec<String> {
         let mut _sources: Vec<&str> = if sources.is_empty() {
             self.sources.iter().map(|s| s.as_str()).collect()
         } else {
@@ -156,5 +148,14 @@ impl Scraping {
             .filter(|&s| self.parsers.contains_key(s))
             .map(|s| s.to_string())
             .collect()
+    }
+}
+
+// replace_sources_item() replaces an item in the source vector at the given index, with the respective key value. If the key is not found, nothing is done.
+fn replace_sources_item(sources: &mut Vec<&str>, index: usize, key: &str) {
+    let _index = sources.iter().position(|s| s.to_owned() == key).unwrap();
+    if _index > 0 {
+        let ele = sources.remove(_index);
+        sources.insert(index, ele);
     }
 }
