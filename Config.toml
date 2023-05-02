@@ -195,3 +195,34 @@ replace_actor_photo = []
 [[sources.carib.number_search]]
 name = "carib"
 rule = [{action = "append", args=["/index.html"]}]
+
+[sources.javdb]
+name = "javdb"
+number_extractor = ["heyzo"]
+detail_url = ["https://javdb.com/v/"]
+expr_number = '//nav[@class="panel movie-panel-info"]/div[1]/a/@data-clipboard-text'
+expr_title = '//strong[@class="current-title"]/text()'
+expr_actor_name = '//span[@class="value"]/a[contains(@href,"/actors/")]/text()'
+expr_actor_photo = '//span[@class="value"]/a[contains(@href,"/actors/")]/@href'
+expr_studio = '//span[@class="value"]/a[contains(@href,"/markers/")]/text()'
+expr_runtime = '//strong[contains(text(),"時長")]/../span/text()'
+expr_release = '//strong[contains(text(),"日期")]/../span/text()'
+expr_outline = ""
+expr_director = '//strong[contains(text(),"導演")]/../span/text()'
+expr_tags = '//strong[contains(text(),"類別")]/../span/a/text()'
+expr_label = '//strong[contains(text(),"系列")]/../span/text()'
+expr_series = '//strong[contains(text(),"系列")]/../span/text()'
+expr_cover = "//div[contains(@class, 'column-video-cover')]/a/img/@src"
+expr_small_cover = ''
+expr_extra_fanart = "//article[@class='message video-panel']/div[@class='message-body']/div[@class='tile-images preview-images']/a[contains(@href,'/samples/')]/@href"
+expr_trailer = '//span[contains(text(),"預告片")]/../../video/source/@src'
+expr_uncensored = ''
+expr_uservotes = '//span[@class="score-stars"]/../text()'
+expr_userrating = '//span[@class="score-stars"]/../text()'
+replace_number = []
+replace_cover = []
+replace_extra_fanart = []
+replace_actor_photo = []
+[[sources.javdb.number_search]]
+name = "*"
+rule = [{action= "append", args = ["?locale=zh"]}]

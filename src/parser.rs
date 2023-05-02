@@ -56,6 +56,7 @@ impl Parser {
                 .number_search
                 .iter()
                 .filter(|x| {
+                    x.name == "*" ||
                     number
                         .to_lowercase()
                         .contains(x.name.to_lowercase().as_str())
