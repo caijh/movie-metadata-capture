@@ -11,6 +11,7 @@ use lazy_static::lazy_static;
 use regex::Regex;
 use serde::{Deserialize, Serialize};
 use crate::request::set_proxy;
+use crate::site_search::SiteSearch;
 use crate::strings::{get_end_index, get_start_index};
 
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
@@ -55,6 +56,7 @@ pub struct DebugMode {
 pub struct Parser {
     pub name: String,
     pub number_extractor: Vec<String>,
+    pub site_search: Option<SiteSearch>,
     pub number_search: Vec<NumberSearch>,
     pub age_check: Option<AgeCheck>,
     pub detail_url: Vec<String>,

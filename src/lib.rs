@@ -8,3 +8,4 @@ pub mod request;
 pub mod scraping;
 pub mod xpath;
 pub mod strings;
+pub mod site_search;
