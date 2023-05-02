@@ -1,6 +1,7 @@
-use sxd_xpath::{Context, Error, Factory, Value};
 use sxd_xpath::nodeset::Node;
+use sxd_xpath::{Context, Error, Factory, Value};
 
+use crate::config::{Rule, StringFlow};
 
 pub fn evaluate_xpath_node<'d>(node: impl Into<Node<'d>>, expr: &str) -> Result<Value<'d>, Error> {
     if expr.is_empty() {
@@ -20,8 +21,23 @@ pub fn evaluate_xpath_node<'d>(node: impl Into<Node<'d>>, expr: &str) -> Result<
 
 pub fn value_to_vec(value: Value) -> Vec<String> {
     match value {
-        Value::Nodeset(nodes) => {
-            nodes.iter().map(|node| node.string_value()).collect()
+        Value::Nodeset(nodes) => nodes.iter().map(|node| node.string_value()).collect(),
+        _ => Vec::new(),
+    }
+}
+
+pub fn value_to_vec_use_handle(value: Value, handle: &Option<Vec<Rule>>) -> Vec<String> {
+    match value {
+        sxd_xpath::Value::Nodeset(nodes) => {
+            if handle.is_some() {
+                let string_flow = StringFlow::new(handle.as_ref().unwrap());
+                nodes
+                    .into_iter()
+                    .map(|node| string_flow.process_string(node.string_value().as_str()))
+                    .collect()
+            } else {
+                nodes.into_iter().map(|node| node.string_value()).collect()
+            }
         }
         _ => Vec::new(),
     }

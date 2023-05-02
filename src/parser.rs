@@ -8,7 +8,7 @@ use url::Url;
 
 use crate::config::{Parser, StringFlow};
 use crate::request::get_html_content;
-use crate::xpath::{evaluate_xpath_node, value_to_vec};
+use crate::xpath::{evaluate_xpath_node, value_to_vec, value_to_vec_use_handle};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
@@ -132,21 +132,7 @@ impl Parser {
         let actor_name: Vec<String> = value_to_vec(actor_name);
         let actor_photo =
             evaluate_xpath_node(document.root(), self.expr_actor_photo.as_str()).unwrap();
-        let actor_photo: Vec<String> = match actor_photo {
-            sxd_xpath::Value::Nodeset(nodes) => {
-                if self.replace_actor_photo.is_some() {
-                    let string_flow = StringFlow::new(self.replace_actor_photo.as_ref().unwrap());
-                    nodes
-                        .iter()
-                        .map(|node| string_flow.process_string(node.string_value().as_str()))
-                        .collect()
-                } else {
-                    nodes.iter().map(|node| node.string_value()).collect()
-                }
-
-            }
-            _ => Vec::new(),
-        };
+        let actor_photo: Vec<String> = value_to_vec_use_handle(actor_photo, &self.replace_actor_photo);
 
         let mut actor = Vec::new();
         let mut iter1 = actor_name.into_iter();
@@ -176,20 +162,7 @@ impl Parser {
 
         let extra_fanart =
             evaluate_xpath_node(document.root(), self.expr_extra_fanart.as_str()).unwrap();
-        let extra_fanart: Vec<String> = match extra_fanart {
-            sxd_xpath::Value::Nodeset(nodes) => {
-                if self.replace_extra_fanart.is_some() {
-                    let string_flow = StringFlow::new(self.replace_extra_fanart.as_ref().unwrap());
-                    nodes
-                        .iter()
-                        .map(|node| string_flow.process_string(node.string_value().as_str()))
-                        .collect()
-                } else {
-                    nodes.iter().map(|node| node.string_value()).collect()
-                }
-            }
-            _ => Vec::new(),
-        };
+        let extra_fanart: Vec<String> = value_to_vec_use_handle(extra_fanart, &self.replace_extra_fanart);
         let trailer = evaluate_xpath_node(document.root(), self.expr_trailer.as_str()).unwrap();
         let tags = evaluate_xpath_node(document.root(), self.expr_tags.as_str()).unwrap();
         let tags = value_to_vec(tags);
