@@ -17,7 +17,7 @@ pub struct SiteSearch {
 }
 
 impl SiteSearch {
-    pub async fn search(&self, number: &str) -> String {
+    pub async fn search(&self, number: &str) -> Option<String> {
         let search_number = if let Some(number_pre_handle) = &self.number_pre_handle {
             let string_flow = StringFlow::new(number_pre_handle);
             let num = string_flow.process_string(number);
@@ -33,14 +33,10 @@ impl SiteSearch {
             let document = package.as_document();
             number_ids = self.parse_search_result(&document);
         }
-        let matching_id = number_ids.iter()
+        number_ids.iter()
             .filter(|(num, _id)| num == number)
             .map(|(_num, id)| id.to_owned())
-            .last();
-        match matching_id {
-            Some(id) => id,
-            None => "".to_owned(),
-        }
+            .last()
     }
 
     fn parse_search_result(&self, document: &Document) -> Vec<(String, String)> {

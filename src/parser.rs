@@ -49,6 +49,19 @@ pub struct Rating {
 
 impl Parser {
     pub async fn search(&self, number: &str, debug: bool) -> Option<Movie> {
+        let mut number= number.to_string();
+        if let Some(site_search) = &self.site_search {
+            let site_number = site_search.search(number.as_str()).await;
+            if site_number.is_none() {
+                return None
+            }
+            number = if let Some(num) = site_number {
+                num
+            } else {
+                number.to_owned()
+            };
+        }
+
         let detail_urls = &self.detail_url;
         let age_check = &self.age_check;
         for _url in detail_urls {
@@ -65,7 +78,7 @@ impl Parser {
 
             let number = if let Some(number_search) = &number_search {
                 let string_flow = StringFlow::new(&number_search.rule);
-                let search_number = string_flow.process_string(number);
+                let search_number = string_flow.process_string(number.as_str());
                 search_number
             } else {
                 number.to_owned()
