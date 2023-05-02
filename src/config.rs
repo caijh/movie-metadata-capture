@@ -57,7 +57,7 @@ pub struct Parser {
     pub name: String,
     pub number_extractor: Vec<String>,
     pub site_search: Option<SiteSearch>,
-    pub number_search: Vec<NumberSearch>,
+    pub number_pre_handle: Vec<NumberHandle>,
     pub age_check: Option<AgeCheck>,
     pub detail_url: Vec<String>,
     pub expr_number: String,
@@ -167,7 +167,7 @@ pub struct Media {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct NumberSearch {
+pub struct NumberHandle {
     pub name: String,
     pub rule: Vec<Rule>,
 }

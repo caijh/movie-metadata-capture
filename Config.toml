@@ -98,7 +98,7 @@ replace_number = []
 replace_cover = []
 replace_extra_fanart = [{action = "insert", args = ["-","jp"]}]
 replace_actor_photo = []
-[[sources.fanza.number_search]]
+[[sources.fanza.number_pre_handle]]
 name = "rebd"
 rule = [{action = "lowercase", args= []},{action = "replace", args = ["-", ""]}, {action = "replace", args = ["h_346", ""]},{action = "insert", args = ["0", "h_346"]}]
 
@@ -130,7 +130,7 @@ replace_number = [{action = "substring", args = ["FC2", ""]}]
 replace_cover = [{action = "insert", args = ["0", "https:"]}]
 replace_extra_fanart = []
 replace_actor_photo = [{action = "insert", args = ["0", "https:"]}]
-[[sources.fc2.number_search]]
+[[sources.fc2.number_pre_handle]]
 name = "fc2"
 rule = [{action = "lowercase", args= []}, {action = "replace", args=["fc2-ppv-", ""]}, {action = "replace", args=["fc2-", ""]}, {action = "replace", args=["fc2ppv ", ""]}, {action = "append", args = ["/"]}]
 
@@ -161,7 +161,7 @@ replace_number = []
 replace_cover = [{action = "insert", args = ["0", "https://www.javbus.com/"]}]
 replace_extra_fanart = [{action = "insert", args = ["0", "https://www.javbus.com/"]}]
 replace_actor_photo = []
-[[sources.javbus.number_search]]
+[[sources.javbus.number_pre_handle]]
 name = "heyzo"
 rule = [{action = "replace", args=[" ", "-"]}]
 
@@ -192,7 +192,7 @@ replace_number = [{action= "substring", args = ["moviepages/", "/index.html"]}, 
 replace_cover = [{action = "substring", args = ["\"", "\""]}, {action = "insert", args = ["0", "https://www.caribbeancom.com"]}]
 replace_extra_fanart = [{action = "insert", args = ["0", "https://www.caribbeancom.com"]}]
 replace_actor_photo = []
-[[sources.carib.number_search]]
+[[sources.carib.number_pre_handle]]
 name = "carib"
 rule = [{action = "append", args=["/index.html"]}]
 
@@ -230,6 +230,6 @@ expr_number = '//*[contains(@class,"movie-list")]/div/a/div[contains(@class, "vi
 expr_id = '//*[contains(@class,"movie-list")]/div/a/@href'
 number_post_handle = []
 id_post_handle = [{action="replace", args = ["/v/", ""]}]
-[[sources.javdb.number_search]]
+[[sources.javdb.number_pre_handle]]
 name = "*"
 rule = [{action= "append", args = ["?locale=zh"]}]

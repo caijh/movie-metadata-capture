@@ -66,7 +66,7 @@ impl Parser {
         let age_check = &self.age_check;
         for _url in detail_urls {
             let number_search = self
-                .number_search
+                .number_pre_handle
                 .iter()
                 .filter(|x| {
                     x.name == "*" ||
