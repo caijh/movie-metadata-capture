@@ -6,6 +6,8 @@ use crate::config::{Rule, StringFlow};
 use crate::request::get_html_content;
 use crate::xpath::evaluate_xpath_node;
 
+// SiteSearch stores the url to search for IDs and Numbers, options for pre-processing the numbers, the
+// expressions for the numbers and IDs, and options for post-processing the numbers and IDs.
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
 pub struct SiteSearch {
     pub url: String,
@@ -17,6 +19,13 @@ pub struct SiteSearch {
 }
 
 impl SiteSearch {
+    /// Searches for the provided number and returns its id as a String if found.
+    ///
+    /// # Parameters
+    /// -  `number` : The number to search
+    ///
+    /// # Returns
+    /// -  `Option<String>` : An option containing the number's id as a String if found,  `None`  otherwise
     pub async fn search(&self, number: &str) -> Option<String> {
         let search_number = if let Some(number_pre_handle) = &self.number_pre_handle {
             let string_flow = StringFlow::new(number_pre_handle);
