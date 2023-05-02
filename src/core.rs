@@ -113,7 +113,7 @@ pub async fn core_main(
             let cover = movie.cover.clone();
             download_cover(&cover, dir, &thumb_path, &fanart_path, config).await;
 
-            if config.extrafanart.switch {
+            if config.extra_fanart.switch {
                 let extra_fanart = &movie.extra_fanart;
                 download_extra_fanart(extra_fanart, dir, config).await;
             }
@@ -180,7 +180,7 @@ pub async fn core_main(
             let cover = movie.cover.clone();
             download_cover(&cover, dir, &thumb_path, &fanart_path, config).await;
 
-            if config.extrafanart.switch {
+            if config.extra_fanart.switch {
                 let extra_fanart = &movie.extra_fanart;
                 download_extra_fanart(extra_fanart, dir, config).await;
             }
@@ -407,7 +407,7 @@ async fn extra_fanart_download_one_by_one(
     dir: &str,
     config: &AppConfig,
 ) {
-    let extrafanart_path = Path::new(dir).join(&config.extrafanart.extrafanart_folder);
+    let extrafanart_path = Path::new(dir).join(&config.extra_fanart.extra_fanart_folder);
     let download_only_missing_images = config.common.download_only_missing_images;
     let jpg_filename = format!("extrafanart-{}.jpg", i + 1);
     let jpg_full_path = extrafanart_path.join(&jpg_filename);

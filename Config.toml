@@ -16,9 +16,9 @@ download_only_missing_images = true
 sleep = 3
 
 # 剧照
-[extrafanart]
+[extra_fanart]
 switch = true
-extrafanart_folder = "extrafanart"
+extra_fanart_folder = "extrafanart"
 
 [face]
 locations_model = "hog"
