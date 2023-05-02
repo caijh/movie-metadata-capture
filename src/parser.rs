@@ -216,7 +216,7 @@ impl Parser {
             plot: "".to_string(),
             runtime: runtime.string(),
             director: director.string(),
-            extra_fanart: extra_fanart,
+            extra_fanart,
             actor,
             label: label.string(),
             tag: tags,
