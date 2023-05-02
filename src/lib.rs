@@ -7,3 +7,4 @@ pub mod parser;
 pub mod request;
 pub mod scraping;
 pub mod xpath;
+pub mod strings;

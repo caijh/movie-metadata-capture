@@ -11,6 +11,7 @@ use lazy_static::lazy_static;
 use regex::Regex;
 use serde::{Deserialize, Serialize};
 use crate::request::set_proxy;
+use crate::strings::{get_end_index, get_start_index};
 
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
 pub struct AppConfig {
@@ -189,12 +190,6 @@ impl StringFlow {
         StringFlow { rules: _rules }
     }
 
-    pub fn add_rules(&mut self, rules: &Vec<Rule>) {
-        for rule in rules {
-            self.rules.push(rule.clone());
-        }
-    }
-
     // 以规则处理字符串
     pub fn process_string(&self, input_string: &str) -> String {
         let mut result = String::from(input_string);
@@ -209,27 +204,12 @@ impl StringFlow {
                     result = result.replace(rule.args[0].as_str(), rule.args[1].as_str());
                 }
                 "substring" => {
-                    let start = match rule.args[0].parse::<usize>() {
-                        Ok(number) => number,
-                        Err(_) => {
-                            result.find(&rule.args[0]).unwrap_or_else(|| 0)
-                        }
-                    };
-                    let end = match rule.args[1].parse::<usize>() {
-                        Ok(number) => number,
-                        Err(_) => {
-                            result.len()
-                        }
-                    };
+                    let start = get_start_index(result.as_str(), rule.args[0].as_str());
+                    let end = get_end_index(result.as_str(), rule.args[1].as_str());
                     result = result[start..end].to_string();
                 }
                 "insert" => {
-                    let start = match rule.args[0].parse::<usize>() {
-                        Ok(number) => number,
-                        Err(_) => {
-                            result.find(&rule.args[0]).unwrap_or_else(|| 0)
-                        }
-                    };
+                    let start = get_start_index(result.as_str(), rule.args[0].as_str());
                     result.insert_str(start, rule.args[1].as_str());
                 }
                 "lowercase" => {
@@ -241,6 +221,7 @@ impl StringFlow {
 
         result
     }
+
 }
 
 lazy_static! {
