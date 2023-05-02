@@ -25,14 +25,14 @@ locations_model = "hog"
 aspect_ratio = 2.12
 
 [proxy]
-switch = true
+switch = false
 proxy = "socks5://127.0.0.1:10808"
 timeout = 20
 retry = 3
 cacert_file = ""
 
 [debug_mode]
-switch = false
+switch = true
 
 [name_rule]
 location_rule = '$actor/$number'
@@ -73,7 +73,7 @@ regex = '\d{6}(-|_)\d{3}'
 [sources.fanza]
 name = "fanza"
 number_extractor = ["rebd", "oae"]
-age_check = { url = "https://www.dmm.co.jp/age_check/=/declared=yes/", target_name = "rurl" }
+age_check = { url = "https://www.dmm.co.jp/age_check/=/declared=yes/", target_name = "rurl", target_url = "https://www.dmm.co.jp/top/" }
 detail_url = ["https://www.dmm.co.jp/digital/videoa/-/detail/=/cid=", "https://www.dmm.co.jp/mono/dvd/-/detail/=/cid=", "https://www.dmm.co.jp/digital/anime/-/detail/=/cid=","https://www.dmm.co.jp/mono/anime/-/detail/=/cid=", "https://www.dmm.co.jp/digital/videoc/-/detail/=/cid=", "https://www.dmm.co.jp/digital/nikkatsu/-/detail/=/cid=","https://www.dmm.co.jp/rental/-/detail/=/cid="]
 expr_number = "//td[contains(text(),'品番：')]/following-sibling::td/text()"
 expr_title = "//*[starts-with(@id, 'title')]/text()"
@@ -199,11 +199,12 @@ rule = [{action = "append", args=["/index.html"]}]
 [sources.javdb]
 name = "javdb"
 number_extractor = ["heyzo"]
+age_check = { url = "https://javdb.com/over18?respond=1", target_name = "rurl", target_url= "1j04p8mqknwdh790ds2m6t6d87Zq3f5cd57fq82b9wqzpy4c301b7"}
 detail_url = ["https://javdb.com/v/"]
 expr_number = '//nav[@class="panel movie-panel-info"]/div[1]/a/@data-clipboard-text'
 expr_title = '//strong[@class="current-title"]/text()'
 expr_actor_name = '//span[@class="value"]/a[contains(@href,"/actors/")]/text()'
-expr_actor_photo = '//span[@class="value"]/a[contains(@href,"/actors/")]/@href'
+expr_actor_photo = ''
 expr_studio = '//span[@class="value"]/a[contains(@href,"/markers/")]/text()'
 expr_runtime = '//strong[contains(text(),"時長")]/../span/text()'
 expr_release = '//strong[contains(text(),"日期")]/../span/text()'
@@ -226,8 +227,8 @@ replace_actor_photo = []
 [sources.javdb.site_search]
 url = "https://javdb.com/search?q="
 number_pre_handle = [{action= "append", args = ["&f=all"]}]
-expr_number = '//*[contains(@class,"movie-list")]/div/a/div[contains(@class, "video-title")]/strong/text()'
-expr_id = '//*[contains(@class,"movie-list")]/div/a/@href'
+expr_number = '//*[contains(@class,"movie-list")]/div[1]/a/div[contains(@class, "video-title")]/strong/text()'
+expr_id = '//*[contains(@class,"movie-list")]/div[1]/a/@href'
 number_post_handle = []
 id_post_handle = [{action="replace", args = ["/v/", ""]}]
 [[sources.javdb.number_pre_handle]]

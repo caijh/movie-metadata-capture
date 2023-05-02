@@ -129,6 +129,7 @@ pub struct Uncensored {
 pub struct AgeCheck {
     pub url: String,
     pub target_name: String,
+    pub target_url: String,
 }
 
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]

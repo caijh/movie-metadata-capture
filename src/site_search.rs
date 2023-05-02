@@ -33,56 +33,54 @@ impl SiteSearch {
             let document = package.as_document();
             number_ids = self.parse_search_result(&document);
         }
-        number_ids.iter()
-            .filter(|(num, _id)| num == number)
-            .map(|(_num, id)| id.to_owned())
-            .last()
+
+        for x in number_ids {
+            if x.0.as_str() == number {
+                return Some(x.1);
+            }
+        }
+        None
     }
 
     fn parse_search_result(&self, document: &Document) -> Vec<(String, String)> {
-        let numbers =
-            evaluate_xpath_node(document.root(), self.expr_number.as_str()).unwrap();
+        let numbers = evaluate_xpath_node(document.root(), self.expr_number.as_str()).unwrap();
         let numbers: Vec<String> = match numbers {
             sxd_xpath::Value::Nodeset(nodes) => {
                 if self.number_post_handle.is_some() {
                     let string_flow = StringFlow::new(self.number_post_handle.as_ref().unwrap());
                     nodes
-                        .iter()
+                        .into_iter()
                         .map(|node| string_flow.process_string(node.string_value().as_str()))
                         .collect()
                 } else {
-                    nodes.iter().map(|node| node.string_value()).collect()
+                    nodes.into_iter().map(|node| node.string_value()).collect()
                 }
             }
             _ => Vec::new(),
         };
-        let ids =
-            evaluate_xpath_node(document.root(), self.expr_id.as_str()).unwrap();
+        let ids = evaluate_xpath_node(document.root(), self.expr_id.as_str()).unwrap();
         let ids: Vec<String> = match ids {
             sxd_xpath::Value::Nodeset(nodes) => {
                 if self.id_post_handle.is_some() {
                     let string_flow = StringFlow::new(self.id_post_handle.as_ref().unwrap());
                     nodes
-                        .iter()
+                        .into_iter()
                         .map(|node| string_flow.process_string(node.string_value().as_str()))
                         .collect()
                 } else {
-                    nodes.iter().map(|node| node.string_value()).collect()
+                    nodes.into_iter().map(|node| node.string_value()).collect()
                 }
             }
             _ => Vec::new(),
         };
+
         let mut number_ids = Vec::new();
-        let mut iter1 = numbers.into_iter();
-        let mut iter2 = ids.into_iter();
-        loop {
-            let elem1 = iter1.next();
-            let elem2 = iter2.next();
-            if elem1.is_none() {
-                break;
-            }
-            let tuple = (elem1.unwrap_or_default(), elem2.unwrap_or_default());
-            number_ids.push(tuple);
+
+        for i in 0..numbers.len() {
+            number_ids.push((
+                numbers.iter().nth(i).unwrap().to_owned(),
+                ids.iter().nth(i).unwrap().to_owned(),
+            ));
         }
         number_ids
     }

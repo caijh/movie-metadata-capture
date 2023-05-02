@@ -1,5 +1,6 @@
 
 
+
 use regex::Regex;
 use sxd_document::dom::Document;
 use sxd_xpath::Value::Boolean;
@@ -49,6 +50,13 @@ pub struct Rating {
 
 impl Parser {
     pub async fn search(&self, number: &str, debug: bool) -> Option<Movie> {
+        if let Some(age_check) = &self.age_check {
+            let mut url = Url::parse(&age_check.url).unwrap();
+            url.query_pairs_mut()
+                .append_pair(&age_check.target_name, &age_check.target_url);
+            let _ = get_html_content(url.as_str()).await;
+        }
+
         let mut number= number.to_string();
         if let Some(site_search) = &self.site_search {
             let site_number = site_search.search(number.as_str()).await;
@@ -63,7 +71,6 @@ impl Parser {
         }
 
         let detail_urls = &self.detail_url;
-        let age_check = &self.age_check;
         for _url in detail_urls {
             let number_search = self
                 .number_pre_handle
@@ -85,15 +92,7 @@ impl Parser {
             };
 
             let detail_url = _url.to_string() + number.as_str();
-            let url = if age_check.is_some() {
-                let age_check = age_check.as_ref().unwrap();
-                let mut url = Url::parse(&age_check.url).unwrap();
-                url.query_pairs_mut()
-                    .append_pair(&age_check.target_name, detail_url.as_str());
-                url
-            } else {
-                Url::parse(&detail_url).unwrap()
-            };
+            let url = Url::parse(&detail_url).unwrap();
             if debug {
                 println!("[+]{}", url);
             }
@@ -102,9 +101,6 @@ impl Parser {
                 let document = package.as_document();
                 let movie = self.parse_to_movie(&document, detail_url);
                 if self.is_movie_valid(&movie) {
-                    if debug {
-                        println!("[+]{:?}", movie);
-                    }
                     return movie;
                 }
             } else {
