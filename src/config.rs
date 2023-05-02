@@ -22,7 +22,7 @@ pub struct AppConfig {
     pub name_rule: NameRule,
     pub uncensored: Uncensored,
     pub debug_mode: DebugMode,
-    pub extra_fanart: Extrafanart,
+    pub extra_fanart: ExtraFanart,
     pub face: Face,
     pub media: Media,
 }
@@ -146,7 +146,7 @@ pub struct Common {
     pub sleep: u64,
 }
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
-pub struct Extrafanart {
+pub struct ExtraFanart {
     pub switch: bool,
     pub extra_fanart_folder: String,
 }
