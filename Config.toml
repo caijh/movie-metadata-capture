@@ -1,6 +1,6 @@
 [common]
 # 1-正常模式，2-整理模式，3-更瓣元数据
-main_mode = 3
+main_mode = 1
 source_folder = "./"
 failed_output_folder = "failed"
 success_output_folder = "./"
@@ -71,6 +71,10 @@ regex = '(?i)\bheyzo[-\s]+\d+'
 [[number_extractor]]
 name = "carib"
 regex = '\d{6}(-|_)\d{3}'
+
+[[number_extractor]]
+name = "H4610"
+regex = 'H4610(-|_)\w+'
 
 [sources.fanza]
 name = "fanza"
@@ -239,3 +243,34 @@ id_post_handle = [{action="replace", args = ["/v/", ""]}]
 [[sources.javdb.number_pre_handle]]
 name = "*"
 rule = [{action= "append", args = ["?locale=zh"]}]
+
+[sources.H4610]
+name = "H4610"
+number_extractor = ["H4610"]
+detail_url = ["https://www.h4610.com/moviepages/"]
+expr_number = '//div[@id="moviePlayer"]/div/@poster'
+expr_title = '//div[@class="moviePlay_title"]/h1/span/text()'
+expr_actor_name = ''
+expr_actor_photo = ''
+expr_studio = ''
+expr_runtime = '//div[@id="movieInfo"]/div/div/div/div[2]/section[2]/dl/dd[2]/text()'
+expr_release = '//div[@id="movieInfo"]/div/div/div/div[2]/section[2]/dl/dd[5]/text()'
+expr_outline = ""
+expr_director = ''
+expr_tags = ''
+expr_label = ''
+expr_series = ''
+expr_cover = '//div[@id="moviePlayer"]/div/@poster'
+expr_small_cover = ''
+expr_extra_fanart = ""
+expr_trailer = ''
+expr_uncensored = ''
+expr_uservotes = ''
+expr_userrating = ''
+replace_number = [{action = "substring", args = ["/moviepages/", "/images"]}, {action = "replace", args = ["/moviepages/", ""]}]
+replace_cover = []
+replace_extra_fanart = []
+replace_actor_photo = []
+[[sources.H4610.number_pre_handle]]
+name = "*"
+rule = [{action = "replace", args = ["H4610-", ""]},{action = "replace", args = ["H4610", ""]},{action= "append", args = ["/index.html"]}]
