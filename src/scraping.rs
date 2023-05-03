@@ -50,9 +50,7 @@ impl Scraping {
                 movie = self.translate_movie(movie).await;
                 Some(movie)
             }
-            None => {
-                None
-            }
+            None => None,
         }
     }
 
@@ -98,8 +96,12 @@ impl Scraping {
         movie
     }
 
-
-    async fn search_movie(&mut self, file_number: &str, number_extractor: &str, sources: Vec<&str>) -> Option<Movie> {
+    async fn search_movie(
+        &mut self,
+        file_number: &str,
+        number_extractor: &str,
+        sources: Vec<&str>,
+    ) -> Option<Movie> {
         let _sources: Vec<String> = if self.specified_source.is_some() {
             vec![self.specified_source.as_ref().unwrap().to_string()]
         } else {

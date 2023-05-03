@@ -1,6 +1,3 @@
-
-
-
 use regex::Regex;
 use sxd_document::dom::Document;
 use sxd_xpath::Value::Boolean;
@@ -8,7 +5,9 @@ use url::Url;
 
 use crate::config::{Parser, StringFlow};
 use crate::request::get_html_content;
-use crate::xpath::{evaluate_xpath_node, value_to_string_use_handle, value_to_vec, value_to_vec_use_handle};
+use crate::xpath::{
+    evaluate_xpath_node, value_to_string_use_handle, value_to_vec, value_to_vec_use_handle,
+};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
@@ -57,11 +56,11 @@ impl Parser {
             let _ = get_html_content(url.as_str()).await;
         }
 
-        let mut number= number.to_string();
+        let mut number = number.to_string();
         if let Some(site_search) = &self.site_search {
             let site_number = site_search.search(number.as_str()).await;
             if site_number.is_none() {
-                return None
+                return None;
             }
             number = if let Some(num) = site_number {
                 num
@@ -76,10 +75,10 @@ impl Parser {
                 .number_pre_handle
                 .iter()
                 .filter(|x| {
-                    x.name == "*" ||
-                    number
-                        .to_lowercase()
-                        .contains(x.name.to_lowercase().as_str())
+                    x.name == "*"
+                        || number
+                            .to_lowercase()
+                            .contains(x.name.to_lowercase().as_str())
                 })
                 .last();
 
@@ -133,7 +132,8 @@ impl Parser {
         let actor_name: Vec<String> = value_to_vec(actor_name);
         let actor_photo =
             evaluate_xpath_node(document.root(), self.expr_actor_photo.as_str()).unwrap();
-        let actor_photo: Vec<String> = value_to_vec_use_handle(actor_photo, &self.replace_actor_photo);
+        let actor_photo: Vec<String> =
+            value_to_vec_use_handle(actor_photo, &self.replace_actor_photo);
 
         let mut actor = Vec::new();
         let mut iter1 = actor_name.into_iter();
@@ -150,7 +150,9 @@ impl Parser {
         let expr_cover = self
             .expr_cover
             .replace("$cover_number", number.to_string().as_str());
-        let mut cover = evaluate_xpath_node(document.root(), &expr_cover).unwrap().string();
+        let mut cover = evaluate_xpath_node(document.root(), &expr_cover)
+            .unwrap()
+            .string();
         if self.replace_cover.is_some() {
             let string_flow = StringFlow::new(self.replace_cover.as_ref().unwrap());
             cover = string_flow.process_string(cover.as_str());
@@ -163,7 +165,8 @@ impl Parser {
 
         let extra_fanart =
             evaluate_xpath_node(document.root(), self.expr_extra_fanart.as_str()).unwrap();
-        let extra_fanart: Vec<String> = value_to_vec_use_handle(extra_fanart, &self.replace_extra_fanart);
+        let extra_fanart: Vec<String> =
+            value_to_vec_use_handle(extra_fanart, &self.replace_extra_fanart);
         let trailer = evaluate_xpath_node(document.root(), self.expr_trailer.as_str()).unwrap();
         let tags = evaluate_xpath_node(document.root(), self.expr_tags.as_str()).unwrap();
         let tags = value_to_vec(tags);
