@@ -17,9 +17,9 @@ pub fn get_number(config: &AppConfig, file_path: &str) -> Option<(String, String
     // Replace all special characters in the base name
     let file_name = G_SPAT.replace_all(base_name, "").to_string();
     // Iterate through the number extractors in the config
-    for parser in config.number_extractor.iter() {
+    for extractor in config.number_extractor.iter() {
         // Get the number from the file name
-        let number = parser.get_number(&file_name);
+        let number = extractor.get_number(&file_name);
         // If a number is found, return it
         if number.is_some() {
             return number;
