@@ -143,7 +143,6 @@ pub struct Common {
     pub auto_exit: bool,
     pub actor_gender: String,
     pub del_empty_folder: bool,
-    pub nfo_skip_days: u8,
     pub ignore_failed_list: bool,
     pub download_only_missing_images: bool,
     pub sleep: u64,
@@ -272,21 +271,14 @@ impl AppConfig {
 
         // Print main working mode
         let main_mode = self.common.main_mode;
-
-        let nfo_skip_days = if self.common.nfo_skip_days == 0 {
-            "".to_string()
-        } else {
-            format!(", nfo_skip_days={}", self.common.nfo_skip_days)
-        };
         println!(
             "{}",
             format_args!(
-                "[+]Main Working mode ## {}: {} ##{}",
+                "[+]Main Working mode ## {}: {} ##",
                 main_mode,
                 ["Scraping", "Organizing", "Scraping in analysis folder"]
                     .get(main_mode - 1)
                     .unwrap(),
-                nfo_skip_days,
             )
         );
     }

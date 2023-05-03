@@ -10,7 +10,6 @@ failed_move = false
 auto_exit = false
 actor_gender = "female"
 del_empty_folder = true
-nfo_skip_days = 30
 ignore_failed_list = false
 download_only_missing_images = true
 sleep = 3
