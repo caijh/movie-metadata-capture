@@ -28,7 +28,7 @@ pub fn value_to_vec(value: Value) -> Vec<String> {
 
 pub fn value_to_vec_use_handle(value: Value, handle: &Option<Vec<Rule>>) -> Vec<String> {
     match value {
-        sxd_xpath::Value::Nodeset(nodes) => {
+        Value::Nodeset(nodes) => {
             if handle.is_some() {
                 let string_flow = StringFlow::new(handle.as_ref().unwrap());
                 nodes
@@ -40,5 +40,14 @@ pub fn value_to_vec_use_handle(value: Value, handle: &Option<Vec<Rule>>) -> Vec<
             }
         }
         _ => Vec::new(),
+    }
+}
+
+pub fn value_to_string_use_handle(value: Value, handle: &Option<Vec<Rule>>) -> String {
+    if handle.is_some() {
+        let string_flow = StringFlow::new(handle.as_ref().unwrap());
+        string_flow.process_string(value.string().as_str())
+    } else {
+        value.string()
     }
 }

@@ -60,6 +60,9 @@ values = "outline"
 name = "rebd"
 regex = '(?i)\b(h_346)?REBD-?\d+'
 [[number_extractor]]
+name = "oae"
+regex = '(?i)\bOAE-?\d+'
+[[number_extractor]]
 name = "fc2"
 regex = '(?i)\bFC2-?(PPV[-\s])?\d+'
 [[number_extractor]]
@@ -97,10 +100,13 @@ replace_number = []
 replace_cover = []
 replace_extra_fanart = [{action = "insert", args = ["-","jp"]}]
 replace_actor_photo = []
+replace_runtime= [{action = "replace", args = ["分", ""]}]
 [[sources.fanza.number_pre_handle]]
 name = "rebd"
 rule = [{action = "lowercase", args= []},{action = "replace", args = ["-", ""]}, {action = "replace", args = ["h_346", ""]},{action = "insert", args = ["0", "h_346"]}]
-
+[[sources.fanza.number_pre_handle]]
+name = "oae"
+rule = [{action = "lowercase", args= []},{action = "replace", args = ["-", ""]}]
 
 [sources.fc2]
 name = "fc2"

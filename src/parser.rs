@@ -8,7 +8,7 @@ use url::Url;
 
 use crate::config::{Parser, StringFlow};
 use crate::request::get_html_content;
-use crate::xpath::{evaluate_xpath_node, value_to_vec, value_to_vec_use_handle};
+use crate::xpath::{evaluate_xpath_node, value_to_string_use_handle, value_to_vec, value_to_vec_use_handle};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
@@ -125,6 +125,7 @@ impl Parser {
         let re = Regex::new(r"\d{4}").unwrap();
         let year = re.find(&release).map(|m| m.as_str().to_owned());
         let runtime = evaluate_xpath_node(document.root(), self.expr_runtime.as_str()).unwrap();
+        let runtime = value_to_string_use_handle(runtime, &self.replace_runtime);
         let outline = evaluate_xpath_node(document.root(), self.expr_outline.as_str()).unwrap();
         let director = evaluate_xpath_node(document.root(), self.expr_director.as_str()).unwrap();
         let actor_name =
@@ -193,7 +194,7 @@ impl Parser {
             studio: studio.string(),
             year: year.unwrap_or_default(),
             outline: outline.string().replace("\n", "").trim().to_string(),
-            runtime: runtime.string(),
+            runtime,
             director: director.string(),
             extra_fanart,
             actor,
