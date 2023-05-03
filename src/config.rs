@@ -1,18 +1,17 @@
-
 use std::collections::HashMap;
+use std::error::Error;
 use std::path::PathBuf;
 use std::sync::{Arc, RwLock};
 use std::{env, fs, io};
-use std::error::Error;
 
 use crate::files::rm_empty_folder;
 
-use lazy_static::lazy_static;
-use regex::Regex;
-use serde::{Deserialize, Serialize};
 use crate::request::set_proxy;
 use crate::site_search::SiteSearch;
 use crate::strings::{get_end_index, get_start_index};
+use lazy_static::lazy_static;
+use regex::Regex;
+use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
 pub struct AppConfig {
@@ -224,7 +223,6 @@ impl StringFlow {
 
         result
     }
-
 }
 
 lazy_static! {
