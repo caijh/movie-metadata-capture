@@ -10,11 +10,9 @@ mod tests {
 
     #[tokio::test]
     async fn test_scraping_movie() {
-        AppConfig::load_config_file("./Config.toml").await.expect("");
-        let config = AppConfig::get_app_config();
-        if config.proxy.switch {
-            set_proxy(&config.proxy).await.expect("fail to set proxy");
-        }
+        AppConfig::load_config_file("./Config.toml")
+            .await
+            .expect("");
         let config = AppConfig::get_app_config();
         let mut scraping = Scraping::new(&config);
         let movie = scraping.search("ka9oae232", "", None, None).await;
@@ -42,7 +40,9 @@ mod tests {
             "",
             "",
             &config,
-        ).await.unwrap();
+        )
+        .await
+        .unwrap();
         move_subtitles("xxx.mp4", ".", "ka9oae232", "", "", "", &config).unwrap();
     }
 }
