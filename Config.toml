@@ -66,6 +66,9 @@ regex = '(?i)\bOAE-?\d+'
 name = "sprl"
 regex = '(?i)\bSPRL-?\d+'
 [[number_extractor]]
+name = "higr"
+regex = '(?i)\bHIGR-?\d+'
+[[number_extractor]]
 name = "fc2"
 regex = '(?i)\bFC2-?(PPV[-\s])?\d+'
 [[number_extractor]]
@@ -80,7 +83,7 @@ regex = 'H4610(-|_)\w+'
 
 [sources.fanza]
 name = "fanza"
-number_extractor = ["rebd", "oae", "sprl"]
+number_extractor = ["rebd", "oae", "sprl", "higr"]
 age_check = { url = "https://www.dmm.co.jp/age_check/=/declared=yes/", target_name = "rurl", target_url = "https://www.dmm.co.jp/top/" }
 detail_url = ["https://www.dmm.co.jp/digital/videoa/-/detail/=/cid=", "https://www.dmm.co.jp/mono/dvd/-/detail/=/cid=", "https://www.dmm.co.jp/digital/anime/-/detail/=/cid=","https://www.dmm.co.jp/mono/anime/-/detail/=/cid=", "https://www.dmm.co.jp/digital/videoc/-/detail/=/cid=", "https://www.dmm.co.jp/digital/nikkatsu/-/detail/=/cid=","https://www.dmm.co.jp/rental/-/detail/=/cid="]
 expr_number = "//td[contains(text(),'品番：')]/following-sibling::td/text()"
@@ -116,6 +119,9 @@ rule = [{action = "lowercase", args= []},{action = "replace", args = ["-", ""]}]
 [[sources.fanza.number_pre_handle]]
 name = "sprl"
 rule = [{action = "lowercase", args= []},{action = "replace", args = ["-", ""]}, {action = "replace", args = ["n_1498", ""]},{action = "insert", args = ["0", "n_1498"]}]
+[[sources.fanza.number_pre_handle]]
+name = "higr"
+rule = [{action = "lowercase", args= []},{action = "replace", args = ["-", ""]}, {action = "replace", args = ["n_1463", ""]},{action = "insert", args = ["0", "n_1463"]}]
 
 [sources.fc2]
 name = "fc2"
