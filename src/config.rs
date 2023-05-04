@@ -212,7 +212,15 @@ impl StringFlow {
                 }
                 "insert" => {
                     let start = get_start_index(result.as_str(), rule.args[0].as_str());
-                    result.insert_str(start, rule.args[1].as_str());
+                    let index = result.find(rule.args[1].as_str());
+                    if index.is_none() {
+                        result.insert_str(start, rule.args[1].as_str());
+                    } else {
+                        let index = index.unwrap();
+                        if index != start {
+                            result.insert_str(start, rule.args[1].as_str());
+                        }
+                    }
                 }
                 "lowercase" => {
                     result = result.to_lowercase();

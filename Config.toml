@@ -85,7 +85,7 @@ regex = 'H4610(-|_)\w+'
 name = "fanza"
 number_extractor = ["rebd", "oae", "sprl", "higr"]
 age_check = { url = "https://www.dmm.co.jp/age_check/=/declared=yes/", target_name = "rurl", target_url = "https://www.dmm.co.jp/top/" }
-detail_url = ["https://www.dmm.co.jp/digital/videoa/-/detail/=/cid=", "https://www.dmm.co.jp/mono/dvd/-/detail/=/cid=", "https://www.dmm.co.jp/digital/anime/-/detail/=/cid=","https://www.dmm.co.jp/mono/anime/-/detail/=/cid=", "https://www.dmm.co.jp/digital/videoc/-/detail/=/cid=", "https://www.dmm.co.jp/digital/nikkatsu/-/detail/=/cid=","https://www.dmm.co.jp/rental/-/detail/=/cid="]
+detail_url = ["https://www.dmm.co.jp/digital/videoa/-/detail/=/cid=", "https://www.dmm.co.jp/mono/dvd/-/detail/=/cid=", "https://www.dmm.co.jp/digital/anime/-/detail/=/cid=", "https://www.dmm.co.jp/mono/anime/-/detail/=/cid=", "https://www.dmm.co.jp/digital/videoc/-/detail/=/cid=", "https://www.dmm.co.jp/digital/nikkatsu/-/detail/=/cid=", "https://www.dmm.co.jp/rental/-/detail/=/cid="]
 expr_number = "//td[contains(text(),'品番：')]/following-sibling::td/text()"
 expr_title = "//*[starts-with(@id, 'title')]/text()"
 expr_actor_name = '//td[contains(text(),"出演者")]/following-sibling::td/span/a/text()'
@@ -107,21 +107,21 @@ expr_uservotes = ""
 expr_userrating = ""
 replace_number = []
 replace_cover = []
-replace_extra_fanart = [{action = "insert", args = ["-","jp"]}]
+replace_extra_fanart = [{ action = "insert", args = ["-", "jp"] }]
 replace_actor_photo = []
-replace_runtime= [{action = "replace", args = ["分", ""]}]
+replace_runtime = [{ action = "replace", args = ["分", ""] }]
 [[sources.fanza.number_pre_handle]]
 name = "rebd"
-rule = [{action = "lowercase", args= []},{action = "replace", args = ["-", ""]}, {action = "replace", args = ["h_346", ""]},{action = "insert", args = ["0", "h_346"]}]
+rule = [{ action = "lowercase", args = [] }, { action = "replace", args = ["-", ""] }, { action = "insert", args = ["0", "h_346"] }]
 [[sources.fanza.number_pre_handle]]
 name = "oae"
-rule = [{action = "lowercase", args= []},{action = "replace", args = ["-", ""]}]
+rule = [{ action = "lowercase", args = [] }, { action = "replace", args = ["-", ""] }]
 [[sources.fanza.number_pre_handle]]
 name = "sprl"
-rule = [{action = "lowercase", args= []},{action = "replace", args = ["-", ""]}, {action = "replace", args = ["n_1498", ""]},{action = "insert", args = ["0", "n_1498"]}]
+rule = [{ action = "lowercase", args = [] }, { action = "replace", args = ["-", ""] }, { action = "insert", args = ["0", "n_1498"] }]
 [[sources.fanza.number_pre_handle]]
 name = "higr"
-rule = [{action = "lowercase", args= []},{action = "replace", args = ["-", ""]}, {action = "replace", args = ["n_1463", ""]},{action = "insert", args = ["0", "n_1463"]}]
+rule = [{ action = "lowercase", args = [] }, { action = "replace", args = ["-", ""] }, { action = "insert", args = ["0", "n_1463"] }]
 
 [sources.fc2]
 name = "fc2"
@@ -146,13 +146,13 @@ expr_trailer = ""
 expr_uncensored = ""
 expr_uservotes = '//li[@class="items_article_StarA"]/a/span/text()'
 expr_userrating = ""
-replace_number = [{action = "substring", args = ["FC2", ""]}]
-replace_cover = [{action = "insert", args = ["0", "https:"]}]
+replace_number = [{ action = "substring", args = ["FC2", ""] }]
+replace_cover = [{ action = "insert", args = ["0", "https:"] }]
 replace_extra_fanart = []
-replace_actor_photo = [{action = "insert", args = ["0", "https:"]}]
+replace_actor_photo = [{ action = "insert", args = ["0", "https:"] }]
 [[sources.fc2.number_pre_handle]]
 name = "fc2"
-rule = [{action = "lowercase", args= []}, {action = "replace", args=["fc2-ppv-", ""]}, {action = "replace", args=["fc2-", ""]}, {action = "replace", args=["fc2ppv ", ""]}, {action = "append", args = ["/"]}]
+rule = [{ action = "lowercase", args = [] }, { action = "replace", args = ["fc2-ppv-", ""] }, { action = "replace", args = ["fc2-", ""] }, { action = "replace", args = ["fc2ppv ", ""] }, { action = "append", args = ["/"] }]
 
 [sources.javbus]
 name = "javbus"
@@ -178,12 +178,12 @@ expr_uncensored = '//*[@id="navbar"]/ul[1]/li[@class="active"]/a[contains(@href,
 expr_uservotes = '//li[@class="items_article_StarA"]/a/span/text()'
 expr_userrating = ""
 replace_number = []
-replace_cover = [{action = "insert", args = ["0", "https://www.javbus.com/"]}]
-replace_extra_fanart = [{action = "insert", args = ["0", "https://www.javbus.com/"]}]
+replace_cover = [{ action = "insert", args = ["0", "https://www.javbus.com/"] }]
+replace_extra_fanart = [{ action = "insert", args = ["0", "https://www.javbus.com/"] }]
 replace_actor_photo = []
 [[sources.javbus.number_pre_handle]]
 name = "heyzo"
-rule = [{action = "replace", args=[" ", "-"]}]
+rule = [{ action = "replace", args = [" ", "-"] }]
 
 [sources.carib]
 name = "carib"
@@ -208,18 +208,18 @@ expr_trailer = ""
 expr_uncensored = ''
 expr_uservotes = ''
 expr_userrating = ""
-replace_number = [{action= "substring", args = ["moviepages/", "/index.html"]}, {action="replace", args = ["moviepages/", ""]}]
-replace_cover = [{action = "substring", args = ["\"", "\""]}, {action = "insert", args = ["0", "https://www.caribbeancom.com"]}]
-replace_extra_fanart = [{action = "insert", args = ["0", "https://www.caribbeancom.com"]}]
+replace_number = [{ action = "substring", args = ["moviepages/", "/index.html"] }, { action = "replace", args = ["moviepages/", ""] }]
+replace_cover = [{ action = "substring", args = ["\"", "\""] }, { action = "insert", args = ["0", "https://www.caribbeancom.com"] }]
+replace_extra_fanart = [{ action = "insert", args = ["0", "https://www.caribbeancom.com"] }]
 replace_actor_photo = []
 [[sources.carib.number_pre_handle]]
 name = "carib"
-rule = [{action = "append", args=["/index.html"]}]
+rule = [{ action = "append", args = ["/index.html"] }]
 
 [sources.javdb]
 name = "javdb"
 number_extractor = ["heyzo"]
-age_check = { url = "https://javdb.com/over18?respond=1", target_name = "rurl", target_url= "1j04p8mqknwdh790ds2m6t6d87Zq3f5cd57fq82b9wqzpy4c301b7"}
+age_check = { url = "https://javdb.com/over18?respond=1", target_name = "rurl", target_url = "1j04p8mqknwdh790ds2m6t6d87Zq3f5cd57fq82b9wqzpy4c301b7" }
 detail_url = ["https://javdb.com/v/"]
 expr_number = '//nav[@class="panel movie-panel-info"]/div[1]/a/@data-clipboard-text'
 expr_title = '//strong[@class="current-title"]/text()'
@@ -246,14 +246,14 @@ replace_extra_fanart = []
 replace_actor_photo = []
 [sources.javdb.site_search]
 url = "https://javdb.com/search?q="
-number_pre_handle = [{action= "append", args = ["&f=all"]}]
+number_pre_handle = [{ action = "append", args = ["&f=all"] }]
 expr_number = '//*[contains(@class,"movie-list")]/div[1]/a/div[contains(@class, "video-title")]/strong/text()'
 expr_id = '//*[contains(@class,"movie-list")]/div[1]/a/@href'
 number_post_handle = []
-id_post_handle = [{action="replace", args = ["/v/", ""]}]
+id_post_handle = [{ action = "replace", args = ["/v/", ""] }]
 [[sources.javdb.number_pre_handle]]
 name = "*"
-rule = [{action= "append", args = ["?locale=zh"]}]
+rule = [{ action = "append", args = ["?locale=zh"] }]
 
 [sources.H4610]
 name = "H4610"
@@ -278,10 +278,10 @@ expr_trailer = ''
 expr_uncensored = ''
 expr_uservotes = ''
 expr_userrating = ''
-replace_number = [{action = "substring", args = ["/moviepages/", "/images"]}, {action = "replace", args = ["/moviepages/", ""]}]
+replace_number = [{ action = "substring", args = ["/moviepages/", "/images"] }, { action = "replace", args = ["/moviepages/", ""] }]
 replace_cover = []
 replace_extra_fanart = []
 replace_actor_photo = []
 [[sources.H4610.number_pre_handle]]
 name = "*"
-rule = [{action = "replace", args = ["H4610-", ""]},{action = "replace", args = ["H4610", ""]},{action= "append", args = ["/index.html"]}]
+rule = [{ action = "replace", args = ["H4610-", ""] }, { action = "replace", args = ["H4610", ""] }, { action = "append", args = ["/index.html"] }]
