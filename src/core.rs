@@ -17,15 +17,15 @@ use dlib_face_recognition::{
 };
 
 use chrono::Local;
-use image::{DynamicImage, open};
+use image::{open, DynamicImage};
 use quick_xml::se::to_string;
 use serde::Serialize;
 use std::fs;
 use std::io::Write;
 use xmlem::Document;
 
-use walkdir::WalkDir;
 use crate::number_parser::get_number;
+use walkdir::WalkDir;
 
 pub async fn core_main(
     file_path: &str,
@@ -507,7 +507,7 @@ pub async fn paste_file_to_folder(
     // 任何情况下都不要覆盖，以免遭遇数据源或者引擎错误导致所有文件得到同一个number，逐一
     // 同名覆盖致使全部文件损失且不可追回的最坏情况
     if target_path.exists() {
-        print!("File Exists on destination path, we will never overwriting.");
+        println!("File Exists on destination path, we will never overwriting.");
         return Ok(());
     }
     let link_mode = config.common.link_mode;
@@ -1099,18 +1099,28 @@ pub fn move_failed_folder(filepath: &str, config: &AppConfig) {
 ///
 /// scraping_data_and_move_movie("path/to/movie.mp4", &config).await?;
 ///
-pub async fn scraping_data_and_move_movie(movie_path: &str, config: &AppConfig) -> Result<(), Box<dyn Error>> {
+pub async fn scraping_data_and_move_movie(
+    movie_path: &str,
+    config: &AppConfig,
+) -> Result<(), Box<dyn Error>> {
     let (n_number, number_extractor) = get_number(config, movie_path).unwrap();
     let movie_path = Path::new(movie_path);
     let movie_path = movie_path.to_string_lossy();
     let movie_path = movie_path.as_ref();
     println!(
         "[!][{}] As Number Processing for '{}'",
-        n_number,
-        movie_path
+        n_number, movie_path
     );
     if n_number.is_empty().not() {
-        core_main(movie_path, number_extractor.as_str(), n_number.as_str(), None, None, config).await?;
+        core_main(
+            movie_path,
+            number_extractor.as_str(),
+            n_number.as_str(),
+            None,
+            None,
+            config,
+        )
+        .await?;
     } else {
         println!("[-] number empty error");
         move_failed_folder(movie_path, config);
