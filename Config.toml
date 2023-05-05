@@ -24,7 +24,7 @@ locations_model = "hog"
 aspect_ratio = 2.12
 
 [proxy]
-switch = false
+switch = true
 proxy = "socks5://127.0.0.1:10808"
 timeout = 20
 retry = 3
@@ -164,7 +164,7 @@ expr_actor_name = ''
 expr_actor_photo = ''
 expr_studio = ''
 expr_runtime = ''
-expr_release = '//div[@class="container"]//h1/../p[3]/text()'
+expr_release = '//*[@id="content"]/div/div/div[2]/div/div/div/div/div[2]/div/p[3]/text()'
 expr_outline = '//div[@class="container"]//h1/../p[2]/text()'
 expr_director = ''
 expr_tags = '//div[@class="tags"]/a/text()'
@@ -172,7 +172,7 @@ expr_label = ''
 expr_series = ''
 expr_cover = '//img[@class="cover"]/@src'
 expr_small_cover = ''
-expr_extra_fanart = '//a[@class="screenshot-link"]/@href'
+expr_extra_fanart = '//div[@class="container"]/div[1]/div[1]/div[1]/div[1]/div[2]//*/@src'
 expr_trailer = ''
 expr_uncensored = ''
 expr_uservotes = ''
