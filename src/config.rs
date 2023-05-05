@@ -83,6 +83,8 @@ pub struct Parser {
     pub replace_extra_fanart: Option<Vec<Rule>>,
     pub replace_actor_photo: Option<Vec<Rule>>,
     pub replace_runtime: Option<Vec<Rule>>,
+    pub replace_tags: Option<Vec<Rule>>,
+    pub replace_release: Option<Vec<Rule>>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
@@ -224,6 +226,9 @@ impl StringFlow {
                 }
                 "lowercase" => {
                     result = result.to_lowercase();
+                },
+                "trim" => {
+                    result = result.trim().to_string();
                 }
                 _ => {}
             }

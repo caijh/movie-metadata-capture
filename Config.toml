@@ -154,6 +154,39 @@ replace_actor_photo = [{ action = "insert", args = ["0", "https:"] }]
 name = "fc2"
 rule = [{ action = "lowercase", args = [] }, { action = "replace", args = ["fc2-ppv-", ""] }, { action = "replace", args = ["fc2-", ""] }, { action = "replace", args = ["fc2ppv ", ""] }, { action = "append", args = ["/"] }]
 
+[sources.nanojav]
+name = "nanojav"
+number_extractor = ["fc2"]
+detail_url = ["https://www.nanojav.com/jav/"]
+expr_number = '//div[@class="container"]//h1/a/text()'
+expr_title = '//div[@class="container"]//h1/../p[2]/text()'
+expr_actor_name = ''
+expr_actor_photo = ''
+expr_studio = ''
+expr_runtime = ''
+expr_release = '//div[@class="container"]//h1/../p[3]/text()'
+expr_outline = '//div[@class="container"]//h1/../p[2]/text()'
+expr_director = ''
+expr_tags = '//div[@class="tags"]/a/text()'
+expr_label = ''
+expr_series = ''
+expr_cover = '//img[@class="cover"]/@src'
+expr_small_cover = ''
+expr_extra_fanart = '//a[@class="screenshot-link"]/@href'
+expr_trailer = ''
+expr_uncensored = ''
+expr_uservotes = ''
+expr_userrating = ''
+replace_number = [{action = "trim", args = []}]
+replace_cover = []
+replace_extra_fanart = []
+replace_actor_photo = []
+replace_release = [{action = "trim", args = []}]
+replace_tags = [{action = "trim", args = []}]
+[[sources.nanojav.number_pre_handle]]
+name = "fc2"
+rule = [{ action = "lowercase", args = [] }, { action = "replace", args = ["fc2-ppv-", ""] }, { action = "replace", args = ["fc2-", ""] }, { action = "replace", args = ["fc2ppv ", ""] }, { action = "insert", args = ["0","FC2-PPV-"] }]
+
 [sources.javbus]
 name = "javbus"
 number_extractor = ["heyzo"]

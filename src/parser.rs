@@ -120,7 +120,7 @@ impl Parser {
         let title = evaluate_xpath_node(document.root(), self.expr_title.as_str()).unwrap();
         let studio = evaluate_xpath_node(document.root(), self.expr_studio.as_str()).unwrap();
         let release = evaluate_xpath_node(document.root(), self.expr_release.as_str()).unwrap();
-        let release = release.string();
+        let release = value_to_string_use_handle(release, &self.replace_release);
         let re = Regex::new(r"\d{4}").unwrap();
         let year = re.find(&release).map(|m| m.as_str().to_owned());
         let runtime = evaluate_xpath_node(document.root(), self.expr_runtime.as_str()).unwrap();
@@ -169,7 +169,7 @@ impl Parser {
             value_to_vec_use_handle(extra_fanart, &self.replace_extra_fanart);
         let trailer = evaluate_xpath_node(document.root(), self.expr_trailer.as_str()).unwrap();
         let tags = evaluate_xpath_node(document.root(), self.expr_tags.as_str()).unwrap();
-        let tags = value_to_vec(tags);
+        let tags = value_to_vec_use_handle(tags, &self.replace_tags);
         let label = evaluate_xpath_node(document.root(), self.expr_label.as_str()).unwrap();
         let series = evaluate_xpath_node(document.root(), self.expr_series.as_str()).unwrap();
         let userrating =
