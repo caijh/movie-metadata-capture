@@ -112,7 +112,7 @@ replace_extra_fanart = [{ action = "insert", args = ["-", "jp"] }]
 replace_actor_photo = []
 replace_runtime = [{ action = "replace", args = ["分", ""] }]
 replace_release = [{ action = "replace", args = ["/", "-"]}]
-replace_userrating = [{action = "substring", args = ["/pc/", ".gif"]}, {action = "replace", args = ["/pc/", ""]}]
+replace_userrating = [{action = "substring", args = ["/pc/", ".gif"]}, {action = "replace", args = ["/pc/", ""]}, {action = "replace", args = [".gif", ""]}]
 [[sources.fanza.number_pre_handle]]
 name = "rebd"
 rule = [{ action = "lowercase", args = [] }, { action = "replace", args = ["-", ""] }, { action = "insert", args = ["0", "h_346"] }]
