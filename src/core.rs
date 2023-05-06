@@ -507,7 +507,7 @@ pub async fn paste_file_to_folder(
     // 任何情况下都不要覆盖，以免遭遇数据源或者引擎错误导致所有文件得到同一个number，逐一
     // 同名覆盖致使全部文件损失且不可追回的最坏情况
     if target_path.exists() {
-        println!("File Exists on destination path, we will never overwriting.");
+        println!("[-]File Exists on destination path, we will never overwriting.");
         return Ok(());
     }
     let link_mode = config.common.link_mode;
