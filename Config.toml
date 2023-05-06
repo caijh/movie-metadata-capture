@@ -86,6 +86,7 @@ name = "fanza"
 number_extractor = ["rebd", "oae", "sprl", "higr"]
 age_check = { url = "https://www.dmm.co.jp/age_check/=/declared=yes/", target_name = "rurl", target_url = "https://www.dmm.co.jp/top/" }
 detail_url = ["https://www.dmm.co.jp/digital/videoa/-/detail/=/cid=", "https://www.dmm.co.jp/mono/dvd/-/detail/=/cid=", "https://www.dmm.co.jp/digital/anime/-/detail/=/cid=", "https://www.dmm.co.jp/mono/anime/-/detail/=/cid=", "https://www.dmm.co.jp/digital/videoc/-/detail/=/cid=", "https://www.dmm.co.jp/digital/nikkatsu/-/detail/=/cid=", "https://www.dmm.co.jp/rental/-/detail/=/cid="]
+max_userrating = "50"
 expr_number = "//td[contains(text(),'品番：')]/following-sibling::td/text()"
 expr_title = "//*[starts-with(@id, 'title')]/text()"
 expr_actor_name = '//td[contains(text(),"出演者")]/following-sibling::td/span/a/text()'
@@ -111,7 +112,6 @@ replace_extra_fanart = [{ action = "insert", args = ["-", "jp"] }]
 replace_actor_photo = []
 replace_runtime = [{ action = "replace", args = ["分", ""] }]
 replace_userrating = [{action = "substring", args = ["/pc/", ".gif"]}, {action = "replace", args = ["/pc/", ""]}]
-max_userrating = "50"
 [[sources.fanza.number_pre_handle]]
 name = "rebd"
 rule = [{ action = "lowercase", args = [] }, { action = "replace", args = ["-", ""] }, { action = "insert", args = ["0", "h_346"] }]

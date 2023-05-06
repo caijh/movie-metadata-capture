@@ -209,7 +209,7 @@ impl Parser {
             website: detail_url,
             uncensored,
             userrating,
-            max_userrating: self.max_userrating.to_string(),
+            max_userrating: self.max_userrating.unwrap_or_default(),
             uservotes: uservotes.number(),
         })
     }
