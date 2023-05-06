@@ -848,6 +848,9 @@ async fn write_nfo_file(
         max: movie.max_userrating.to_string(),
         default: true
     };
+    let ratings = Ratings {
+        rating: vec![rating],
+    };
     let nfo = MovieNFO {
         title: title.clone(),
         original_title: movie.title.clone(),
@@ -873,7 +876,7 @@ async fn write_nfo_file(
         release_date: movie.release.clone(),
         release: movie.release.clone(),
         userrating: movie.userrating.clone(),
-        ratings: vec![rating],
+        ratings,
         cover: movie.cover.clone(),
         trailer: "".to_string(),
         website: movie.website.clone(),
@@ -935,7 +938,7 @@ struct MovieNFO {
     release_date: String,
     release: String,
     userrating: String,
-    ratings: Vec<Rating>,
+    ratings: Ratings,
     cover: String,
     trailer: String,
     website: String,
@@ -962,6 +965,12 @@ struct Thumb {
 struct Fanart {
     #[serde(rename = "thumb")]
     thumb: Vec<Thumb>,
+}
+
+#[derive(Serialize)]
+struct Ratings {
+    #[serde(rename = "rating")]
+    rating: Vec<Rating>,
 }
 
 #[derive(Serialize)]
