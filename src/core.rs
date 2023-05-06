@@ -863,7 +863,7 @@ async fn write_nfo_file(
         release_date: movie.release.clone(),
         release: movie.release.clone(),
         userrating: movie.userrating.clone(),
-        cover: thumb_path.to_string(),
+        cover: movie.cover.clone(),
         trailer: "".to_string(),
         website: movie.website.clone(),
     };
