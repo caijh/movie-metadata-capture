@@ -846,6 +846,7 @@ async fn write_nfo_file(
         value: movie.userrating.to_string(),
         votes: movie.uservotes.to_string(),
         max: movie.max_userrating.to_string(),
+        default: true
     };
     let nfo = MovieNFO {
         title: title.clone(),
@@ -969,6 +970,8 @@ pub struct Rating {
     pub votes: String,
     #[serde(rename = "@max")]
     pub max: String,
+    #[serde(rename = "@default")]
+    pub default: bool,
 }
 pub async fn scraping_data_and_move_movie_with_custom_number(
     file_path: &str,
