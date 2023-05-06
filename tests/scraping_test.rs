@@ -5,7 +5,7 @@ mod tests {
         cut_image, download_actor_photo, download_cover, download_extra_fanart,
         download_small_cover, move_subtitles, paste_file_to_folder,
     };
-    use movie_metadata_capture::request::set_proxy;
+
     use movie_metadata_capture::scraping::Scraping;
 
     #[tokio::test]
