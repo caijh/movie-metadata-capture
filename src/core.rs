@@ -838,6 +838,10 @@ async fn write_nfo_file(
             })
         }
     }
+    let thumb = Thumb { content: fanart_path.to_string()};
+    let fanart = Fanart {
+        thumb: vec![thumb],
+    };
     let nfo = MovieNFO {
         title: title.clone(),
         original_title: movie.title.clone(),
@@ -853,7 +857,7 @@ async fn write_nfo_file(
         director: movie.director.clone(),
         poster: poster_path.to_string(),
         thumb: thumb_path.to_string(),
-        fanart: fanart_path.to_string(),
+        fanart,
         actors: actor,
         maker: movie.studio.clone(),
         label: movie.label.clone(),
@@ -903,7 +907,7 @@ struct MovieNFO {
     director: String,
     poster: String,
     thumb: String,
-    fanart: String,
+    fanart: Fanart,
     #[serde(rename = "actor")]
     actors: Vec<Actor>,
     maker: String,
@@ -930,6 +934,18 @@ struct Actor {
 struct Tag {
     #[serde(rename = "$value")]
     content: String,
+}
+
+#[derive(Serialize)]
+struct Thumb {
+    #[serde(rename = "$value")]
+    content: String,
+}
+
+#[derive(Serialize)]
+struct Fanart {
+    #[serde(rename = "thumb")]
+    thumb: Vec<Thumb>,
 }
 
 pub async fn scraping_data_and_move_movie_with_custom_number(
