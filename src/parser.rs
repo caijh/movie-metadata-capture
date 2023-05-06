@@ -34,7 +34,7 @@ pub struct Movie {
     pub uncensored: bool,
     pub userrating: String,
     pub max_userrating: String,
-    pub uservotes: f64,
+    pub uservotes:String,
 }
 
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
@@ -211,7 +211,7 @@ impl Parser {
             uncensored,
             userrating,
             max_userrating,
-            uservotes: uservotes.number(),
+            uservotes: uservotes.string(),
         })
     }
 
