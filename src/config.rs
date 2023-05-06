@@ -59,6 +59,8 @@ pub struct Parser {
     pub number_pre_handle: Vec<NumberHandle>,
     pub age_check: Option<AgeCheck>,
     pub detail_url: Vec<String>,
+    pub max_userrating: String,
+
     pub expr_number: String,
     pub expr_title: String,
     pub expr_actor_name: String,
@@ -78,6 +80,7 @@ pub struct Parser {
     pub expr_uncensored: String,
     pub expr_userrating: String,
     pub expr_uservotes: String,
+
     pub replace_number: Option<Vec<Rule>>,
     pub replace_cover: Option<Vec<Rule>>,
     pub replace_extra_fanart: Option<Vec<Rule>>,
@@ -85,6 +88,7 @@ pub struct Parser {
     pub replace_runtime: Option<Vec<Rule>>,
     pub replace_tags: Option<Vec<Rule>>,
     pub replace_release: Option<Vec<Rule>>,
+    pub replace_userrating: Option<Vec<Rule>>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]

@@ -104,12 +104,14 @@ expr_extra_fanart = '//a[@name="sample-image"]/img/@src'
 expr_trailer = ""
 expr_uncensored = ""
 expr_uservotes = ""
-expr_userrating = ""
+expr_userrating = "//*[@id="mu"]/div/table/tbody/tr/td[1]/div[3]/table/tbody/tr[10]/td[2]/img/@src"
 replace_number = []
 replace_cover = []
 replace_extra_fanart = [{ action = "insert", args = ["-", "jp"] }]
 replace_actor_photo = []
 replace_runtime = [{ action = "replace", args = ["分", ""] }]
+replace_userrating = [{action = "substring", args = ["/pc/", ".gif"]}, {action = "replace", args = ["/pc/", ""]}]
+max_userrating = "50"
 [[sources.fanza.number_pre_handle]]
 name = "rebd"
 rule = [{ action = "lowercase", args = [] }, { action = "replace", args = ["-", ""] }, { action = "insert", args = ["0", "h_346"] }]

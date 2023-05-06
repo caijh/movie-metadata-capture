@@ -842,6 +842,11 @@ async fn write_nfo_file(
     let fanart = Fanart {
         thumb: vec![thumb],
     };
+    let rating = Rating {
+        value: movie.userrating.to_string(),
+        votes: movie.uservotes.to_string(),
+        max: movie.max_userrating.to_string(),
+    };
     let nfo = MovieNFO {
         title: title.clone(),
         original_title: movie.title.clone(),
@@ -867,6 +872,7 @@ async fn write_nfo_file(
         release_date: movie.release.clone(),
         release: movie.release.clone(),
         userrating: movie.userrating.clone(),
+        ratings: vec![rating],
         cover: movie.cover.clone(),
         trailer: "".to_string(),
         website: movie.website.clone(),
@@ -928,6 +934,7 @@ struct MovieNFO {
     release_date: String,
     release: String,
     userrating: String,
+    ratings: Vec<Rating>,
     cover: String,
     trailer: String,
     website: String,
@@ -956,6 +963,13 @@ struct Fanart {
     thumb: Vec<Thumb>,
 }
 
+#[derive(Serialize)]
+pub struct Rating {
+    pub value: String,
+    pub votes: String,
+    #[serde(rename = "@max")]
+    pub max: String,
+}
 pub async fn scraping_data_and_move_movie_with_custom_number(
     file_path: &str,
     custom_number: &str,

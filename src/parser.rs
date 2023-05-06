@@ -33,6 +33,7 @@ pub struct Movie {
     pub series: String,
     pub uncensored: bool,
     pub userrating: String,
+    pub max_userrating: String,
     pub uservotes: f64,
 }
 
@@ -41,11 +42,6 @@ pub struct Actor {
     pub name: String,
 }
 
-#[derive(Serialize, Deserialize, Debug, Default, Clone)]
-pub struct Rating {
-    pub value: String,
-    pub votes: String,
-}
 
 impl Parser {
     pub async fn search(&self, number: &str, debug: bool) -> Option<Movie> {
@@ -174,6 +170,7 @@ impl Parser {
         let series = evaluate_xpath_node(document.root(), self.expr_series.as_str()).unwrap();
         let userrating =
             evaluate_xpath_node(document.root(), self.expr_userrating.as_str()).unwrap();
+        let userrating = value_to_string_use_handle(userrating, &self.replace_userrating);
         let uservotes = evaluate_xpath_node(document.root(), self.expr_uservotes.as_str()).unwrap();
         let uncensored =
             evaluate_xpath_node(document.root(), self.expr_uncensored.as_str()).unwrap();
@@ -211,7 +208,8 @@ impl Parser {
             trailer: trailer.string(),
             website: detail_url,
             uncensored,
-            userrating: userrating.string(),
+            userrating,
+            max_userrating: self.max_userrating.to_string(),
             uservotes: uservotes.number(),
         })
     }
