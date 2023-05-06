@@ -22,7 +22,7 @@ use quick_xml::se::to_string;
 use serde::Serialize;
 use std::fs;
 use std::io::Write;
-use xmlem::Document;
+use xmlem::{Document, display};
 
 use crate::number_parser::get_number;
 use walkdir::WalkDir;
@@ -876,7 +876,15 @@ async fn write_nfo_file(
     let xml = to_string(&nfo).unwrap();
     let xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>".to_string() + &xml;
     let doc = Document::from_str(&xml).unwrap();
-    let xml = doc.to_string_pretty();
+    let dp = display::Config {
+        is_pretty: true,
+        indent: 2,
+        end_pad: 0,
+        max_line_length: usize::MAX,
+        entity_mode: display::EntityMode::Standard,
+        indent_text_nodes: false,
+    };
+    let xml = doc.to_string_pretty_with_config(&dp);
     let mut file = OpenOptions::new()
         .write(true)
         .create(true)
