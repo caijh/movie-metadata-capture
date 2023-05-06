@@ -172,6 +172,7 @@ impl Parser {
             evaluate_xpath_node(document.root(), self.expr_userrating.as_str()).unwrap();
         let userrating = value_to_string_use_handle(userrating, &self.replace_userrating);
         let uservotes = evaluate_xpath_node(document.root(), self.expr_uservotes.as_str()).unwrap();
+        let max_userrating = self.max_userrating.unwrap_or_default();
         let uncensored =
             evaluate_xpath_node(document.root(), self.expr_uncensored.as_str()).unwrap();
         let uncensored = match uncensored {
@@ -209,7 +210,7 @@ impl Parser {
             website: detail_url,
             uncensored,
             userrating,
-            max_userrating: self.max_userrating.unwrap_or_default(),
+            max_userrating: max_userrating,
             uservotes: uservotes.number(),
         })
     }
