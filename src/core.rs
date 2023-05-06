@@ -876,7 +876,7 @@ async fn write_nfo_file(
     let xml = to_string(&nfo).unwrap();
     let doc = Document::from_str(&xml).unwrap();
     let xml = doc.to_string_pretty();
-
+    let xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>".to_string() + &xml;
     let mut file = OpenOptions::new()
         .write(true)
         .create(true)
