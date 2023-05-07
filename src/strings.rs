@@ -12,7 +12,7 @@ pub fn get_end_index(s: &str, end: &str) -> usize {
     let end = match end.parse::<usize>() {
         Ok(number) => number,
         Err(_) => {
-            s.len()
+            s.find(end).unwrap_or_else(|| s.len())
         }
     };
     end
