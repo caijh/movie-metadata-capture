@@ -293,11 +293,11 @@ replace_extra_fanart = []
 replace_actor_photo = []
 [sources.javdb.site_search]
 url = "https://javdb.com/search?q="
-number_pre_handle = [{ action = "append", args = ["&f=all"] }]
+site_number_pre_handle = [{ action = "append", args = ["&f=all"] }]
 expr_number = '//*[contains(@class,"movie-list")]/div[1]/a/div[contains(@class, "video-title")]/strong/text()'
 expr_id = '//*[contains(@class,"movie-list")]/div[1]/a/@href'
-number_post_handle = []
-id_post_handle = [{ action = "replace", args = ["/v/", ""] }]
+site_number_post_handle = []
+site_id_post_handle = [{ action = "replace", args = ["/v/", ""] }]
 [[sources.javdb.number_pre_handle]]
 name = "*"
 rule = [{ action = "append", args = ["?locale=zh"] }]

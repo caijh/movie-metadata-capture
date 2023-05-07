@@ -11,11 +11,11 @@ use crate::xpath::evaluate_xpath_node;
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
 pub struct SiteSearch {
     pub url: String,
-    pub number_pre_handle: Option<Vec<Rule>>,
+    pub site_number_pre_handle: Option<Vec<Rule>>,
     pub expr_number: String,
     pub expr_id: String,
-    pub number_post_handle: Option<Vec<Rule>>,
-    pub id_post_handle: Option<Vec<Rule>>,
+    pub site_number_post_handle: Option<Vec<Rule>>,
+    pub site_id_post_handle: Option<Vec<Rule>>,
 }
 
 impl SiteSearch {
@@ -27,7 +27,7 @@ impl SiteSearch {
     /// # Returns
     /// -  `Option<String>` : An option containing the number's id as a String if found,  `None`  otherwise
     pub async fn search(&self, number: &str) -> Option<String> {
-        let search_number = if let Some(number_pre_handle) = &self.number_pre_handle {
+        let search_number = if let Some(number_pre_handle) = &self.site_number_pre_handle {
             let string_flow = StringFlow::new(number_pre_handle);
             let num = string_flow.process_string(number);
             num
@@ -55,8 +55,8 @@ impl SiteSearch {
         let numbers = evaluate_xpath_node(document.root(), self.expr_number.as_str()).unwrap();
         let numbers: Vec<String> = match numbers {
             sxd_xpath::Value::Nodeset(nodes) => {
-                if self.number_post_handle.is_some() {
-                    let string_flow = StringFlow::new(self.number_post_handle.as_ref().unwrap());
+                if self.site_number_post_handle.is_some() {
+                    let string_flow = StringFlow::new(self.site_number_post_handle.as_ref().unwrap());
                     nodes
                         .into_iter()
                         .map(|node| string_flow.process_string(node.string_value().as_str()))
@@ -70,8 +70,8 @@ impl SiteSearch {
         let ids = evaluate_xpath_node(document.root(), self.expr_id.as_str()).unwrap();
         let ids: Vec<String> = match ids {
             sxd_xpath::Value::Nodeset(nodes) => {
-                if self.id_post_handle.is_some() {
-                    let string_flow = StringFlow::new(self.id_post_handle.as_ref().unwrap());
+                if self.site_id_post_handle.is_some() {
+                    let string_flow = StringFlow::new(self.site_id_post_handle.as_ref().unwrap());
                     nodes
                         .into_iter()
                         .map(|node| string_flow.process_string(node.string_value().as_str()))
