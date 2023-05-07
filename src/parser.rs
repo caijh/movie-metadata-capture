@@ -136,7 +136,10 @@ impl Parser {
         let year = re.find(&release).map(|m| m.as_str().to_owned());
         let runtime = evaluate_xpath_node(document.root(), self.expr_runtime.as_str()).unwrap();
         let runtime = value_to_string_use_handle(runtime, &self.replace_runtime);
+
         let outline = evaluate_xpath_node(document.root(), self.expr_outline.as_str()).unwrap();
+        let outline = value_to_string_use_handle(outline, &self.replace_outline);
+
         let director = evaluate_xpath_node(document.root(), self.expr_director.as_str()).unwrap();
         let actor_name =
             evaluate_xpath_node(document.root(), self.expr_actor_name.as_str()).unwrap();
@@ -209,7 +212,7 @@ impl Parser {
             series: series.string(),
             studio,
             year: year.unwrap_or_default(),
-            outline: outline.string().replace("\n", "").trim().to_string(),
+            outline,
             runtime,
             director: director.string(),
             extra_fanart,
