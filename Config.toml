@@ -214,6 +214,7 @@ expr_trailer = ""
 expr_uncensored = '//*[@id="navbar"]/ul[1]/li[@class="active"]/a[contains(@href,"uncensored")]'
 expr_uservotes = '//li[@class="items_article_StarA"]/a/span/text()'
 expr_userrating = ""
+replace_release = [{action = "trim", args = []}]
 replace_number = []
 replace_cover = [{ action = "insert", args = ["0", "https://www.javbus.com/"] }]
 replace_extra_fanart = [{ action = "insert", args = ["0", "https://www.javbus.com/"], when = [{name = "!contains", args = ["https"]}]}]
