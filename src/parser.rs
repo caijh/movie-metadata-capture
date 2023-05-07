@@ -193,7 +193,7 @@ impl Parser {
         let userrating = value_to_string_use_handle(userrating, &self.replace_userrating);
 
         let uservotes = evaluate_xpath_node(document.root(), self.expr_uservotes.as_str()).unwrap();
-        let uservotes = value_to_string_use_handle(uservotes, &self.replace_series);
+        let uservotes = value_to_string_use_handle(uservotes, &self.replace_uservotes);
         let max_userrating = self.source_max_userrating.clone().unwrap_or_default();
 
         let uncensored =
