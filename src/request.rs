@@ -9,7 +9,7 @@ use std::{
 
 use crate::config;
 use lazy_static::lazy_static;
-use reqwest::{Client, Proxy, Url};
+use reqwest::{Client, Proxy, Url, StatusCode};
 use tokio::sync::RwLock;
 
 pub struct Request {
@@ -80,6 +80,9 @@ pub async fn parallel_download_files(
 pub async fn get_html_content(url: &str) -> Result<String, Box<dyn Error>> {
     let client = client().await?;
     let res = client.get(url).send().await?;
+    if res.status() == StatusCode::NOT_FOUND {
+        return Err("404".into());
+    }
     let body = res.text().await?;
     Ok(body)
 }
