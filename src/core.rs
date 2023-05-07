@@ -792,7 +792,7 @@ async fn write_nfo_file(
         .name_rule
         .naming_rule
         .replace("$number", &movie.number)
-        .replace("$title", &movie.title);
+        .replace("$title", &movie.title.replace(&movie.number, ""));
     let actor = movie
         .actor
         .iter()
