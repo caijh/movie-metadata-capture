@@ -84,6 +84,7 @@ pub struct Parser {
     pub expr_uservotes: String,
 
     pub replace_number: Option<Vec<Rule>>,
+    pub replace_title: Option<Vec<Rule>>,
     pub replace_cover: Option<Vec<Rule>>,
     pub replace_extra_fanart: Option<Vec<Rule>>,
     pub replace_actor_photo: Option<Vec<Rule>>,

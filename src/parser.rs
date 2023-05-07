@@ -129,6 +129,8 @@ impl Parser {
         }
 
         let title = evaluate_xpath_node(document.root(), self.expr_title.as_str()).unwrap();
+        let title = value_to_string_use_handle(title, &self.replace_title);
+
         let studio = evaluate_xpath_node(document.root(), self.expr_studio.as_str()).unwrap();
         let studio = value_to_string_use_handle(studio, &self.replace_studio);
 
@@ -207,7 +209,7 @@ impl Parser {
         };
         Some(Movie {
             number: number.to_string(),
-            title: title.string(),
+            title,
             series: series.string(),
             studio,
             year: year.unwrap_or_default(),
