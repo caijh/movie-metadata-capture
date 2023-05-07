@@ -112,7 +112,7 @@ impl Parser {
                 }
                 Err(_) => {
                     if debug {
-                        println!("[-]Get html content from {} fail or Not found", url);
+                        println!("[-]Get html content from {} failure or Not found", url);
                     }
                 }
             }
