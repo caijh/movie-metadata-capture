@@ -248,7 +248,7 @@ expr_label = "//span[@class='spec-title'][contains(text(),'シリーズ')]/../sp
 expr_series = "//span[@class='spec-title'][contains(text(),'シリーズ')]/../span[@class='spec-content']/a/text()"
 expr_cover = '//div[@class="vjs-poster"]/@style'
 expr_small_cover = ''
-expr_extra_fanart = "//*[@id='sampleexclude']/div[2]/div/div[@class='grid-item']/div/a/@href"
+expr_extra_fanart = "//*[@id='sampleexclude']/div[2]/div/div[@class='grid-item']/div/a[position()<6]/@href"
 expr_trailer = ""
 expr_uncensored = ''
 expr_uservotes = ''
@@ -257,6 +257,7 @@ replace_number = [{ action = "substring", args = ["moviepages/", "/index.html"] 
 replace_cover = [{ action = "substring", args = ["\"", "\""] }, { action = "insert", args = ["0", "https://www.caribbeancom.com"] }]
 replace_extra_fanart = [{ action = "insert", args = ["0", "https://www.caribbeancom.com"] }]
 replace_actor_photo = []
+replace_runtime = [{action = "trim", args = []}]
 [[sources.carib.number_pre_handle]]
 name = "carib"
 rule = [{ action = "append", args = ["/index.html"] }]
