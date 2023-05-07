@@ -92,10 +92,6 @@ impl Parser {
             }
             match get_html_content(url.as_str()).await {
                 Ok(content) => {
-                    if debug {
-                        println!("[+]Get html content from {} success", url);
-                        println!("{}", content);
-                    }
                     let package = sxd_html::parse_html(&content);
                     let document = package.as_document();
                     let movie = self.parse_to_movie(&document, detail_url);
