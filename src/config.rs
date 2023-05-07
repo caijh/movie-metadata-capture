@@ -213,6 +213,8 @@ impl Condition {
         match self.name.as_str() {
             "contains" => sourcs.contains(self.args[0].as_str()),
             "!contains" => !sourcs.contains(self.args[0].as_str()),
+            "empty" => sourcs.is_empty(),
+            "!empty" => !sourcs.is_empty(),
             _ => false
         }
     }
