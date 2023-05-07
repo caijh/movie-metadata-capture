@@ -196,7 +196,7 @@ rule = [{ action = "lowercase", args = [] }, { action = "replace", args = ["fc2-
 
 [sources.javbus]
 name = "javbus"
-number_extractor = ["heyzo"]
+number_extractor = ["heyzo", "rebd"]
 source_detail_url = ["https://www.javbus.com/"]
 expr_number = '//div[@class="container"]/div[1]/div[2]/p[1]/span[2]/text()'
 expr_title = '//div[@class="container"]/h3/text()'
