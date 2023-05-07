@@ -116,13 +116,8 @@ impl Parser {
         None
     }
     fn parse_to_movie(&self, document: &Document, detail_url: String) -> Option<Movie> {
-        let mut number = evaluate_xpath_node(document.root(), self.expr_number.as_str())
-            .unwrap()
-            .string();
-        if self.replace_number.is_some() {
-            let string_flow = StringFlow::new(self.replace_number.as_ref().unwrap());
-            number = string_flow.process_string(number.as_str());
-        }
+        let number = evaluate_xpath_node(document.root(), self.expr_number.as_str()).unwrap();
+        let number = value_to_string_use_handle(number, &self.replace_number);
 
         let title = evaluate_xpath_node(document.root(), self.expr_title.as_str()).unwrap();
         let title = value_to_string_use_handle(title, &self.replace_title);
@@ -134,6 +129,7 @@ impl Parser {
         let release = value_to_string_use_handle(release, &self.replace_release);
         let re = Regex::new(r"\d{4}").unwrap();
         let year = re.find(&release).map(|m| m.as_str().to_owned());
+
         let runtime = evaluate_xpath_node(document.root(), self.expr_runtime.as_str()).unwrap();
         let runtime = value_to_string_use_handle(runtime, &self.replace_runtime);
 
@@ -141,6 +137,8 @@ impl Parser {
         let outline = value_to_string_use_handle(outline, &self.replace_outline);
 
         let director = evaluate_xpath_node(document.root(), self.expr_director.as_str()).unwrap();
+        let director = value_to_string_use_handle(director, &self.replace_director);
+
         let actor_name =
             evaluate_xpath_node(document.root(), self.expr_actor_name.as_str()).unwrap();
         let actor_name: Vec<String> = value_to_vec(actor_name);
@@ -161,36 +159,43 @@ impl Parser {
             let tuple = (elem1.unwrap_or_default(), elem2.unwrap_or_default());
             actor.push(tuple);
         }
+
         let expr_cover = self
             .expr_cover
             .replace("$cover_number", number.to_string().as_str());
-        let mut cover = evaluate_xpath_node(document.root(), &expr_cover)
-            .unwrap()
-            .string();
-        if self.replace_cover.is_some() {
-            let string_flow = StringFlow::new(self.replace_cover.as_ref().unwrap());
-            cover = string_flow.process_string(cover.as_str());
-        }
+        let cover = evaluate_xpath_node(document.root(), &expr_cover).unwrap();
+        let cover = value_to_string_use_handle(cover, &self.replace_cover);
 
         let expr_small_cover = self
             .expr_small_cover
             .replace("$cover_number", number.to_string().as_str());
         let cover_small = evaluate_xpath_node(document.root(), &expr_small_cover).unwrap();
+        let cover_small = value_to_string_use_handle(cover_small, &self.replace_small_cover);
 
         let extra_fanart =
             evaluate_xpath_node(document.root(), self.expr_extra_fanart.as_str()).unwrap();
         let extra_fanart: Vec<String> =
             value_to_vec_use_handle(extra_fanart, &self.replace_extra_fanart);
+
         let trailer = evaluate_xpath_node(document.root(), self.expr_trailer.as_str()).unwrap();
+
         let tags = evaluate_xpath_node(document.root(), self.expr_tags.as_str()).unwrap();
         let tags = value_to_vec_use_handle(tags, &self.replace_tags);
+
         let label = evaluate_xpath_node(document.root(), self.expr_label.as_str()).unwrap();
+        let label = value_to_string_use_handle(label, &self.replace_label);
+
         let series = evaluate_xpath_node(document.root(), self.expr_series.as_str()).unwrap();
+        let series = value_to_string_use_handle(series, &self.replace_series);
+
         let userrating =
             evaluate_xpath_node(document.root(), self.expr_userrating.as_str()).unwrap();
         let userrating = value_to_string_use_handle(userrating, &self.replace_userrating);
+
         let uservotes = evaluate_xpath_node(document.root(), self.expr_uservotes.as_str()).unwrap();
+        let uservotes = value_to_string_use_handle(uservotes, &self.replace_series);
         let max_userrating = self.source_max_userrating.clone().unwrap_or_default();
+
         let uncensored =
             evaluate_xpath_node(document.root(), self.expr_uncensored.as_str()).unwrap();
         let uncensored = match uncensored {
@@ -209,26 +214,26 @@ impl Parser {
         Some(Movie {
             number: number.to_string(),
             title,
-            series: series.string(),
+            series,
             studio,
             year: year.unwrap_or_default(),
             outline,
             runtime,
-            director: director.string(),
+            director,
             extra_fanart,
             actor,
-            label: label.string(),
+            label,
             tag: tags,
             genre: "".to_string(),
             release,
             cover,
-            cover_small: cover_small.string(),
+            cover_small,
             trailer: trailer.string(),
             website: detail_url,
             uncensored,
             userrating,
             max_userrating,
-            uservotes: uservotes.string(),
+            uservotes,
         })
     }
 

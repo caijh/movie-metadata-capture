@@ -1,0 +1,53 @@
+[sources.fanza.site_search]
+url = "https://javdb.com/search?q="
+site_number_pre_handle = []
+expr_number = ''
+expr_id = ''
+site_number_post_handle = []
+site_id_post_handle = []
+[[sources.fanza.number_pre_handle]]
+name = "rebd"
+rule = []
+[sources.fanza]
+name = "fanza"
+number_extractor = []
+source_age_check = { url = "", target_name = "", target_url = "" }
+source_detail_url = []
+source_max_userrating = "50"
+source_allow_use_site_number = false
+expr_number = ''
+expr_title = ''
+expr_actor_name = ''
+expr_actor_photo = ''
+expr_studio = ''
+expr_runtime = ''
+expr_release = ''
+expr_outline = ''
+expr_director = ''
+expr_tags = ''
+expr_label = ''
+expr_series = ''
+expr_cover = ''
+expr_small_cover = ''
+expr_extra_fanart = ''
+expr_trailer = ""
+expr_uncensored = ""
+expr_userrating = ''
+expr_uservotes = ""
+replace_number = []
+replace_title = []
+replace_outline = []
+replace_studio = []
+replace_director = []
+replace_cover = []
+replace_small_cover = []
+replace_extra_fanart = []
+replace_actor_photo = []
+replace_runtime = []
+replace_release = []
+replace_tags = []
+replace_label = []
+replace_series = []
+replace_userrating = []
+replace_uservotes = []
+

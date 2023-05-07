@@ -85,15 +85,20 @@ pub struct Parser {
 
     pub replace_number: Option<Vec<Rule>>,
     pub replace_title: Option<Vec<Rule>>,
-    pub replace_cover: Option<Vec<Rule>>,
     pub replace_outline: Option<Vec<Rule>>,
+    pub replace_studio: Option<Vec<Rule>>,
+    pub replace_director: Option<Vec<Rule>>,
+    pub replace_cover: Option<Vec<Rule>>,
+    pub replace_small_cover: Option<Vec<Rule>>,
     pub replace_extra_fanart: Option<Vec<Rule>>,
     pub replace_actor_photo: Option<Vec<Rule>>,
     pub replace_runtime: Option<Vec<Rule>>,
     pub replace_tags: Option<Vec<Rule>>,
+    pub replace_label: Option<Vec<Rule>>,
+    pub replace_series: Option<Vec<Rule>>,
     pub replace_release: Option<Vec<Rule>>,
     pub replace_userrating: Option<Vec<Rule>>,
-    pub replace_studio: Option<Vec<Rule>>,
+    pub replace_uservotes: Option<Vec<Rule>>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
