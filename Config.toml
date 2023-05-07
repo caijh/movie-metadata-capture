@@ -272,7 +272,7 @@ source_max_userrating = "5"
 expr_number = '//nav[@class="panel movie-panel-info"]/div[1]/a/@data-clipboard-text'
 expr_title = '//strong[@class="current-title"]/text()'
 expr_actor_name = '//span[@class="value"]/a[contains(@href,"/actors/")]/text()'
-expr_actor_photo = '//span[@class="value"]/a[contains(@href,"/actors/")]/@href'
+expr_actor_photo = ''
 expr_studio = '//span[@class="value"]/a[contains(@href,"/markers/")]/text()'
 expr_runtime = '//strong[contains(text(),"時長")]/../span/text()'
 expr_release = '//strong[contains(text(),"日期")]/../span/text()'
@@ -291,9 +291,9 @@ expr_userrating = '//span[@class="score-stars"]/../text()'
 replace_number = []
 replace_cover = []
 replace_extra_fanart = []
-replace_actor_photo = [{action = "insert", args = ["0", "https://c0.jdbstatic.com"]}, {action = "append", args = [".jpg"]}]
+replace_actor_photo = []
 replace_runtime = [{action = "replace", args = ["分鍾", ""]}, {action = "trim", args = []}]
-replace_userrating = [{action = "replace", args = ["\u{a0}", ""]}, {action = "substring", args = ["0", "分"]}]
+replace_userrating = [{action = "trim", args = []}, {action = "substring", args = ["0", "分"]}]
 replace_uservotes = [{action = "substring", args = ["由", "人"]}, {action = "replace", args = ["由", ""]}]
 [sources.javdb.site_search]
 url = "https://javdb.com/search?q="
