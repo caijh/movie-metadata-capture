@@ -216,7 +216,7 @@ expr_uservotes = '//li[@class="items_article_StarA"]/a/span/text()'
 expr_userrating = ""
 replace_number = []
 replace_cover = [{ action = "insert", args = ["0", "https://www.javbus.com/"] }]
-replace_extra_fanart = [{ action = "insert", args = ["0", "https://www.javbus.com/"] }]
+replace_extra_fanart = [{ action = "insert", args = ["0", "https://www.javbus.com/"], when = [{name = "!contains", args = ["https"]}]}]
 replace_actor_photo = []
 [[sources.javbus.number_pre_handle]]
 name = "heyzo"

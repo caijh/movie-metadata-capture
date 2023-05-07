@@ -11,6 +11,7 @@ use crate::site_search::SiteSearch;
 use crate::strings::{get_end_index, get_start_index};
 use lazy_static::lazy_static;
 use regex::Regex;
+
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
@@ -183,6 +184,36 @@ pub struct NumberHandle {
 pub struct Rule {
     pub action: String,
     pub args: Vec<String>,
+    pub when: Option<Vec<Condition>>,
+}
+
+impl Rule {
+    fn is_match(&self, source: &str) -> bool {
+        if let Some(when) = &self.when {
+            for condition in when {
+                if !condition.is_match(source) {
+                    return false;
+                }
+            }
+        }
+        true
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct Condition {
+    pub name: String,
+    pub args: Vec<String>,
+}
+
+impl Condition {
+    fn is_match(&self, sourcs: &str) -> bool {
+        match self.name.as_str() {
+            "contains" => sourcs.contains(self.args[0].as_str()),
+            "!contains" => !sourcs.contains(self.args[0].as_str()),
+            _ => false
+        }
+    }
 }
 
 // 创建一个数据结构来管理多个操作
@@ -204,6 +235,9 @@ impl StringFlow {
         let mut result = String::from(input_string);
 
         for rule in self.rules.iter() {
+            if !rule.is_match(&result) {
+                continue;
+            }
             let action = rule.action.as_str();
             match action {
                 "append" => {
