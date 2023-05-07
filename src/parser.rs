@@ -130,6 +130,8 @@ impl Parser {
 
         let title = evaluate_xpath_node(document.root(), self.expr_title.as_str()).unwrap();
         let studio = evaluate_xpath_node(document.root(), self.expr_studio.as_str()).unwrap();
+        let studio = value_to_string_use_handle(studio, &self.replace_studio);
+
         let release = evaluate_xpath_node(document.root(), self.expr_release.as_str()).unwrap();
         let release = value_to_string_use_handle(release, &self.replace_release);
         let re = Regex::new(r"\d{4}").unwrap();
@@ -207,7 +209,7 @@ impl Parser {
             number: number.to_string(),
             title: title.string(),
             series: series.string(),
-            studio: studio.string(),
+            studio,
             year: year.unwrap_or_default(),
             outline: outline.string().replace("\n", "").trim().to_string(),
             runtime,

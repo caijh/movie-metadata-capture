@@ -91,6 +91,7 @@ pub struct Parser {
     pub replace_tags: Option<Vec<Rule>>,
     pub replace_release: Option<Vec<Rule>>,
     pub replace_userrating: Option<Vec<Rule>>,
+    pub replace_studio: Option<Vec<Rule>>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
