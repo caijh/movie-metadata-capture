@@ -44,7 +44,7 @@ pub struct Actor {
 
 impl Parser {
     pub async fn search(&self, number: &str, debug: bool) -> Option<Movie> {
-        if let Some(age_check) = &self.age_check {
+        if let Some(age_check) = &self.source_age_check {
             let mut url = Url::parse(&age_check.url).unwrap();
             url.query_pairs_mut()
                 .append_pair(&age_check.target_name, &age_check.target_url);
@@ -64,7 +64,7 @@ impl Parser {
             };
         }
 
-        let detail_urls = &self.detail_url;
+        let detail_urls = &self.source_detail_url;
         for _url in detail_urls {
             let number_search = self
                 .number_pre_handle

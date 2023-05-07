@@ -87,8 +87,8 @@ regex = '\d{4}(-|_)\d{4}'
 [sources.fanza]
 name = "fanza"
 number_extractor = ["rebd", "oae", "sprl", "higr"]
-age_check = { url = "https://www.dmm.co.jp/age_check/=/declared=yes/", target_name = "rurl", target_url = "https://www.dmm.co.jp/top/" }
-detail_url = ["https://www.dmm.co.jp/digital/videoa/-/detail/=/cid=", "https://www.dmm.co.jp/mono/dvd/-/detail/=/cid=", "https://www.dmm.co.jp/digital/anime/-/detail/=/cid=", "https://www.dmm.co.jp/mono/anime/-/detail/=/cid=", "https://www.dmm.co.jp/digital/videoc/-/detail/=/cid=", "https://www.dmm.co.jp/digital/nikkatsu/-/detail/=/cid=", "https://www.dmm.co.jp/rental/-/detail/=/cid="]
+source_age_check = { url = "https://www.dmm.co.jp/source_age_check/=/declared=yes/", target_name = "rurl", target_url = "https://www.dmm.co.jp/top/" }
+source_detail_url = ["https://www.dmm.co.jp/digital/videoa/-/detail/=/cid=", "https://www.dmm.co.jp/mono/dvd/-/detail/=/cid=", "https://www.dmm.co.jp/digital/anime/-/detail/=/cid=", "https://www.dmm.co.jp/mono/anime/-/detail/=/cid=", "https://www.dmm.co.jp/digital/videoc/-/detail/=/cid=", "https://www.dmm.co.jp/digital/nikkatsu/-/detail/=/cid=", "https://www.dmm.co.jp/rental/-/detail/=/cid="]
 source_max_userrating = "50"
 source_allow_use_site_number = false
 expr_number = "//td[contains(text(),'品番：')]/following-sibling::td/text()"
@@ -133,7 +133,7 @@ rule = [{ action = "lowercase", args = [] }, { action = "replace", args = ["-", 
 [sources.fc2]
 name = "fc2"
 number_extractor = ["fc2"]
-detail_url = ["https://adult.contents.fc2.com/article/"]
+source_detail_url = ["https://adult.contents.fc2.com/article/"]
 expr_number = '/html/head/title/text()'
 expr_title = '//*[@id="top"]/div[1]/section[1]/div/section/div[2]/h3/text()'
 expr_actor_name = '//*[@id="top"]/div[1]/section[1]/div/section/div[2]/ul/li[3]/a/text()'
@@ -164,7 +164,7 @@ rule = [{ action = "lowercase", args = [] }, { action = "replace", args = ["fc2-
 [sources.nanojav]
 name = "nanojav"
 number_extractor = ["fc2"]
-detail_url = ["https://www.nanojav.com/jav/"]
+source_detail_url = ["https://www.nanojav.com/jav/"]
 expr_number = '//div[@class="container"]//h1/a/text()'
 expr_title = '//div[@class="container"]//h1/../p[2]/text()'
 expr_actor_name = ''
@@ -197,7 +197,7 @@ rule = [{ action = "lowercase", args = [] }, { action = "replace", args = ["fc2-
 [sources.javbus]
 name = "javbus"
 number_extractor = ["heyzo"]
-detail_url = ["https://www.javbus.com/"]
+source_detail_url = ["https://www.javbus.com/"]
 expr_number = '//div[@class="container"]/div[1]/div[2]/p[1]/span[2]/text()'
 expr_title = '//div[@class="container"]/h3/text()'
 expr_actor_name = '//div[@class="star-name"]/a/text()'
@@ -233,7 +233,7 @@ rule = [{ action = "replace", args = ["REBD-", "REBDB-"] }]
 [sources.carib]
 name = "carib"
 number_extractor = ["carib"]
-detail_url = ["https://www.caribbeancom.com/moviepages/"]
+source_detail_url = ["https://www.caribbeancom.com/moviepages/"]
 expr_number = '/html/head/link[@hreflang="en-US"]/@href'
 expr_title = "//div[@class='movie-info section']/div[@class='heading']/h1[@itemprop='name']/text()"
 expr_actor_name = "//span[@class='spec-content']/a[@itemprop='actor']/span/text()"
@@ -264,8 +264,8 @@ rule = [{ action = "append", args = ["/index.html"] }]
 [sources.javdb]
 name = "javdb"
 number_extractor = ["heyzo"]
-age_check = { url = "https://javdb.com/over18?respond=1", target_name = "rurl", target_url = "1j04p8mqknwdh790ds2m6t6d87Zq3f5cd57fq82b9wqzpy4c301b7" }
-detail_url = ["https://javdb.com/v/"]
+source_age_check = { url = "https://javdb.com/over18?respond=1", target_name = "rurl", target_url = "1j04p8mqknwdh790ds2m6t6d87Zq3f5cd57fq82b9wqzpy4c301b7" }
+source_detail_url = ["https://javdb.com/v/"]
 expr_number = '//nav[@class="panel movie-panel-info"]/div[1]/a/@data-clipboard-text'
 expr_title = '//strong[@class="current-title"]/text()'
 expr_actor_name = '//span[@class="value"]/a[contains(@href,"/actors/")]/text()'
@@ -303,7 +303,7 @@ rule = [{ action = "append", args = ["?locale=zh"] }]
 [sources.H4610]
 name = "H4610"
 number_extractor = ["H4610"]
-detail_url = ["https://www.h4610.com/moviepages/"]
+source_detail_url = ["https://www.h4610.com/moviepages/"]
 expr_number = '//div[@id="moviePlayer"]/div/@poster'
 expr_title = '//div[@class="moviePlay_title"]/h1/span/text()'
 expr_actor_name = ''
@@ -334,7 +334,7 @@ rule = [{ action = "replace", args = ["H4610-", ""] }, { action = "replace", arg
 [sources.paco]
 name = "paco"
 number_extractor = ["paco"]
-detail_url = ["https://www.pacopacomama.com/movies/"]
+source_detail_url = ["https://www.pacopacomama.com/movies/"]
 expr_number = '//*[@id="movies"]/div/div[1]/div[1]//video@poster'
 expr_title = '//*[@id="movies"]/div/div[1]/div[2]/div[1]/div/h1/text()'
 expr_actor_name = '//*[@id="movies"]/div/div[1]/div[2]/div[1]/ul/li[3]/span[2]/span/a/text()'
@@ -365,7 +365,7 @@ rule = [{ action = "append", args = ["/"] }]
 [sources.heydouga]
 name = "heydouga"
 number_extractor = ["heydouga"]
-detail_url = ["https://www.heydouga.com/moviepages/"]
+source_detail_url = ["https://www.heydouga.com/moviepages/"]
 source_allow_use_site_number = false
 source_max_userrating = "5"
 expr_number = '//*[@id="movie-review-form"]/input[4]/@value'

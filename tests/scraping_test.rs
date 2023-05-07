@@ -15,7 +15,7 @@ mod tests {
             .expect("");
         let config = AppConfig::get_app_config();
         let mut scraping = Scraping::new(&config);
-        let movie = scraping.search("ka9oae232", "", None, None).await;
+        let movie = scraping.search("022021_437", "paco", None, Some("paco".to_string())).await;
         println!("{:?}", movie);
         assert!(movie.is_some());
         let movie = movie.unwrap();
