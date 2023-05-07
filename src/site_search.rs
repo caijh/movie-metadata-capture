@@ -1,10 +1,12 @@
+
+
 use serde::{Deserialize, Serialize};
 use sxd_document::dom::Document;
 use url::Url;
 
 use crate::config::{Rule, StringFlow};
 use crate::request::get_html_content;
-use crate::xpath::evaluate_xpath_node;
+use crate::xpath::{evaluate_xpath_node, value_to_vec_use_handle};
 
 // SiteSearch stores the url to search for IDs and Numbers, options for pre-processing the numbers, the
 // expressions for the numbers and IDs, and options for post-processing the numbers and IDs.
@@ -53,38 +55,10 @@ impl SiteSearch {
 
     fn parse_search_result(&self, document: &Document) -> Vec<(String, String)> {
         let numbers = evaluate_xpath_node(document.root(), self.expr_number.as_str()).unwrap();
-        let numbers: Vec<String> = match numbers {
-            sxd_xpath::Value::Nodeset(nodes) => {
-                if self.site_number_post_handle.is_some() {
-                    let string_flow = StringFlow::new(self.site_number_post_handle.as_ref().unwrap());
-                    nodes
-                        .into_iter()
-                        .map(|node| string_flow.process_string(node.string_value().as_str()))
-                        .collect()
-                } else {
-                    nodes.into_iter().map(|node| node.string_value()).collect()
-                }
-            }
-            _ => Vec::new(),
-        };
+        let numbers = value_to_vec_use_handle(numbers, &self.site_number_post_handle);
         let ids = evaluate_xpath_node(document.root(), self.expr_id.as_str()).unwrap();
-        let ids: Vec<String> = match ids {
-            sxd_xpath::Value::Nodeset(nodes) => {
-                if self.site_id_post_handle.is_some() {
-                    let string_flow = StringFlow::new(self.site_id_post_handle.as_ref().unwrap());
-                    nodes
-                        .into_iter()
-                        .map(|node| string_flow.process_string(node.string_value().as_str()))
-                        .collect()
-                } else {
-                    nodes.into_iter().map(|node| node.string_value()).collect()
-                }
-            }
-            _ => Vec::new(),
-        };
-
+        let ids = value_to_vec_use_handle(ids, &self.site_id_post_handle);
         let mut number_ids = Vec::new();
-
         for i in 0..numbers.len() {
             number_ids.push((
                 numbers.iter().nth(i).unwrap().to_owned(),
