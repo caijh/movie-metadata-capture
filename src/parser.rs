@@ -78,7 +78,7 @@ impl Parser {
                 })
                 .last();
 
-            let number = if let Some(number_search) = &number_search {
+            let search_number = if let Some(number_search) = &number_search {
                 let string_flow = StringFlow::new(&number_search.rule);
                 let search_number = string_flow.process_string(number.as_str());
                 search_number
@@ -86,7 +86,7 @@ impl Parser {
                 number.to_owned()
             };
 
-            let detail_url = _url.to_string() + number.as_str();
+            let detail_url = _url.to_string() + search_number.as_str();
             let url = Url::parse(&detail_url).unwrap();
             if debug {
                 println!("[+]{}", url);
@@ -96,6 +96,13 @@ impl Parser {
                 let document = package.as_document();
                 let movie = self.parse_to_movie(&document, detail_url);
                 if self.is_movie_valid(&movie) {
+                    if let Some(allow_use_site_number) = self.source_allow_use_site_number {
+                        if !allow_use_site_number {
+                            let mut movie = movie.unwrap();
+                            movie.number = number;
+                            return Some(movie);
+                        }
+                    }
                     return movie;
                 }
             } else {
@@ -172,7 +179,7 @@ impl Parser {
             evaluate_xpath_node(document.root(), self.expr_userrating.as_str()).unwrap();
         let userrating = value_to_string_use_handle(userrating, &self.replace_userrating);
         let uservotes = evaluate_xpath_node(document.root(), self.expr_uservotes.as_str()).unwrap();
-        let max_userrating = self.max_userrating.clone().unwrap_or_default();
+        let max_userrating = self.source_max_userrating.clone().unwrap_or_default();
         let uncensored =
             evaluate_xpath_node(document.root(), self.expr_uncensored.as_str()).unwrap();
         let uncensored = match uncensored {

@@ -86,7 +86,8 @@ name = "fanza"
 number_extractor = ["rebd", "oae", "sprl", "higr"]
 age_check = { url = "https://www.dmm.co.jp/age_check/=/declared=yes/", target_name = "rurl", target_url = "https://www.dmm.co.jp/top/" }
 detail_url = ["https://www.dmm.co.jp/digital/videoa/-/detail/=/cid=", "https://www.dmm.co.jp/mono/dvd/-/detail/=/cid=", "https://www.dmm.co.jp/digital/anime/-/detail/=/cid=", "https://www.dmm.co.jp/mono/anime/-/detail/=/cid=", "https://www.dmm.co.jp/digital/videoc/-/detail/=/cid=", "https://www.dmm.co.jp/digital/nikkatsu/-/detail/=/cid=", "https://www.dmm.co.jp/rental/-/detail/=/cid="]
-max_userrating = "50"
+source_max_userrating = "50"
+source_allow_use_site_number = false
 expr_number = "//td[contains(text(),'品番：')]/following-sibling::td/text()"
 expr_title = "//*[starts-with(@id, 'title')]/text()"
 expr_actor_name = '//td[contains(text(),"出演者")]/following-sibling::td/span/a/text()'
@@ -220,6 +221,9 @@ replace_actor_photo = []
 [[sources.javbus.number_pre_handle]]
 name = "heyzo"
 rule = [{ action = "replace", args = [" ", "-"] }]
+[[sources.javbus.number_pre_handle]]
+name = "rebd"
+rule = [{ action = "replace", args = ["REBD-", "REBDB-"] }]
 
 [sources.carib]
 name = "carib"
