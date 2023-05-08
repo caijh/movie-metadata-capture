@@ -1,4 +1,4 @@
-use crate::config::AppConfig;
+use crate::config::{AppConfig, NumberExtractor};
 use crate::files::{create_soft_link, file_exit_and_not_empty};
 use crate::request::{download_file, parallel_download_files};
 use crate::scraping::Scraping;
@@ -29,7 +29,7 @@ use walkdir::WalkDir;
 
 pub async fn core_main(
     file_path: &str,
-    number_extractor: &str,
+    number_extractor: &NumberExtractor,
     custom_number: &str,
     sources: Option<String>,
     specified_source: Option<String>,
@@ -985,7 +985,7 @@ pub struct Rating {
 pub async fn scraping_data_and_move_movie_with_custom_number(
     file_path: &str,
     custom_number: &str,
-    number_prefix: &str,
+    number_extractor: &NumberExtractor,
     specified_source: Option<String>,
     config: &AppConfig,
 ) -> Result<(), Box<dyn Error>> {
@@ -998,7 +998,7 @@ pub async fn scraping_data_and_move_movie_with_custom_number(
     if !custom_number.is_empty() {
         match core_main(
             file_path,
-            number_prefix,
+            number_extractor,
             custom_number,
             None,
             specified_source,
@@ -1164,7 +1164,7 @@ pub async fn scraping_data_and_move_movie(
     if n_number.is_empty().not() {
         core_main(
             movie_path,
-            number_extractor.as_str(),
+            &number_extractor,
             n_number.as_str(),
             None,
             None,

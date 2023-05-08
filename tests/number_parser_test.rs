@@ -1,5 +1,7 @@
 #[cfg(test)]
 mod tests {
+
+
     use movie_metadata_capture::config::AppConfig;
     use movie_metadata_capture::number_parser::get_number;
 
@@ -9,9 +11,10 @@ mod tests {
             .await
             .expect("");
         let config = AppConfig::get_app_config();
+        let (number, _) = get_number(&config, "SS016-1.mp4").unwrap();
         assert_eq!(
-            get_number(&config, "SS016-1.mp4"),
-            Some(("SS016-1".to_string(), "".to_string()))
+            number,
+            "SS016-1"
         );
     }
 }

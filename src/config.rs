@@ -62,7 +62,6 @@ pub struct DebugMode {
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
 pub struct Parser {
     pub name: String,
-    pub number_extractor: Vec<String>,
     pub site_search: Option<SiteSearch>,
     pub number_pre_handle: Vec<NumberHandle>,
     pub source_age_check: Option<AgeCheck>,
@@ -112,6 +111,7 @@ pub struct Parser {
 pub struct NumberExtractor {
     pub name: String,
     pub regex: String,
+    pub sources: Option<Vec<String>>,
 }
 
 impl NumberExtractor {
@@ -125,11 +125,11 @@ impl NumberExtractor {
     ///
     /// An Option of a tuple of strings containing the number and the name.
     /// If the regex does not match the filename, None is returned.
-    pub fn get_number(&self, filename: &str) -> Option<(String, String)> {
+    pub fn get_number(&self, filename: &str) -> Option<String> {
         let re = Regex::new(&self.regex).unwrap();
         if re.is_match(filename) {
             let m = re.captures(filename).unwrap();
-            return Some((m.get(0).unwrap().as_str().to_string(), self.name.to_owned()));
+            return Some(m.get(0).unwrap().as_str().to_string());
         }
         None
     }

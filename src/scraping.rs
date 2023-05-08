@@ -5,7 +5,7 @@ use crate::translator::AzureTranslator;
 
 use serde_json::Value;
 
-use crate::config::{AppConfig, Parser, Translate};
+use crate::config::{AppConfig, Parser, Translate, NumberExtractor};
 use crate::parser::Movie;
 
 #[derive(Default)]
@@ -35,7 +35,7 @@ impl Scraping {
     pub async fn search(
         &mut self,
         number: &str,
-        number_extractor: &str,
+        number_extractor: &NumberExtractor,
         sources: Option<String>,
         specified_source: Option<String>,
     ) -> Option<Movie> {
@@ -99,7 +99,7 @@ impl Scraping {
     async fn search_movie(
         &mut self,
         file_number: &str,
-        number_extractor: &str,
+        number_extractor: &NumberExtractor,
         sources: Vec<&str>,
     ) -> Option<Movie> {
         let _sources: Vec<String> = if self.specified_source.is_some() {
@@ -139,19 +139,20 @@ impl Scraping {
         movie
     }
 
-    fn get_reorder_sources(&self, sources: Vec<&str>, number_extractor: &str) -> Vec<String> {
+    fn get_reorder_sources(&self, sources: Vec<&str>, number_extractor: &NumberExtractor) -> Vec<String> {
         let mut _sources: Vec<&str> = if sources.is_empty() {
             self.sources.iter().map(|s| s.as_str()).collect()
         } else {
             sources
         };
-        let parser = &self.parsers;
 
-        parser.into_iter().for_each(|(k, v)| {
-            if v.number_extractor.contains(&number_extractor.to_string()) {
-                replace_sources_item(&mut _sources, 0, k.as_str());
+        let sources = number_extractor.sources.clone();
+        if let Some(mut sources) = sources {
+            sources.reverse();
+            for ele in sources {
+                replace_sources_item(&mut _sources, 0, &ele);
             }
-        });
+        }
 
         _sources
             .into_iter()

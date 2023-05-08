@@ -2,7 +2,7 @@ use chrono::Local;
 use clap::{arg, Parser};
 use movie_metadata_capture::config::AppConfig;
 use movie_metadata_capture::core::{scraping_data_and_move_movie, scraping_data_and_move_movie_with_custom_number, movie_lists};
-use movie_metadata_capture::number_parser::get_number;
+use movie_metadata_capture::number_parser::{get_number, DEFAULT_NUMBER_EXTRACTOR};
 use rand::Rng;
 use std::error::Error;
 use std::ops::Not;
@@ -37,15 +37,15 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let single_file_path = args.single_file_path.unwrap_or_default();
     if !single_file_path.is_empty() {
         println!("[+]==================== Single File =====================");
-        let (custom_number, number_prefix) = if args.custom_number.is_none() {
+        let (custom_number, number_extractor) = if args.custom_number.is_none() {
             get_number(&config, single_file_path.as_str()).unwrap()
         } else {
-            (args.custom_number.unwrap_or_default(), "".to_string())
+            (args.custom_number.unwrap_or_default(), DEFAULT_NUMBER_EXTRACTOR.to_owned())
         };
         scraping_data_and_move_movie_with_custom_number(
             single_file_path.as_str(),
             custom_number.as_str(),
-            number_prefix.as_str(),
+            &number_extractor,
             args.specified_source,
             &config,
         )

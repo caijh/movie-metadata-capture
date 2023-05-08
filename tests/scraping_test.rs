@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-    use movie_metadata_capture::config::AppConfig;
+    use movie_metadata_capture::config::{AppConfig, NumberExtractor};
     use movie_metadata_capture::core::{
         cut_image, download_actor_photo, download_cover, download_extra_fanart,
         download_small_cover, move_subtitles, paste_file_to_folder,
@@ -15,7 +15,12 @@ mod tests {
             .expect("");
         let config = AppConfig::get_app_config();
         let mut scraping = Scraping::new(&config);
-        let movie = scraping.search("022021_437", "paco", None, Some("paco".to_string())).await;
+        let number_parser = NumberExtractor {
+            name: "paco".to_string(),
+            regex: "".to_string(),
+            sources: None,
+        };
+        let movie = scraping.search("022021_437", &number_parser, None, Some("paco".to_string())).await;
         println!("{:?}", movie);
         assert!(movie.is_some());
         let movie = movie.unwrap();
