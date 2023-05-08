@@ -1,4 +1,3 @@
-
 [sources.fc2]
 name = "fc2"
 number_extractor = ["fc2"]

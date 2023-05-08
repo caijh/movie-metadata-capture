@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use std::error::Error;
 use std::path::Path;
-use std::sync::{Arc, RwLock, Mutex};
+use std::sync::{Arc, RwLock};
 use std::{env, fs, io};
 
 use config::{Config, File};
@@ -23,13 +23,17 @@ pub struct AppConfig {
     pub proxy: Proxy,
     pub translate: Translate,
     pub number_extractor: Vec<NumberExtractor>,
-    pub sources: HashMap<String, Parser>,
     pub name_rule: NameRule,
     pub uncensored: Uncensored,
     pub debug_mode: DebugMode,
     pub extra_fanart: ExtraFanart,
     pub face: Face,
     pub media: Media,
+}
+
+#[derive(Serialize, Deserialize, Debug, Default, Clone)]
+pub struct SourcesHolder {
+    pub sources: HashMap<String, Parser>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
@@ -157,7 +161,7 @@ pub struct Common {
     pub source_folder: String,
     pub failed_output_folder: String,
     pub success_output_folder: String,
-    pub parers_folder: String,
+    pub parser_folder: String,
     pub link_mode: usize,
     pub scan_hardlink: bool,
     pub failed_move: bool,
@@ -293,7 +297,7 @@ impl StringFlow {
 
 lazy_static! {
     pub static ref CONFIG: Arc<RwLock<AppConfig>> = Arc::new(RwLock::new(AppConfig::default()));
-    static ref SOURCES: Mutex<HashMap<String, Parser>> = Mutex::new(HashMap::new());
+    static ref SOURCES: RwLock<HashMap<String, Parser>> = RwLock::new(HashMap::new());
 }
 
 impl AppConfig {
@@ -310,14 +314,14 @@ impl AppConfig {
 
         let parsers = Config::builder()
         .add_source(
-                glob((config.common.parers_folder.to_string() +"/*.toml").as_str())
+                glob((config.common.parser_folder.to_string() +"/*.toml").as_str())
                     .unwrap()
                     .map(|path| File::from(path.unwrap()))
                     .collect::<Vec<_>>(),
-            ).build().expect(format!("[!] Fail to load parsers from dir {}", config.common.parers_folder).as_str());
-        let parsers = parsers.try_deserialize::<HashMap<String, Parser>>().unwrap();
-        for ele in parsers {
-            SOURCES.lock().unwrap().insert(ele.0, ele.1);
+            ).build().expect(format!("[!] Fail to load parsers from dir {}", config.common.parser_folder).as_str());
+        let sources_holder = parsers.try_deserialize::<SourcesHolder>().unwrap();
+        for ele in sources_holder.sources {
+            SOURCES.write().unwrap().insert(ele.0, ele.1);
         }
 
         if config.proxy.switch {
@@ -329,6 +333,10 @@ impl AppConfig {
 
     pub fn get_app_config() -> std::sync::RwLockReadGuard<'static, AppConfig> {
         CONFIG.read().unwrap()
+    }
+
+    pub fn get_sources(&self) -> std::sync::RwLockReadGuard<HashMap<String, Parser>> {
+        SOURCES.read().unwrap()
     }
 
     pub fn print_config_and_args(&self) {

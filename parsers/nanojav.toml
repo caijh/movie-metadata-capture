@@ -1,4 +1,3 @@
-
 [sources.nanojav]
 name = "nanojav"
 number_extractor = ["fc2"]

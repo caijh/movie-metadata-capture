@@ -20,8 +20,8 @@ pub struct Scraping {
 impl Scraping {
     pub fn new(config: &AppConfig) -> Self {
         let debug = config.debug_mode.switch;
-        let sources: Vec<String> = config.sources.keys().cloned().collect();
-        let parsers = config.sources.to_owned();
+        let sources: Vec<String> = config.get_sources().keys().cloned().collect();
+        let parsers = config.get_sources().to_owned();
         let translate = config.translate.clone();
         Scraping {
             debug,

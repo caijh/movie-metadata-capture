@@ -9,7 +9,8 @@ mod tests {
         if config.proxy.switch {
             set_proxy(&config.proxy).await.expect("fail to set proxy");
         }
-        let parser = config.sources.get("fanza").unwrap();
+        let sources = config.get_sources();
+        let parser = sources.get("fanza").unwrap();
         let movie = parser.search("ka9oae232", false).await;
         println!("{:?}", movie);
         assert!(movie.is_some());
