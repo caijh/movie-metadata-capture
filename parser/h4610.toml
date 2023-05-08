@@ -1,6 +1,5 @@
 [sources.H4610]
 name = "H4610"
-number_extractor = ["H4610"]
 source_detail_url = ["https://www.h4610.com/moviepages/"]
 expr_number = '//div[@id="moviePlayer"]/div/@poster'
 expr_title = '//div[@class="moviePlay_title"]/h1/span/text()'

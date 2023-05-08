@@ -1,6 +1,5 @@
 [sources.javdb]
 name = "javdb"
-number_extractor = ["heyzo", "rebd"]
 source_age_check = { url = "https://javdb.com/over18?respond=1", target_name = "rurl", target_url = "1j04p8mqknwdh790ds2m6t6d87Zq3f5cd57fq82b9wqzpy4c301b7" }
 source_detail_url = ["https://javdb.com/v/"]
 source_max_userrating = "5"

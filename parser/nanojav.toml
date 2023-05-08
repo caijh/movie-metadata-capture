@@ -1,6 +1,5 @@
 [sources.nanojav]
 name = "nanojav"
-number_extractor = ["fc2"]
 source_detail_url = ["https://www.nanojav.com/jav/"]
 expr_number = '//div[@class="container"]//h1/a/text()'
 expr_title = '//div[@class="container"]//h1/../p[2]/text()'

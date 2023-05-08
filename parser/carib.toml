@@ -1,6 +1,5 @@
 [sources.carib]
 name = "carib"
-number_extractor = ["carib"]
 source_detail_url = ["https://www.caribbeancom.com/moviepages/"]
 expr_number = '/html/head/link[@hreflang="en-US"]/@href'
 expr_title = "//div[@class='movie-info section']/div[@class='heading']/h1[@itemprop='name']/text()"

@@ -60,27 +60,36 @@ values = "outline"
 [[number_extractor]]
 name = "rebd"
 regex = '(?i)\b(h_346)?REBD-?\d+'
+sources = ["fanza"]
 [[number_extractor]]
 name = "oae"
 regex = '(?i)\bOAE-?\d+'
+sources = ["fanza"]
 [[number_extractor]]
 name = "sprl"
 regex = '(?i)\bSPRL-?\d+'
+sources = ["fanza"]
 [[number_extractor]]
 name = "higr"
 regex = '(?i)\bHIGR-?\d+'
+sources = ["fanza"]
 [[number_extractor]]
 name = "fc2"
 regex = '(?i)\bFC2-?(PPV[-\s])?\d+'
+sources = ["fc2"]
 [[number_extractor]]
 name = "heyzo"
 regex = '(?i)\bheyzo[-\s]+\d+'
+sources = ["javbus", "javdb"]
 [[number_extractor]]
 name = "carib"
 regex = '\d{6}(-|_)\d{3}'
+sources = ["carib"]
 [[number_extractor]]
 name = "H4610"
 regex = 'H4610(-|_)\w+'
+sources = ["H4610"]
 [[number_extractor]]
 name = "heydouga"
 regex = '\d{4}(-|_)\d{4}'
+sources = ["heydouga"]

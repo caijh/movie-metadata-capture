@@ -1,6 +1,5 @@
 [sources.fc2]
 name = "fc2"
-number_extractor = ["fc2"]
 source_detail_url = ["https://adult.contents.fc2.com/article/"]
 expr_number = '/html/head/title/text()'
 expr_title = '//*[@id="top"]/div[1]/section[1]/div/section/div[2]/h3/text()'

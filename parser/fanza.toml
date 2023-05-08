@@ -1,6 +1,5 @@
 [sources.fanza]
 name = "fanza"
-number_extractor = ["rebd", "oae", "sprl", "higr"]
 source_age_check = { url = "https://www.dmm.co.jp/source_age_check/=/declared=yes/", target_name = "rurl", target_url = "https://www.dmm.co.jp/top/" }
 source_detail_url = ["https://www.dmm.co.jp/digital/videoa/-/detail/=/cid=", "https://www.dmm.co.jp/mono/dvd/-/detail/=/cid=", "https://www.dmm.co.jp/digital/anime/-/detail/=/cid=", "https://www.dmm.co.jp/mono/anime/-/detail/=/cid=", "https://www.dmm.co.jp/digital/videoc/-/detail/=/cid=", "https://www.dmm.co.jp/digital/nikkatsu/-/detail/=/cid=", "https://www.dmm.co.jp/rental/-/detail/=/cid="]
 source_max_userrating = "50"

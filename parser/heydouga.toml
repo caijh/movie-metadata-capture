@@ -1,6 +1,5 @@
 [sources.heydouga]
 name = "heydouga"
-number_extractor = ["heydouga"]
 source_detail_url = ["https://www.heydouga.com/moviepages/"]
 source_allow_use_site_number = false
 source_max_userrating = "5"
