@@ -1,6 +1,7 @@
+use config::Config;
 use std::collections::HashMap;
 use std::error::Error;
-use std::path::PathBuf;
+use std::path::Path;
 use std::sync::{Arc, RwLock};
 use std::{env, fs, io};
 
@@ -221,7 +222,7 @@ impl Condition {
             "!contains" => !sourcs.contains(self.args[0].as_str()),
             "empty" => sourcs.is_empty(),
             "!empty" => !sourcs.is_empty(),
-            _ => false
+            _ => false,
         }
     }
 }
@@ -275,7 +276,7 @@ impl StringFlow {
                 }
                 "lowercase" => {
                     result = result.to_lowercase();
-                },
+                }
                 "trim" => {
                     result = result.trim().to_string();
                 }
@@ -293,8 +294,11 @@ lazy_static! {
 
 impl AppConfig {
     pub async fn load_config_file(file: &str) -> Result<(), Box<dyn Error>> {
-        let config_file_path = PathBuf::from(file);
-        let cfg = confy::load_path::<AppConfig>(config_file_path)?;
+        let settings = Config::builder()
+            .add_source(config::File::from(Path::new(file)))
+            .build()
+            .expect(format!("[!] Fail to load config file {}", file).as_str());
+        let cfg = settings.try_deserialize::<AppConfig>().unwrap();
 
         let config_clone = CONFIG.clone();
         let mut config = config_clone.write().unwrap();
