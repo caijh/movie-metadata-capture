@@ -1,0 +1,35 @@
+[sources.heydouga]
+name = "heydouga"
+number_extractor = ["heydouga"]
+source_detail_url = ["https://www.heydouga.com/moviepages/"]
+source_allow_use_site_number = false
+source_max_userrating = "5"
+expr_number = '//*[@id="movie-review-form"]/input[4]/@value'
+expr_title = '//*[@id="title-bg"]/h1/text()'
+expr_actor_name = '//*[@id="movie-info"]/ul/li[2]/span[2]/a/text()'
+expr_actor_photo = ''
+expr_studio = ''
+expr_runtime = '//*[@id="movie-info"]/ul/li[4]/span[2]/text()'
+expr_release = '//*[@id="movie-info"]/ul/li[1]/span[2]/text()'
+expr_outline = '//*[@id="movie-description"]/div/p/text()'
+expr_director = ''
+expr_tags = '//*[@id="movie_tag_list"]/li/a/text()'
+expr_label = ''
+expr_series = ''
+expr_cover = '//*[@id="title-bg"]/h1/div/a/@href'
+expr_small_cover = ''
+expr_extra_fanart = ''
+expr_trailer = ''
+expr_uncensored = ''
+expr_uservotes = ''
+expr_userrating = '//*[@id="score_number"]/text()'
+replace_number = []
+replace_title = [{action = "trim", args = []}]
+replace_cover = [{action = "substring", args = ["/moviepages/", "/index.html"]}, {action = "replace", args = ["/moviepages/", ""]}, {action = "insert", args = ["0", "https://image01-www.heydouga.com/contents/"]}, {action = "append", args = ["/player_thumb.jpg"]}]
+replace_extra_fanart = []
+replace_actor_photo = []
+replace_studio = [{action = "append", args = ["heydouga"]}]
+replace_runtime = [{action = "replace", args = [" 分", ""]}]
+[[sources.heydouga.number_pre_handle]]
+name = "*"
+rule = [{ action = "replace", args = ["-", "/"] }, {action = "append", args = ["/index.html"]}]

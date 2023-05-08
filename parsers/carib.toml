@@ -1,0 +1,32 @@
+[sources.carib]
+name = "carib"
+number_extractor = ["carib"]
+source_detail_url = ["https://www.caribbeancom.com/moviepages/"]
+expr_number = '/html/head/link[@hreflang="en-US"]/@href'
+expr_title = "//div[@class='movie-info section']/div[@class='heading']/h1[@itemprop='name']/text()"
+expr_actor_name = "//span[@class='spec-content']/a[@itemprop='actor']/span/text()"
+expr_actor_photo = ''
+expr_studio = ''
+expr_runtime = "//span[@class='spec-content']/span[@itemprop='duration']/text()"
+expr_release = "//li[2]/span[@class='spec-content']/text()"
+expr_outline = "//div[@class='movie-info section']/p[@itemprop='description']/text()"
+expr_director = ''
+expr_tags = "//span[@class='spec-content']/a[@itemprop='genre']/text()"
+expr_label = "//span[@class='spec-title'][contains(text(),'シリーズ')]/../span[@class='spec-content']/a/text()"
+expr_series = "//span[@class='spec-title'][contains(text(),'シリーズ')]/../span[@class='spec-content']/a/text()"
+expr_cover = '/html/head/link[@hreflang="en-US"]/@href'
+expr_small_cover = ''
+expr_extra_fanart = "//*[@id='sampleexclude']/div[2]/div/div[@class='grid-item']/div/a[starts-with(@href, '/moviepages')]/@href"
+expr_trailer = ""
+expr_uncensored = ''
+expr_uservotes = ''
+expr_userrating = ""
+replace_number = [{ action = "substring", args = ["moviepages/", "/index.html"] }, { action = "replace", args = ["moviepages/", ""] }]
+replace_cover = [{ action = "substring", args = ["/moviepages/", "/index.html"] }, { action = "insert", args = ["0", "https://www.caribbeancom.com"] }, {action = "append", args = ["/images/l_l.jpg"]}]
+replace_extra_fanart = [{ action = "insert", args = ["0", "https://www.caribbeancom.com"]}]
+replace_actor_photo = []
+replace_runtime = [{action = "trim", args = []}]
+replace_release = [{action = "replace", args = ["/", "-"]}]
+[[sources.carib.number_pre_handle]]
+name = "carib"
+rule = [{ action = "append", args = ["/index.html"] }]

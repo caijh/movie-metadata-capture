@@ -1,0 +1,31 @@
+
+[sources.fc2]
+name = "fc2"
+number_extractor = ["fc2"]
+source_detail_url = ["https://adult.contents.fc2.com/article/"]
+expr_number = '/html/head/title/text()'
+expr_title = '//*[@id="top"]/div[1]/section[1]/div/section/div[2]/h3/text()'
+expr_actor_name = '//*[@id="top"]/div[1]/section[1]/div/section/div[2]/ul/li[3]/a/text()'
+expr_actor_photo = '//*[@id="top"]/div[1]/section[1]/div/section/div[1]/span/img/@src'
+expr_studio = '//*[@id="top"]/div[1]/section[1]/div/section/div[2]/ul/li[3]/a/text()'
+expr_runtime = "//p[@class='items_article_info']/text()"
+expr_release = '//*[@id="top"]/div[1]/section[1]/div/section/div[2]/div[2]/p/text()'
+expr_outline = "//div[@class='mg-b20 lh4']//p/text()"
+expr_director = '//*[@id="top"]/div[1]/section[1]/div/section/div[2]/ul/li[3]/a/text()'
+expr_tags = "//a[@class='tag tagTag']/text()"
+expr_label = "//td[contains(text(),'レーベル：')]/following-sibling::td/a/text()"
+expr_series = "//td[contains(text(),'シリーズ：')]/following-sibling::td/a/text()"
+expr_cover = "//div[@class='items_article_MainitemThumb']/span/img/@src"
+expr_small_cover = ''
+expr_extra_fanart = '//ul[@class="items_article_SampleImagesArea"]/li/a/@href'
+expr_trailer = ""
+expr_uncensored = ""
+expr_uservotes = '//li[@class="items_article_StarA"]/a/span/text()'
+expr_userrating = ""
+replace_number = [{ action = "substring", args = ["FC2", ""] }]
+replace_cover = [{ action = "insert", args = ["0", "https:"] }]
+replace_extra_fanart = []
+replace_actor_photo = [{ action = "insert", args = ["0", "https:"] }]
+[[sources.fc2.number_pre_handle]]
+name = "fc2"
+rule = [{ action = "lowercase", args = [] }, { action = "replace", args = ["fc2-ppv-", ""] }, { action = "replace", args = ["fc2-", ""] }, { action = "replace", args = ["fc2ppv ", ""] }, { action = "append", args = ["/"] }]

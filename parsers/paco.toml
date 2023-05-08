@@ -1,0 +1,31 @@
+[sources.paco]
+name = "paco"
+number_extractor = ["paco"]
+source_detail_url = ["https://www.pacopacomama.com/movies/"]
+expr_number = '//*[@id="movies"]/div/div[1]/div[1]//video@poster'
+expr_title = '//*[@id="movies"]/div/div[1]/div[2]/div[1]/div/h1/text()'
+expr_actor_name = '//*[@id="movies"]/div/div[1]/div[2]/div[1]/ul/li[3]/span[2]/span/a/text()'
+expr_actor_photo = ''
+expr_studio = '//*[@id="gh-paco"]/a/@title'
+expr_runtime = '//*[@id="movies"]/div/div[1]/div[2]/div[1]/ul/li[2]/span[2]/text()'
+expr_release = '//*[@id="movies"]/div/div[1]/div[2]/div[1]/ul/li[1]/span[2]/text()'
+expr_outline = '//*[@id="movies"]/div/div[1]/div[2]/div[1]/p/text()'
+expr_director = ''
+expr_tags = '//*[@id="movies"]/div/div[1]/div[2]/div[1]/ul/li[5]/span[2]/span/a/text()'
+expr_label = '//*[@id="movies"]/div/div[1]/div[2]/div[1]/ul/li[4]/span[2]/a/text()'
+expr_series = '//*[@id="movies"]/div/div[1]/div[2]/div[1]/ul/li[4]/span[2]/a/text()'
+expr_cover = '//*[@id="video-player-0_html5_api"]@poster'
+expr_small_cover = ''
+expr_extra_fanart = '//*[@id="movies"]/div/div[1]/div[2]/div[3]/div/div/div/div/img/@data-vue-img-src'
+expr_trailer = ''
+expr_uncensored = ''
+expr_uservotes = ''
+expr_userrating = ''
+replace_number = [{ action = "substring", args = ["/sample/", "/l_hd.jpg"] }, { action = "replace", args = ["/sample/", ""] }]
+replace_cover = []
+replace_extra_fanart = [{action = "insert", args = ["0", "https://www.pacopacomama.com/"]}]
+replace_actor_photo = []
+[[sources.paco.number_pre_handle]]
+name = "*"
+rule = [{ action = "append", args = ["/"] }]
+
