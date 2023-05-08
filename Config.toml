@@ -60,19 +60,19 @@ values = "outline"
 [[number_extractor]]
 name = "rebd"
 regex = '(?i)\b(h_346)?REBD-?\d+'
-sources = ["fanza"]
+sources = ["fanza", "javbus", "javdb"]
 [[number_extractor]]
 name = "oae"
 regex = '(?i)\bOAE-?\d+'
-sources = ["fanza"]
+sources = ["fanza", "javbus", "javdb"]
 [[number_extractor]]
 name = "sprl"
 regex = '(?i)\bSPRL-?\d+'
-sources = ["fanza"]
+sources = ["fanza", "javbus", "javdb"]
 [[number_extractor]]
 name = "higr"
 regex = '(?i)\bHIGR-?\d+'
-sources = ["fanza"]
+sources = ["fanza", "javbus", "javdb"]
 [[number_extractor]]
 name = "fc2"
 regex = '(?i)\bFC2-?(PPV[-\s])?\d+'
