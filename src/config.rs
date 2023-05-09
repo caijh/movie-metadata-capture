@@ -272,12 +272,20 @@ impl StringFlow {
                 "insert" => {
                     let start = get_start_index(result.as_str(), rule.args[0].as_str());
                     let index = result.find(rule.args[1].as_str());
-                    if index.is_none() {
-                        result.insert_str(start, rule.args[1].as_str());
-                    } else {
-                        let index = index.unwrap();
+                    if let Some(index) = index {
                         if index != start {
                             result.insert_str(start, rule.args[1].as_str());
+                        }
+                    } else {
+                        result.insert_str(start, rule.args[1].as_str());
+                    }
+                }
+                "between" => {
+                    if let Some(start_idx) = result.find(rule.args[0].as_str()) {
+                        let start_pos = start_idx + rule.args[0].len();
+                        if let Some(end_idx) = result[start_pos..].find(rule.args[1].as_str()) {
+                            let end_pos = start_pos + end_idx;
+                            result = result[start_pos..end_pos].to_string();
                         }
                     }
                 }
