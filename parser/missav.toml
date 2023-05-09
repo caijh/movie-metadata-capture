@@ -10,6 +10,7 @@ name = "rebd"
 rule = []
 [sources.fanza]
 name = "fanza"
+number_extractor = []
 source_age_check = { url = "", target_name = "", target_url = "" }
 source_detail_url = []
 source_max_userrating = "50"
