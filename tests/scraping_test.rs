@@ -16,11 +16,18 @@ mod tests {
         let config = AppConfig::get_app_config();
         let mut scraping = Scraping::new(&config);
         let number_parser = NumberExtractor {
-            name: "paco".to_string(),
-            regex: "".to_string(),
-            sources: None,
+            name: "fc2".to_string(),
+            regex: r#"(?i)\bFC2-?(PPV[-\s])?\d+"#.to_string(),
+            sources: Some(vec!["missav".to_string()]),
         };
-        let movie = scraping.search("022021_437", &number_parser, None, Some("paco".to_string())).await;
+        let movie = scraping
+            .search(
+                "FC2-1928548",
+                &number_parser,
+                None,
+                Some("missav".to_string()),
+            )
+            .await;
         println!("{:?}", movie);
         assert!(movie.is_some());
         let movie = movie.unwrap();

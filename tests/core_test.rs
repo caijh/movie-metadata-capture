@@ -2,7 +2,6 @@
 mod tests {
     use movie_metadata_capture::config::AppConfig;
     use movie_metadata_capture::core::{download_cover, download_small_cover};
-    use movie_metadata_capture::request::set_proxy;
     use std::path::Path;
 
     #[tokio::test]
@@ -12,10 +11,6 @@ mod tests {
             .expect("Fail to load config");
 
         let config = AppConfig::get_app_config();
-        if config.proxy.switch {
-            set_proxy(&config.proxy).await.expect("Fail to set proxy");
-        }
-
         let cover_small_url = "https://okami.my.id/wp-content/uploads/2023/04/3JuliaPle3.jpg";
         let dir = "dir";
         let filename = "image.jpg";
@@ -32,9 +27,6 @@ mod tests {
             .expect("Fail to load config");
 
         let config = AppConfig::get_app_config();
-        if config.proxy.switch {
-            set_proxy(&config.proxy).await.expect("Fail to set proxy");
-        }
 
         let cover_url = "https://pics.dmm.co.jp/mono/movie/adult/ka9oae232/ka9oae232pl.jpg";
         let dir = ".";
