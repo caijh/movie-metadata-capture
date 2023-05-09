@@ -76,7 +76,7 @@ sources = ["fanza", "javbus", "javdb"]
 [[number_extractor]]
 name = "fc2"
 regex = '(?i)\bFC2-?(PPV[-\s])?\d+'
-sources = ["fc2", "missav"]
+sources = ["fc2", "nanojav", "missav"]
 [[number_extractor]]
 name = "heyzo"
 regex = '(?i)\bheyzo[-\s]+\d+'
