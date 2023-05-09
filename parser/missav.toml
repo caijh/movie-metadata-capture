@@ -1,33 +1,25 @@
-[sources.fanza.site_search]
-url = "https://javdb.com/search?q="
-site_number_pre_handle = []
-expr_number = ''
-expr_id = ''
-site_number_post_handle = []
-site_id_post_handle = []
-[[sources.fanza.number_pre_handle]]
-name = "rebd"
-rule = []
-[sources.fanza]
-name = "fanza"
-number_extractor = []
-source_age_check = { url = "", target_name = "", target_url = "" }
-source_detail_url = []
-source_max_userrating = "50"
-source_allow_use_site_number = false
-expr_number = ''
-expr_title = ''
-expr_actor_name = ''
+[[sources.missav.number_pre_handle]]
+name = "fc2"
+rule = [{ action = "lowercase", args = [] }, { action = "replace", args = ["fc2-ppv-", ""] }, { action = "replace", args = ["fc2-", ""] }, { action = "replace", args = ["fc2ppv ", ""] }, { action = "insert", args = ["0","fc2-ppv-"] }]
+
+[sources.missav]
+name = "missav"
+source_detail_url = ["https://missav.com/cn/"]
+source_max_userrating = ""
+source_allow_use_site_number = true
+expr_number = '//span[contains(text(),"番号")]/following-sibling::span/text()'
+expr_title = '//span[contains(text(),"标题")]/following-sibling::span/text()'
+expr_actor_name = '//span[contains(text(),"类型")]/following-sibling::a/text()'
 expr_actor_photo = ''
 expr_studio = ''
 expr_runtime = ''
-expr_release = ''
-expr_outline = ''
+expr_release = '//span[contains(text(),"发行日期")]/following-sibling::span/text()'
+expr_outline = '//h1[1]/text()'
 expr_director = ''
-expr_tags = ''
+expr_tags = '//span[contains(text(),"标籤")]/following-sibling::a/text()'
 expr_label = ''
 expr_series = ''
-expr_cover = ''
+expr_cover = '//video[1]/@data-poster'
 expr_small_cover = ''
 expr_extra_fanart = ''
 expr_trailer = ""
@@ -39,7 +31,7 @@ replace_title = []
 replace_outline = []
 replace_studio = []
 replace_director = []
-replace_cover = []
+replace_cover = [{action = "substring", args = ["0", "?"]}]
 replace_small_cover = []
 replace_extra_fanart = []
 replace_actor_photo = []
