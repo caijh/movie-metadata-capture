@@ -13,7 +13,7 @@ use glob::glob;
 
 use crate::files::rm_empty_folder;
 
-use crate::request::set_proxy;
+use crate::request::Request;
 use crate::site_search::SiteSearch;
 use crate::strings::{get_end_index, get_start_index};
 
@@ -305,7 +305,7 @@ impl AppConfig {
         let settings = Config::builder()
             .add_source(config::File::from(Path::new(file)))
             .build()
-            .expect(format!("[!] Fail to load config file {}", file).as_str());
+            .unwrap_or_else(|_| panic!("[!] Fail to load config file {}", file));
         let cfg = settings.try_deserialize::<AppConfig>().unwrap();
 
         let config_clone = CONFIG.clone();
@@ -313,19 +313,26 @@ impl AppConfig {
         *config = cfg;
 
         let parsers = Config::builder()
-        .add_source(
-                glob((config.common.parser_folder.to_string() +"/*.toml").as_str())
+            .add_source(
+                glob((config.common.parser_folder.to_string() + "/*.toml").as_str())
                     .unwrap()
                     .map(|path| File::from(path.unwrap()))
                     .collect::<Vec<_>>(),
-            ).build().expect(format!("[!] Fail to load parsers from dir {}", config.common.parser_folder).as_str());
+            )
+            .build()
+            .unwrap_or_else(|_| {
+                panic!(
+                    "[!] Fail to load parsers from dir {}",
+                    config.common.parser_folder
+                )
+            });
         let sources_holder = parsers.try_deserialize::<SourcesHolder>().unwrap();
         for ele in sources_holder.sources {
             SOURCES.write().unwrap().insert(ele.0, ele.1);
         }
 
         if config.proxy.switch {
-            set_proxy(&config.proxy).await?;
+            Request::set_proxy(&config.proxy).await?;
         }
 
         Ok(())

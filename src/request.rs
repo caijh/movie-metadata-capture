@@ -9,7 +9,7 @@ use std::{
 
 use crate::config;
 use lazy_static::lazy_static;
-use reqwest::{Client, Proxy, Url, StatusCode};
+use reqwest::{Client, Proxy, StatusCode, Url};
 use tokio::sync::RwLock;
 
 pub struct Request {
@@ -23,20 +23,22 @@ lazy_static! {
             .cookie_store(true)
             .build()
             .unwrap();
-        Arc::new(RwLock::new(Request { client: client }))
+        Arc::new(RwLock::new(Request { client }))
     };
 }
 
-pub async fn set_proxy(proxy: &config::Proxy) -> Result<(), Box<dyn Error>> {
-    let timeout = proxy.timeout;
-    let proxy = Proxy::all(&proxy.proxy).unwrap();
-    let client = Client::builder()
-        .user_agent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.133 Safari/537.36")
-        .proxy(proxy).cookie_store(true).connect_timeout(Duration::from_secs(timeout)).build().unwrap();
-    let req_clone = REQUEST.clone();
-    let mut request = req_clone.write().await;
-    request.client = client;
-    Ok(())
+impl Request {
+    pub async fn set_proxy(proxy: &config::Proxy) -> Result<(), Box<dyn Error>> {
+        let timeout = proxy.timeout;
+        let proxy = Proxy::all(&proxy.proxy).unwrap();
+        let client = Client::builder()
+            .user_agent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.133 Safari/537.36")
+            .proxy(proxy).cookie_store(true).connect_timeout(Duration::from_secs(timeout)).build().unwrap();
+        let req_clone = REQUEST.clone();
+        let mut request = req_clone.write().await;
+        request.client = client;
+        Ok(())
+    }
 }
 
 pub async fn client() -> Result<Client, Box<dyn Error>> {
@@ -62,7 +64,7 @@ pub async fn download_file(url: &str, save_path: &PathBuf) -> Result<PathBuf, Bo
 
 pub async fn parallel_download_files(
     dn_list: Vec<(String, PathBuf)>,
-) -> Vec<Result<PathBuf, Box<dyn std::error::Error>>> {
+) -> Vec<Result<PathBuf, Box<dyn Error>>> {
     let tasks = dn_list
         .into_iter()
         .map(|(url, save_path)| {
