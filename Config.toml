@@ -26,7 +26,7 @@ aspect_ratio = 2.12
 
 [proxy]
 switch = true
-proxy = "socks5://127.0.0.1:10808"
+proxy = "http://127.0.0.1:10809"
 timeout = 20
 retry = 3
 cacert_file = ""
