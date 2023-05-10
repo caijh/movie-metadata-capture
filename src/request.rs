@@ -55,7 +55,7 @@ pub async fn download_file(url: &str, save_path: &PathBuf) -> Result<PathBuf, Bo
             let dir = save_path.parent().unwrap();
             create_dir_all(dir)?;
             let mut file = File::create(save_path).unwrap();
-            let _ = file.write_all(&mut res.bytes().await.unwrap());
+            let _ = file.write_all(&res.bytes().await.unwrap());
             Ok(save_path.clone())
         }
         Err(e) => Err(e.into()),
@@ -69,7 +69,7 @@ pub async fn parallel_download_files(
         .into_iter()
         .map(|(url, save_path)| {
             let url = url;
-            let save_path = save_path.clone();
+            let save_path = save_path;
             async move { download_file(&url, &save_path).await }
         })
         .collect::<Vec<_>>();
