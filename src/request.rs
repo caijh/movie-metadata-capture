@@ -39,17 +39,19 @@ impl Request {
         request.client = client;
         Ok(())
     }
+
+    pub async fn get_client() -> Result<Client, Box<dyn Error>> {
+        let request = REQUEST.read().await;
+        let client = &request.client;
+        Ok(client.clone())
+    }
+
 }
 
-pub async fn client() -> Result<Client, Box<dyn Error>> {
-    let request = REQUEST.read().await;
-    let client = &request.client;
-    Ok(client.clone())
-}
 
 pub async fn download_file(url: &str, save_path: &PathBuf) -> Result<PathBuf, Box<dyn Error>> {
     let url = Url::parse(url).unwrap();
-    let client = client().await?;
+    let client = Request::get_client().await?;
     match client.get(url).send().await {
         Ok(res) => {
             let dir = save_path.parent().unwrap();
@@ -80,7 +82,7 @@ pub async fn parallel_download_files(
 
 // get html content from url
 pub async fn get_html_content(url: &str) -> Result<String, Box<dyn Error>> {
-    let client = client().await?;
+    let client = Request::get_client().await?;
     let res = client.get(url).send().await?;
     if res.status() == StatusCode::NOT_FOUND {
         return Err("404".into());

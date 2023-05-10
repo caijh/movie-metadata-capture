@@ -1,6 +1,6 @@
 use serde_derive::{Deserialize, Serialize};
 
-use crate::request::client;
+use crate::request::{Request};
 
 pub struct AzureTranslator {
     pub service_url: String,
@@ -36,7 +36,7 @@ impl AzureTranslator {
         let request_body = [AzureRequest { text }];
         let request_body = serde_json::to_string(&request_body).unwrap();
         let params = [("from", from_lang), ("to", to_lang)];
-        let client = client().await.expect("fail to get client");
+        let client = Request::get_client().await.expect("fail to get client");
         let region = &self.region;
         let region = if region.is_some() {
             region.as_ref().unwrap().to_string()
