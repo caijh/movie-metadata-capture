@@ -41,7 +41,7 @@ impl Scraping {
     ) -> Option<Movie> {
         self.specified_source = specified_source;
         let sources = sources.unwrap_or_default();
-        let sources: Vec<&str> = sources.split(",").filter(|s| s.is_empty().not()).collect();
+        let sources: Vec<&str> = sources.split(',').filter(|s| s.is_empty().not()).collect();
 
         let movie = self.search_movie(number, number_extractor, sources).await;
 
