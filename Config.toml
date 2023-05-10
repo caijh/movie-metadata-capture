@@ -78,6 +78,10 @@ name = "impno"
 regex = '(?i)\bIMPNO-?\d+'
 sources = ["javdb", "javbus"]
 [[number_extractor]]
+name = "mbdd"
+regex = '(?i)\bMBDD-?\d+'
+sources = ["javbus", "javdb"]
+[[number_extractor]]
 name = "fc2"
 regex = '(?i)\bFC2-?(PPV[-\s])?\d+'
 sources = ["fc2", "nanojav", "missav"]
