@@ -74,6 +74,10 @@ name = "higr"
 regex = '(?i)\bHIGR-?\d+'
 sources = ["fanza", "javbus", "javdb"]
 [[number_extractor]]
+name = "impno"
+regex = '(?i)\bIMPNO-?\d+'
+sources = ["javdb", "javbus"]
+[[number_extractor]]
 name = "fc2"
 regex = '(?i)\bFC2-?(PPV[-\s])?\d+'
 sources = ["fc2", "nanojav", "missav"]
