@@ -41,7 +41,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
             let movie = scraping
                 .search(&number, &number_extractor, None, Some(info_args.source))
                 .await;
-            if movie.is_some() {
+            if movie.is_some() && !config.debug_mode.switch {
                 println!("{:?}", movie);
             }
         },
