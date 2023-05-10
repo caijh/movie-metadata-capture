@@ -116,7 +116,7 @@ impl Scraping {
             match self.parsers.get(source.as_str()) {
                 Some(parser) => {
                     if self.debug {
-                        println!("[+]select {}", source);
+                        println!("[+]select source: {}", source);
                     }
                     movie = parser.search(file_number, self.debug).await;
                     if movie.is_some() {
