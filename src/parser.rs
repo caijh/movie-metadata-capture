@@ -54,9 +54,7 @@ impl Parser {
         let mut number = number.to_string();
         if let Some(site_search) = &self.site_search {
             let site_number = site_search.search(number.as_str()).await;
-            if site_number.is_none() {
-                return None;
-            }
+            site_number.as_ref()?;
             number = if let Some(num) = site_number {
                 num
             } else {
