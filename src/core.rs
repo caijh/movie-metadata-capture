@@ -992,7 +992,7 @@ pub async fn scraping_data_and_move_movie_with_custom_number(
     let file_name = Path::new(file_path).file_name().unwrap().to_str().unwrap();
 
     println!(
-        "[!] [{}] As Number Processing for '{}'",
+        "[!][{}] As Number Processing for '{}'",
         custom_number, file_path
     );
     if !custom_number.is_empty() {
