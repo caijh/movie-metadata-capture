@@ -223,12 +223,12 @@ pub struct Condition {
 }
 
 impl Condition {
-    fn is_match(&self, sourcs: &str) -> bool {
+    fn is_match(&self, source: &str) -> bool {
         match self.name.as_str() {
-            "contains" => sourcs.contains(self.args[0].as_str()),
-            "!contains" => !sourcs.contains(self.args[0].as_str()),
-            "empty" => sourcs.is_empty(),
-            "!empty" => !sourcs.is_empty(),
+            "contains" => source.contains(self.args[0].as_str()),
+            "!contains" => !source.contains(self.args[0].as_str()),
+            "empty" => source.is_empty(),
+            "!empty" => !source.is_empty(),
             _ => false,
         }
     }
