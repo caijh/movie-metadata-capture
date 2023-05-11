@@ -19,7 +19,6 @@ pub struct Request {
 lazy_static! {
     pub static ref REQUEST: Arc<RwLock<Request>> = {
         let client = reqwest::Client::builder()
-            .user_agent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.133 Safari/537.36")
             .cookie_store(true)
             .build()
             .unwrap();
@@ -32,8 +31,11 @@ impl Request {
         let timeout = proxy.timeout;
         let proxy = Proxy::all(&proxy.proxy).unwrap();
         let client = Client::builder()
-            .user_agent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.133 Safari/537.36")
-            .proxy(proxy).cookie_store(true).connect_timeout(Duration::from_secs(timeout)).build().unwrap();
+            .proxy(proxy)
+            .cookie_store(true)
+            .connect_timeout(Duration::from_secs(timeout))
+            .build()
+            .unwrap();
         let req_clone = REQUEST.clone();
         let mut request = req_clone.write().await;
         request.client = client;
@@ -45,9 +47,7 @@ impl Request {
         let client = &request.client;
         Ok(client.clone())
     }
-
 }
-
 
 pub async fn download_file(url: &str, save_path: &PathBuf) -> Result<PathBuf, Box<dyn Error>> {
     let url = Url::parse(url).unwrap();
