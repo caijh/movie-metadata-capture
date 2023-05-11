@@ -22,6 +22,7 @@ expr_uservotes = '//li[@class="items_article_StarA"]/a/span/text()'
 expr_userrating = ""
 replace_number = [{ action = "substring", args = ["FC2", ""] }]
 replace_cover = [{ action = "insert", args = ["0", "https:"] }]
+replace_release = [{action = "substring", args =[":", ""]}, {action = "trim", args =[]}, {action = "replace", args = ["/", "-"]}]
 replace_extra_fanart = []
 replace_actor_photo = [{ action = "insert", args = ["0", "https:"] }]
 [[sources.fc2.number_pre_handle]]
