@@ -24,7 +24,6 @@ pub struct Movie {
     pub actor: Vec<(String, String)>,
     pub label: String,
     pub tag: Vec<String>,
-    pub genre: String,
     pub release: String,
     pub cover: String,
     pub cover_small: String,
@@ -158,15 +157,13 @@ impl Parser {
             actor.push(tuple);
         }
 
-        let expr_cover = self
-            .expr_cover
-            .replace("$cover_number", number.to_string().as_str());
+        let expr_cover = self.expr_cover.replace("$cover_number", number.as_str());
         let cover = evaluate_xpath_node(document.root(), &expr_cover).unwrap();
         let cover = value_to_string_use_handle(cover, &self.replace_cover);
 
         let expr_small_cover = self
             .expr_small_cover
-            .replace("$cover_number", number.to_string().as_str());
+            .replace("$cover_number", number.as_str());
         let cover_small = evaluate_xpath_node(document.root(), &expr_small_cover).unwrap();
         let cover_small = value_to_string_use_handle(cover_small, &self.replace_small_cover);
 
@@ -200,18 +197,13 @@ impl Parser {
         let uncensored = match uncensored {
             Boolean(b) => b,
             _ => {
-                if tags.contains(&"無码".to_string())
+                tags.contains(&"無码".to_string())
                     || tags.contains(&"無修正".to_string())
                     || tags.contains(&"uncensored".to_string())
-                {
-                    true
-                } else {
-                    false
-                }
             }
         };
         Some(Movie {
-            number: number.to_string(),
+            number,
             title,
             series,
             studio,
@@ -223,7 +215,6 @@ impl Parser {
             actor,
             label,
             tag: tags,
-            genre: "".to_string(),
             release,
             cover,
             cover_small,
@@ -231,7 +222,7 @@ impl Parser {
             website: detail_url,
             uncensored,
             user_rating,
-            max_user_rating: max_user_rating,
+            max_user_rating,
             user_votes,
         })
     }
