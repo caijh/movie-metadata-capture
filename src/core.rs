@@ -22,7 +22,7 @@ use quick_xml::se::to_string;
 use serde::Serialize;
 use std::fs;
 use std::io::Write;
-use xmlem::{Document, display};
+use xmlem::{display, Document};
 
 use crate::number_parser::get_number;
 use walkdir::WalkDir;
@@ -80,7 +80,7 @@ pub async fn core_main(
     let _4k = lower_path.contains("4k");
 
     let cover = &movie.cover;
-    let ext = image_ext(Some(cover.as_str()));
+    let ext = image_ext(cover.as_str());
     let mut thumb_path = format!("thumb{}", ext);
     let mut poster_path = format!("poster{}", ext);
     let mut fanart_path = format!("fanart{}", ext);
@@ -275,17 +275,14 @@ fn is_uncensored(number: &str, config: &AppConfig) -> bool {
     }
 }
 
-fn image_ext(url: Option<&str>) -> &str {
+fn image_ext(url: &str) -> String {
     let image_extensions = [".jpg", ".jpeg", ".gif", ".png", ".bmp"];
-    url.and_then(move |s| {
-        for x in image_extensions.iter() {
-            if s.ends_with(x) {
-                return Some(x.clone());
-            }
+    for x in image_extensions.iter() {
+        if url.ends_with(x) {
+            return x.to_string();
         }
-        None
-    })
-    .unwrap_or(".jpg")
+    }
+    "".to_string()
 }
 
 pub async fn download_small_cover(
@@ -407,10 +404,10 @@ async fn extra_fanart_download_one_by_one(
     dir: &str,
     config: &AppConfig,
 ) {
-    let extrafanart_path = Path::new(dir).join(&config.extra_fanart.extra_fanart_folder);
+    let extra_fanart_path = Path::new(dir).join(&config.extra_fanart.extra_fanart_folder);
     let download_only_missing_images = config.common.download_only_missing_images;
     let jpg_filename = format!("extrafanart-{}.jpg", i + 1);
-    let jpg_full_path = extrafanart_path.join(&jpg_filename);
+    let jpg_full_path = extra_fanart_path.join(&jpg_filename);
 
     for i in 0..config.proxy.retry {
         if download_only_missing_images && file_exit_and_not_empty(&jpg_full_path) {
@@ -418,7 +415,7 @@ async fn extra_fanart_download_one_by_one(
         }
         download_file_with_filename(
             extrafanart_url,
-            extrafanart_path.to_string_lossy().as_ref(),
+            extra_fanart_path.to_string_lossy().as_ref(),
             &jpg_filename,
             &config,
         )
@@ -451,7 +448,7 @@ pub async fn download_actor_photo(
     let mut dn_list = Vec::new();
     for (actor_name, url) in actors.iter() {
         if url.is_empty().not() {
-            let pic_full_path = actors_dir.join(format!("{}{}", actor_name, image_ext(Some(url))));
+            let pic_full_path = actors_dir.join(format!("{}{}", actor_name, image_ext(url)));
             if download_only_missing_images && file_exit_and_not_empty(&pic_full_path) {
                 continue;
             }
@@ -798,7 +795,7 @@ async fn write_nfo_file(
         .iter()
         .map(|(name, thumb)| {
             let thumb = if thumb.is_empty().not() {
-                format!(".actors/{}{}", name, image_ext(Some(thumb)))
+                format!(".actors/{}{}", name, image_ext(thumb))
             } else {
                 thumb.to_owned()
             };
@@ -838,15 +835,15 @@ async fn write_nfo_file(
             })
         }
     }
-    let thumb = Thumb { content: fanart_path.to_string()};
-    let fanart = Fanart {
-        thumb: vec![thumb],
+    let thumb = Thumb {
+        content: fanart_path.to_string(),
     };
+    let fanart = Fanart { thumb: vec![thumb] };
     let rating = Rating {
         value: movie.user_rating.to_string(),
         votes: movie.user_votes.to_string(),
         max: movie.max_user_rating.to_string(),
-        default: true
+        default: true,
     };
     let ratings = Ratings {
         rating: vec![rating],
