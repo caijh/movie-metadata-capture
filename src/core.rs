@@ -41,7 +41,7 @@ pub async fn core_main(
         .await;
 
     if movie.is_none() {
-        move_failed_folder(file_path, &config);
+        move_failed_folder(file_path, config);
         return Ok(());
     }
     let movie = movie.unwrap();
@@ -58,7 +58,7 @@ pub async fn core_main(
     let uncensored = if movie.uncensored {
         true
     } else {
-        is_uncensored(number, &config)
+        is_uncensored(number, config)
     };
 
     let lower_path = file_path.to_lowercase();
@@ -118,10 +118,10 @@ pub async fn core_main(
                 download_extra_fanart(extra_fanart, dir, config).await;
             }
 
-            download_actor_photo(&movie.actor, dir, &number, config).await;
+            download_actor_photo(&movie.actor, dir, number, config).await;
 
             if movie.cover_small.is_empty() {
-                cut_image(&config, dir, &thumb_path, &poster_path);
+                cut_image(config, dir, &thumb_path, &poster_path);
             }
 
             paste_file_to_folder(
@@ -185,10 +185,10 @@ pub async fn core_main(
                 download_extra_fanart(extra_fanart, dir, config).await;
             }
 
-            download_actor_photo(&movie.actor, dir, &number, config).await;
+            download_actor_photo(&movie.actor, dir, number, config).await;
 
             if movie.cover_small.is_empty() {
-                cut_image(&config, dir, &thumb_path, &poster_path);
+                cut_image(config, dir, &thumb_path, &poster_path);
             }
 
             write_nfo_file(
@@ -341,7 +341,7 @@ pub async fn download_cover(
         full_thumb_path.file_name().unwrap().to_string_lossy()
     );
     let full_fanart_path = PathBuf::from(dir).join(fanart_file_name);
-    match fs::copy(&full_thumb_path, &full_fanart_path) {
+    match fs::copy(&full_thumb_path, full_fanart_path) {
         Ok(_) => {}
         Err(e) => {
             eprintln!("[-]Failed to copy thumbnail to fanart: {:?}", e);
@@ -381,9 +381,9 @@ pub async fn download_file_with_filename(
 
     is_success
 }
-pub async fn download_extra_fanart(extrafanart: &Vec<String>, dir: &str, config: &AppConfig) {
+pub async fn download_extra_fanart(extra_fanart: &Vec<String>, dir: &str, config: &AppConfig) {
     let tm_start = std::time::Instant::now();
-    let tasks = extrafanart
+    let tasks = extra_fanart
         .into_iter()
         .enumerate()
         .map(move |(i, url)| extra_fanart_download_one_by_one(url, i, dir, config))
@@ -399,7 +399,7 @@ pub async fn download_extra_fanart(extrafanart: &Vec<String>, dir: &str, config:
 }
 
 async fn extra_fanart_download_one_by_one(
-    extrafanart_url: &str,
+    extra_fanart_url: &str,
     i: usize,
     dir: &str,
     config: &AppConfig,
@@ -414,10 +414,10 @@ async fn extra_fanart_download_one_by_one(
             break;
         }
         download_file_with_filename(
-            extrafanart_url,
+            extra_fanart_url,
             extra_fanart_path.to_string_lossy().as_ref(),
             &jpg_filename,
-            &config,
+            config,
         )
         .await;
         if !file_exit_and_not_empty(&jpg_full_path) {
@@ -1018,7 +1018,7 @@ pub async fn scraping_data_and_move_movie_with_custom_number(
                 } else {
                     let move_path =
                         Path::new(config.common.failed_output_folder.as_str()).join(file_name);
-                    match fs::rename(file_path, &move_path) {
+                    match fs::rename(file_path, move_path) {
                         Ok(_) => println!("[-] Move [{}] to failed folder", file_path),
                         Err(err) => eprintln!("[!] Error while moving file - {}", err),
                     };
@@ -1052,7 +1052,7 @@ pub fn movie_lists(config: &AppConfig, folder_path: &Path) -> Vec<String> {
     }
 
     let media_type = &config.media.media_type.to_lowercase();
-    let file_types: HashSet<&str> = media_type.split(",").collect();
+    let file_types: HashSet<&str> = media_type.split(',').collect();
     let mut total_movies: Vec<String> = Vec::new();
 
     for entry in WalkDir::new(folder_path) {
@@ -1097,11 +1097,7 @@ pub fn move_failed_folder(filepath: &str, config: &AppConfig) {
                 e
             );
         }
-        if let Ok(mut wwibbmt) = std::fs::OpenOptions::new()
-            .append(true)
-            .create(true)
-            .open(&mtxt)
-        {
+        if let Ok(mut wwibbmt) = OpenOptions::new().append(true).create(true).open(&mtxt) {
             let tmstr = Local::now().format("%Y-%m-%d %H:%M").to_string();
             if let Err(e) = writeln!(
                 wwibbmt,
