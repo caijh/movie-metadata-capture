@@ -36,7 +36,7 @@ fn remove_empty_dirs(dir: &str) -> io::Result<()> {
             remove_empty_dirs(&path.display().to_string())?;
             if let Ok(entries) = fs::read_dir(&path) {
                 if entries.filter_map(|entry| entry.ok()).count() == 0 {
-                    fs::remove_dir_all(&path)?;
+                    fs::remove_dir(&path)?;
                 }
             }
         }
