@@ -32,10 +32,10 @@ fn remove_empty_dirs(dir: &str) -> io::Result<()> {
         let entry = entry?;
         let path = entry.path();
         if path.is_dir() {
-            remove_empty_dirs(path.to_str().unwrap())?;
+            remove_empty_dirs(&path.display().to_string())?;
             if let Ok(entries) = fs::read_dir(&path) {
-                if entries.count() == 0 {
-                    fs::remove_dir(&path)?;
+                if entries.filter_map(|entry| entry.ok()).count() == 0 {
+                    fs::remove_dir_all(&path)?;
                 }
             }
         }
