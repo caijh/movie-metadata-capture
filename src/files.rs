@@ -5,9 +5,9 @@ use walkdir::WalkDir;
 pub fn file_exit_and_not_empty(filepath: &std::path::Path) -> bool {
     filepath.is_file()
         && filepath
-        .metadata()
-        .map(|meta| meta.len() > 0)
-        .unwrap_or(false)
+            .metadata()
+            .map(|meta| meta.len() > 0)
+            .unwrap_or(false)
 }
 
 #[cfg(unix)]
@@ -27,8 +27,8 @@ pub async fn rm_empty_folder(dir: &str) -> Result<(), io::Error> {
     Ok(())
 }
 
-fn remove_empty_dirs(path: &str) -> io::Result<()> {
-    for entry in fs::read_dir(path)? {
+fn remove_empty_dirs(dir: &str) -> io::Result<()> {
+    for entry in fs::read_dir(dir)? {
         let entry = entry?;
         let path = entry.path();
         if path.is_dir() {
