@@ -5,7 +5,7 @@ use crate::translator::AzureTranslator;
 
 use serde_json::Value;
 
-use crate::config::{AppConfig, Parser, Translate, NumberExtractor};
+use crate::config::{AppConfig, NumberExtractor, Parser, Translate};
 use crate::parser::Movie;
 
 #[derive(Default)]
@@ -139,7 +139,11 @@ impl Scraping {
         movie
     }
 
-    fn get_reorder_sources(&self, sources: Vec<&str>, number_extractor: &NumberExtractor) -> Vec<String> {
+    fn get_reorder_sources(
+        &self,
+        sources: Vec<&str>,
+        number_extractor: &NumberExtractor,
+    ) -> Vec<String> {
         let mut _sources: Vec<&str> = if sources.is_empty() {
             self.sources.iter().map(|s| s.as_str()).collect()
         } else {
@@ -164,7 +168,7 @@ impl Scraping {
 
 // replace_sources_item() replaces an item in the source vector at the given index, with the respective key value. If the key is not found, nothing is done.
 fn replace_sources_item(sources: &mut Vec<&str>, index: usize, key: &str) {
-    let _index = sources.iter().position(|s| s.to_owned() == key).unwrap();
+    let _index = sources.iter().position(|s| *s == key).unwrap();
     if _index > 0 {
         let ele = sources.remove(_index);
         sources.insert(index, ele);
