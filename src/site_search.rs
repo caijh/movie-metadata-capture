@@ -1,5 +1,3 @@
-
-
 use serde::{Deserialize, Serialize};
 use sxd_document::dom::Document;
 use url::Url;
@@ -31,8 +29,7 @@ impl SiteSearch {
     pub async fn search(&self, number: &str) -> Option<String> {
         let search_number = if let Some(number_pre_handle) = &self.site_number_pre_handle {
             let string_flow = StringFlow::new(number_pre_handle);
-            let num = string_flow.process_string(number);
-            num
+            string_flow.process_string(number)
         } else {
             number.to_owned()
         };
@@ -61,8 +58,8 @@ impl SiteSearch {
         let mut number_ids = Vec::new();
         for i in 0..numbers.len() {
             number_ids.push((
-                numbers.iter().nth(i).unwrap().to_owned(),
-                ids.iter().nth(i).unwrap().to_owned(),
+                numbers.get(i).unwrap().to_owned(),
+                ids.get(i).unwrap().to_owned(),
             ));
         }
         number_ids
