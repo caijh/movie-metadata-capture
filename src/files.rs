@@ -26,7 +26,8 @@ pub async fn rm_empty_folder(dir: &str) -> Result<(), io::Error> {
     remove_empty_dirs(dir)?;
     Ok(())
 }
-
+// remove_empty_dirs() recursively removes all empty directories in the given directory.
+// Returns an io::Error if any of the text or directory operations fail.
 fn remove_empty_dirs(dir: &str) -> io::Result<()> {
     for entry in fs::read_dir(dir)? {
         let entry = entry?;
