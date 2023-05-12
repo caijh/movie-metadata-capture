@@ -23,28 +23,22 @@ pub fn create_soft_link(src: &Path, dst: &Path) -> io::Result<()> {
 }
 
 pub async fn rm_empty_folder(dir: &str) -> Result<(), io::Error> {
-    let mut empty_dirs = vec![];
+    remove_empty_dirs(dir)?;
+    Ok(())
+}
 
-    // Iterate over all entries in the directory and any subdirectories
-    for entry in WalkDir::new(dir).into_iter().filter_map(|e| e.ok()) {
-        if entry.path().is_dir() {
-            // If the directory is empty, add it to the list of empty directories
-            if fs::read_dir(&entry.path()).unwrap().next().is_none() {
-                empty_dirs.push(PathBuf::from(&entry.path()));
+fn remove_empty_dirs(path: &str) -> io::Result<()> {
+    for entry in fs::read_dir(path)? {
+        let entry = entry?;
+        let path = entry.path();
+        if path.is_dir() {
+            remove_empty_dirs(path.to_str().unwrap())?;
+            if let Ok(entries) = fs::read_dir(&path) {
+                if entries.count() == 0 {
+                    fs::remove_dir(&path)?;
+                }
             }
         }
     }
-
-    // Remove all the empty directories
-    for dir in empty_dirs {
-        let path = dir.to_string_lossy().to_string();
-        match fs::remove_dir(dir) {
-            Ok(_) => {}
-            Err(_) => {
-                println!("[-]Failed to remove directory {}", path);
-            }
-        }
-    }
-
     Ok(())
 }
