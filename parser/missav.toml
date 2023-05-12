@@ -5,7 +5,7 @@ rule = [{ action = "lowercase", args = [] }, { action = "replace", args = ["fc2-
 [sources.missav]
 name = "missav"
 source_detail_url = ["https://missav.com/cn/"]
-source_max_userrating = ""
+source_max_user_rating = ""
 source_allow_use_site_number = true
 expr_number = '//span[contains(text(),"番号:")]/following-sibling::span/text()'
 expr_title = '//span[contains(text(),"标题:")]/following-sibling::span/text()'

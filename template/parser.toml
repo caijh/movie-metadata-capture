@@ -12,7 +12,7 @@ rule = []
 name = "fanza"
 source_age_check = { url = "", target_name = "", target_url = "" }
 source_detail_url = []
-source_max_userrating = "50"
+source_max_user_rating = "50"
 source_allow_use_site_number = false
 expr_number = ''
 expr_title = ''

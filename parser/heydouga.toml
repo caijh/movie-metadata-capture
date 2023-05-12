@@ -2,7 +2,7 @@
 name = "heydouga"
 source_detail_url = ["https://www.heydouga.com/moviepages/"]
 source_allow_use_site_number = false
-source_max_userrating = "5"
+source_max_user_rating = "5"
 expr_number = '//*[@id="movie-review-form"]/input[4]/@value'
 expr_title = '//*[@id="title-bg"]/h1/text()'
 expr_actor_name = '//*[@id="movie-info"]/ul/li[2]/span[2]/a/text()'

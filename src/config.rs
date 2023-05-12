@@ -66,7 +66,7 @@ pub struct Parser {
     pub number_pre_handle: Vec<NumberHandle>,
     pub source_age_check: Option<AgeCheck>,
     pub source_detail_url: Vec<String>,
-    pub source_max_userrating: Option<String>,
+    pub source_max_user_rating: Option<String>,
     pub source_allow_use_site_number: Option<bool>,
 
     pub expr_number: String,

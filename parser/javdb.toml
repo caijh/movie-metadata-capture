@@ -2,7 +2,7 @@
 name = "javdb"
 source_age_check = { url = "https://javdb.com/over18?respond=1", target_name = "rurl", target_url = "1j04p8mqknwdh790ds2m6t6d87Zq3f5cd57fq82b9wqzpy4c301b7" }
 source_detail_url = ["https://javdb.com/v/"]
-source_max_userrating = "5"
+source_max_user_rating = "5"
 expr_number = '//nav[@class="panel movie-panel-info"]/div[1]/a/@data-clipboard-text'
 expr_title = '//strong[@class="current-title"]/text()'
 expr_actor_name = '//span[@class="value"]/a[contains(@href,"/actors/")]/text()'
