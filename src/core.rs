@@ -243,7 +243,7 @@ fn create_folder(movie: &Movie, config: &AppConfig) -> PathBuf {
         location_rule = new_location_rule;
     }
     location_rule = location_rule.replace("$number", &movie.number);
-    if location_rule.starts_with("/") {
+    if location_rule.starts_with('/') {
         location_rule = location_rule[1..].parse().unwrap();
     }
     let mut path = std::path::PathBuf::from(success_folder);
@@ -256,7 +256,7 @@ fn create_folder(movie: &Movie, config: &AppConfig) -> PathBuf {
             }
         }
     }
-    return std::path::PathBuf::from(path);
+    path
 }
 
 fn is_uncensored(number: &str, config: &AppConfig) -> bool {
@@ -381,10 +381,10 @@ pub async fn download_file_with_filename(
 
     is_success
 }
-pub async fn download_extra_fanart(extra_fanart: &Vec<String>, dir: &str, config: &AppConfig) {
+pub async fn download_extra_fanart(extra_fanart: &[String], dir: &str, config: &AppConfig) {
     let tm_start = std::time::Instant::now();
     let tasks = extra_fanart
-        .into_iter()
+        .iter()
         .enumerate()
         .map(move |(i, url)| extra_fanart_download_one_by_one(url, i, dir, config))
         .collect::<Vec<_>>();
@@ -494,12 +494,7 @@ pub async fn paste_file_to_folder(
         .unwrap_or("");
     let target_path = Path::new(dir).join(format!(
         "{}{}{}{}{}{}",
-        number,
-        leak_word,
-        c_word,
-        hack_word,
-        ".".to_string(),
-        file_extension
+        number, leak_word, c_word, hack_word, ".", file_extension
     ));
     // 任何情况下都不要覆盖，以免遭遇数据源或者引擎错误导致所有文件得到同一个number，逐一
     // 同名覆盖致使全部文件损失且不可追回的最坏情况
@@ -585,7 +580,7 @@ fn face_crop_width(
         .to_owned();
 
     for model in locations_model {
-        if let Some((center, _top)) = face_center(&image, filename, model) {
+        if let Some((center, _top)) = face_center(image, filename, model) {
             if center < crop_width_half {
                 return (0, 0, crop_width_half * aspect_ratio as u32, height);
             }
@@ -629,7 +624,7 @@ fn face_crop_height(
         .collect();
 
     for model in locations_model {
-        if let Some((_center, top)) = face_center(&image, filename, model) {
+        if let Some((_center, top)) = face_center(image, filename, model) {
             // 如果找到就跳出循环
             if top > 0 {
                 // 头部靠上
@@ -687,7 +682,7 @@ fn get_face_center(locations: FaceLocations) -> Option<(u32, u32)> {
     if face_centers.is_empty() {
         None
     } else {
-        let face_center: (u32, u32) = face_centers.get(0).unwrap().to_owned();
+        let face_center: (u32, u32) = face_centers.first().unwrap().to_owned();
         Some(face_center)
     }
 }
@@ -801,7 +796,7 @@ async fn write_nfo_file(
             };
             Actor {
                 name: name.to_string(),
-                thumb: thumb.to_string(),
+                thumb,
             }
         })
         .collect();
@@ -851,7 +846,7 @@ async fn write_nfo_file(
     let nfo = MovieNFO {
         title: title.clone(),
         original_title: movie.title.clone(),
-        sort_title: title.clone(),
+        sort_title: title,
         customrating: "JP-18+".to_string(),
         mpaa: "JP-18+".to_string(),
         set: movie.series.clone(),
@@ -999,7 +994,7 @@ pub async fn scraping_data_and_move_movie_with_custom_number(
             custom_number,
             None,
             specified_source,
-            &config,
+            config,
         )
         .await
         {
