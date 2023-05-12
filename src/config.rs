@@ -317,28 +317,12 @@ impl AppConfig {
         let cfg = settings.try_deserialize::<AppConfig>().unwrap();
 
         let config_clone = CONFIG.clone();
-        let mut config = config_clone.write().unwrap();
-        *config = cfg;
-
-        let parsers = Config::builder()
-            .add_source(
-                glob((config.common.parser_folder.to_string() + "/*.toml").as_str())
-                    .unwrap()
-                    .map(|path| File::from(path.unwrap()))
-                    .collect::<Vec<_>>(),
-            )
-            .build()
-            .unwrap_or_else(|_| {
-                panic!(
-                    "[!] Fail to load parsers from dir {}",
-                    config.common.parser_folder
-                )
-            });
-        let sources_holder = parsers.try_deserialize::<SourcesHolder>().unwrap();
-        for ele in sources_holder.sources {
-            SOURCES.write().unwrap().insert(ele.0, ele.1);
+        {
+            let mut config = config_clone.write().unwrap();
+            *config = cfg;
         }
-
+        let config = CONFIG.read().unwrap();
+        config.init_sources();
         if config.proxy.switch {
             Request::set_proxy(&config.proxy).await?;
         }
@@ -348,6 +332,27 @@ impl AppConfig {
 
     pub fn get_app_config() -> std::sync::RwLockReadGuard<'static, AppConfig> {
         CONFIG.read().unwrap()
+    }
+
+    pub fn init_sources(&self) {
+        let parsers = Config::builder()
+            .add_source(
+                glob((self.common.parser_folder.to_string() + "/*.toml").as_str())
+                    .unwrap()
+                    .map(|path| File::from(path.unwrap()))
+                    .collect::<Vec<_>>(),
+            )
+            .build()
+            .unwrap_or_else(|_| {
+                panic!(
+                    "[!] Fail to load parsers from dir {}",
+                    self.common.parser_folder
+                )
+            });
+        let sources_holder = parsers.try_deserialize::<SourcesHolder>().unwrap();
+        for ele in sources_holder.sources {
+            SOURCES.write().unwrap().insert(ele.0, ele.1);
+        }
     }
 
     pub fn get_sources(&self) -> std::sync::RwLockReadGuard<HashMap<String, Parser>> {
