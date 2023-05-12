@@ -18,8 +18,8 @@ expr_small_cover = ''
 expr_extra_fanart = '//*[@id="movies"]/div/div[1]/div[2]/div[3]/div/div/div/div/img/@data-vue-img-src'
 expr_trailer = ''
 expr_uncensored = ''
-expr_uservotes = ''
-expr_userrating = ''
+expr_user_votes = ''
+expr_user_rating = ''
 replace_number = [{ action = "substring", args = ["/sample/", "/l_hd.jpg"] }, { action = "replace", args = ["/sample/", ""] }]
 replace_cover = []
 replace_extra_fanart = [{action = "insert", args = ["0", "https://www.pacopacomama.com/"]}]

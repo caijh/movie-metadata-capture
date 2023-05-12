@@ -20,15 +20,15 @@ expr_small_cover = ''
 expr_extra_fanart = "//article[@class='message video-panel']/div[@class='message-body']/div[@class='tile-images preview-images']/a[contains(@href,'/samples/')]/@href"
 expr_trailer = '//span[contains(text(),"預告片")]/../../video/source/@src'
 expr_uncensored = ''
-expr_uservotes = '//span[@class="score-stars"]/../text()'
-expr_userrating = '//span[@class="score-stars"]/../text()'
+expr_user_votes = '//span[@class="score-stars"]/../text()'
+expr_user_rating = '//span[@class="score-stars"]/../text()'
 replace_number = []
 replace_cover = []
 replace_extra_fanart = []
 replace_actor_photo = []
 replace_runtime = [{action = "replace", args = ["分鍾", ""]}, {action = "trim", args = []}]
-replace_userrating = [{action = "trim", args = []}, {action = "substring", args = ["0", "分"]}]
-replace_uservotes = [{action = "substring", args = ["由", "人"]}, {action = "replace", args = ["由", ""]}]
+replace_user_rating = [{action = "trim", args = []}, {action = "substring", args = ["0", "分"]}]
+replace_user_votes = [{action = "substring", args = ["由", "人"]}, {action = "replace", args = ["由", ""]}]
 [sources.javdb.site_search]
 url = "https://javdb.com/search?q="
 site_number_pre_handle = [{ action = "append", args = ["&f=all"] }]

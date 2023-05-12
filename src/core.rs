@@ -843,9 +843,9 @@ async fn write_nfo_file(
         thumb: vec![thumb],
     };
     let rating = Rating {
-        value: movie.userrating.to_string(),
-        votes: movie.uservotes.to_string(),
-        max: movie.max_userrating.to_string(),
+        value: movie.user_rating.to_string(),
+        votes: movie.user_votes.to_string(),
+        max: movie.max_user_rating.to_string(),
         default: true
     };
     let ratings = Ratings {
@@ -875,7 +875,7 @@ async fn write_nfo_file(
         premiered: movie.release.clone(),
         release_date: movie.release.clone(),
         release: movie.release.clone(),
-        userrating: movie.userrating.clone(),
+        userrating: movie.user_rating.clone(),
         ratings,
         cover: movie.cover.clone(),
         trailer: "".to_string(),

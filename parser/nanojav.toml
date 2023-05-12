@@ -18,8 +18,8 @@ expr_small_cover = ''
 expr_extra_fanart = '//div[@class="container"]/div[1]/div[1]/div[1]/div[1]/div[2]//*/@src'
 expr_trailer = ''
 expr_uncensored = ''
-expr_uservotes = ''
-expr_userrating = ''
+expr_user_votes = ''
+expr_user_rating = ''
 replace_number = [{action = "trim", args = []}]
 replace_cover = []
 replace_extra_fanart = []

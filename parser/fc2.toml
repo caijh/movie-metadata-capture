@@ -18,8 +18,8 @@ expr_small_cover = ''
 expr_extra_fanart = '//ul[@class="items_article_SampleImagesArea"]/li/a/@href'
 expr_trailer = ""
 expr_uncensored = ""
-expr_uservotes = '//li[@class="items_article_StarA"]/a/span/text()'
-expr_userrating = ""
+expr_user_votes = '//li[@class="items_article_StarA"]/a/span/text()'
+expr_user_rating = ""
 replace_number = [{ action = "substring", args = ["FC2", ""] }]
 replace_cover = [{ action = "insert", args = ["0", "https:"] }]
 replace_release = [{action = "substring", args =[":", ""]}, {action = "trim", args =[]}, {action = "replace", args = ["/", "-"]}]

@@ -19,8 +19,8 @@ expr_small_cover = ''
 expr_extra_fanart = '//div[@id="sample-waterfall"]/a/@href'
 expr_trailer = ""
 expr_uncensored = '//*[@id="navbar"]/ul[1]/li[@class="active"]/a[contains(@href,"uncensored")]'
-expr_uservotes = '//li[@class="items_article_StarA"]/a/span/text()'
-expr_userrating = ""
+expr_user_votes = '//li[@class="items_article_StarA"]/a/span/text()'
+expr_user_rating = ''
 replace_release = [{action = "trim", args = []}]
 replace_number = []
 replace_cover = [{ action = "insert", args = ["0", "https://www.javbus.com/"] }]

@@ -86,8 +86,8 @@ pub struct Parser {
     pub expr_extra_fanart: String,
     pub expr_trailer: String,
     pub expr_uncensored: String,
-    pub expr_userrating: String,
-    pub expr_uservotes: String,
+    pub expr_user_rating: String,
+    pub expr_user_votes: String,
 
     pub replace_number: Option<Vec<Rule>>,
     pub replace_title: Option<Vec<Rule>>,
@@ -103,8 +103,8 @@ pub struct Parser {
     pub replace_label: Option<Vec<Rule>>,
     pub replace_series: Option<Vec<Rule>>,
     pub replace_release: Option<Vec<Rule>>,
-    pub replace_userrating: Option<Vec<Rule>>,
-    pub replace_uservotes: Option<Vec<Rule>>,
+    pub replace_user_rating: Option<Vec<Rule>>,
+    pub replace_user_votes: Option<Vec<Rule>>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]

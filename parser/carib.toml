@@ -18,8 +18,8 @@ expr_small_cover = ''
 expr_extra_fanart = "//*[@id='sampleexclude']/div[2]/div/div[@class='grid-item']/div/a[starts-with(@href, '/moviepages')]/@href"
 expr_trailer = ""
 expr_uncensored = ''
-expr_uservotes = ''
-expr_userrating = ""
+expr_user_votes = ''
+expr_user_rating = ""
 replace_number = [{ action = "substring", args = ["moviepages/", "/index.html"] }, { action = "replace", args = ["moviepages/", ""] }]
 replace_cover = [{ action = "substring", args = ["/moviepages/", "/index.html"] }, { action = "insert", args = ["0", "https://www.caribbeancom.com"] }, {action = "append", args = ["/images/l_l.jpg"]}]
 replace_extra_fanart = [{ action = "insert", args = ["0", "https://www.caribbeancom.com"]}]

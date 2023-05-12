@@ -20,8 +20,8 @@ expr_small_cover = ''
 expr_extra_fanart = ''
 expr_trailer = ''
 expr_uncensored = ''
-expr_uservotes = ''
-expr_userrating = '//*[@id="score_number"]/text()'
+expr_user_votes = ''
+expr_user_rating = '//*[@id="score_number"]/text()'
 replace_number = []
 replace_title = [{action = "trim", args = []}]
 replace_cover = [{action = "substring", args = ["/moviepages/", "/index.html"]}, {action = "replace", args = ["/moviepages/", ""]}, {action = "insert", args = ["0", "https://image01-www.heydouga.com/contents/"]}, {action = "append", args = ["/player_thumb.jpg"]}]

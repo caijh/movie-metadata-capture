@@ -32,9 +32,9 @@ pub struct Movie {
     pub website: String,
     pub series: String,
     pub uncensored: bool,
-    pub userrating: String,
-    pub max_userrating: String,
-    pub uservotes: String,
+    pub user_rating: String,
+    pub max_user_rating: String,
+    pub user_votes: String,
 }
 
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
@@ -186,13 +186,14 @@ impl Parser {
         let series = evaluate_xpath_node(document.root(), self.expr_series.as_str()).unwrap();
         let series = value_to_string_use_handle(series, &self.replace_series);
 
-        let userrating =
-            evaluate_xpath_node(document.root(), self.expr_userrating.as_str()).unwrap();
-        let userrating = value_to_string_use_handle(userrating, &self.replace_userrating);
+        let user_rating =
+            evaluate_xpath_node(document.root(), self.expr_user_rating.as_str()).unwrap();
+        let user_rating = value_to_string_use_handle(user_rating, &self.replace_user_rating);
 
-        let uservotes = evaluate_xpath_node(document.root(), self.expr_uservotes.as_str()).unwrap();
-        let uservotes = value_to_string_use_handle(uservotes, &self.replace_uservotes);
-        let max_userrating = self.source_max_user_rating.clone().unwrap_or_default();
+        let user_votes =
+            evaluate_xpath_node(document.root(), self.expr_user_votes.as_str()).unwrap();
+        let user_votes = value_to_string_use_handle(user_votes, &self.replace_user_votes);
+        let max_user_rating = self.source_max_user_rating.clone().unwrap_or_default();
 
         let uncensored =
             evaluate_xpath_node(document.root(), self.expr_uncensored.as_str()).unwrap();
@@ -229,9 +230,9 @@ impl Parser {
             trailer: trailer.string(),
             website: detail_url,
             uncensored,
-            userrating,
-            max_userrating,
-            uservotes,
+            user_rating,
+            max_user_rating: max_user_rating,
+            user_votes,
         })
     }
 
