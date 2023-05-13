@@ -42,3 +42,6 @@ rule = [{ action = "lowercase", args = [] }, { action = "replace", args = ["-", 
 [[sources.fanza.number_pre_handle]]
 name = "higr"
 rule = [{ action = "lowercase", args = [] }, { action = "replace", args = ["-", ""] }, { action = "insert", args = ["0", "n_1463"] }]
+[[sources.fanza.number_pre_handle]]
+name = "mbdd"
+rule = [{ action = "lowercase", args = [] }, { action = "replace", args = ["-", ""] }]
