@@ -27,7 +27,7 @@ pub async fn rm_empty_folder(dir: &str) -> Result<(), io::Error> {
 }
 // remove_empty_dirs() recursively removes all empty directories in the given directory.
 // Returns an io::Error if any of the text or directory operations fail.
-fn remove_empty_dirs(dir_path: &str) -> std::io::Result<()> {
+fn remove_empty_dirs(dir_path: &str) -> io::Result<()> {
     let path = Path::new(dir_path);
     if !path.exists() {
         return Ok(());
