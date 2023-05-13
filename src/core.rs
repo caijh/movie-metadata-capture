@@ -282,7 +282,7 @@ fn image_ext(url: &str) -> String {
             return x.to_string();
         }
     }
-    "".to_string()
+    ".jpg".to_string()
 }
 
 pub async fn download_small_cover(
