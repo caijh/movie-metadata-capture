@@ -1,6 +1,5 @@
 use std::path::{Path, PathBuf};
 use std::{fs, io};
-use walkdir::WalkDir;
 
 pub fn file_exit_and_not_empty(filepath: &std::path::Path) -> bool {
     filepath.is_file()
