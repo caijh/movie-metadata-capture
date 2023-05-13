@@ -44,8 +44,10 @@ fn remove_empty_dirs(dir_path: &str) -> std::io::Result<()> {
             remove_empty_dirs(entry.path().to_str().unwrap())?;
 
             // Check if the directory is now empty and remove it if it is
-            if fs::read_dir(entry.path())?.next().is_none() {
-                fs::remove_dir(entry.path())?;
+            if let Ok(entries) = fs::read_dir(entry.path()) {
+                if entries.filter_map(|entry| entry.ok()).count() == 0 {
+                    fs::remove_dir(entry.path())?;
+                }
             }
         }
     }
