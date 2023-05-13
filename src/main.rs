@@ -1,15 +1,17 @@
 use chrono::Local;
 use clap::{arg, Parser, Subcommand};
 use movie_metadata_capture::config::AppConfig;
-use movie_metadata_capture::core::{scraping_data_and_move_movie, scraping_data_and_move_movie_with_custom_number, movie_lists};
+use movie_metadata_capture::core::{
+    movie_lists, scraping_data_and_move_movie, scraping_data_and_move_movie_with_custom_number,
+};
 use movie_metadata_capture::number_parser::{get_number, DEFAULT_NUMBER_EXTRACTOR};
+use movie_metadata_capture::scraping::Scraping;
 use rand::Rng;
 use std::error::Error;
 use std::ops::Not;
 use std::path::Path;
 use std::time::Duration;
 use std::{thread, time};
-use movie_metadata_capture::scraping::Scraping;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
@@ -28,15 +30,15 @@ async fn main() -> Result<(), Box<dyn Error>> {
     }
 
     let start_time = time::Instant::now();
-    println!(
-        "[+]Start at {}",
-        Local::now().format("%Y-%m-%d %H:%M:%S").to_string()
-    );
+    println!("[+]Start at {}", Local::now().format("%Y-%m-%d %H:%M:%S"));
 
     match args.subcommand {
         SubCommand::Info(info_args) => {
-            let  (number, number_extractor)= get_number(&config, info_args.file.as_str()).unwrap();
-            println!("[!][{}] As Number Processing for '{}'", number, info_args.file);
+            let (number, number_extractor) = get_number(&config, info_args.file.as_str()).unwrap();
+            println!(
+                "[!][{}] As Number Processing for '{}'",
+                number, info_args.file
+            );
             let mut scraping = Scraping::new(&config);
             let movie = scraping
                 .search(&number, &number_extractor, None, Some(info_args.source))
@@ -44,7 +46,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
             if movie.is_some() && !config.debug_mode.switch {
                 println!("{:?}", movie);
             }
-        },
+        }
         SubCommand::Scraping(scraping_args) => {
             config.create_failed_folder().await?;
 
@@ -54,7 +56,10 @@ async fn main() -> Result<(), Box<dyn Error>> {
                 let (custom_number, number_extractor) = if scraping_args.custom_number.is_none() {
                     get_number(&config, single_file_path.as_str()).unwrap()
                 } else {
-                    (scraping_args.custom_number.unwrap_or_default(), DEFAULT_NUMBER_EXTRACTOR.to_owned())
+                    (
+                        scraping_args.custom_number.unwrap_or_default(),
+                        DEFAULT_NUMBER_EXTRACTOR.to_owned(),
+                    )
                 };
                 scraping_data_and_move_movie_with_custom_number(
                     &single_file_path,
@@ -62,7 +67,8 @@ async fn main() -> Result<(), Box<dyn Error>> {
                     &number_extractor,
                     scraping_args.source,
                     &config,
-                ).await?;
+                )
+                .await?;
             } else {
                 let folder_path = if config.common.source_folder.is_empty().not() {
                     Path::new(&config.common.source_folder)
@@ -92,7 +98,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
     println!(
         "[+]Running time {} End at {}",
         total_time_str,
-        Local::now().format("%Y-%m-%d %H:%M:%S").to_string()
+        Local::now().format("%Y-%m-%d %H:%M:%S")
     );
 
     if config.common.auto_exit {
