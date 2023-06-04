@@ -87,26 +87,19 @@ impl Parser {
             if debug {
                 println!("[+]{}", url);
             }
-            match get_html_content(url.as_str()).await {
-                Ok(content) => {
-                    let package = sxd_html::parse_html(&content);
-                    let document = package.as_document();
-                    let movie = self.parse_to_movie(&document, detail_url);
-                    if self.is_movie_valid(&movie) {
-                        if let Some(allow_use_site_number) = self.source_allow_use_site_number {
-                            if !allow_use_site_number {
-                                let mut movie = movie.unwrap();
-                                movie.number = number;
-                                return Some(movie);
-                            }
+            if let Ok(content) = get_html_content(url.as_str()).await {
+                let package = sxd_html::parse_html(&content);
+                let document = package.as_document();
+                let movie = self.parse_to_movie(&document, detail_url);
+                if self.is_movie_valid(&movie) {
+                    if let Some(allow_use_site_number) = self.source_allow_use_site_number {
+                        if !allow_use_site_number {
+                            let mut movie = movie.unwrap();
+                            movie.number = number;
+                            return Some(movie);
                         }
-                        return movie;
                     }
-                }
-                Err(_) => {
-                    if debug {
-                        println!("[-]Get html content Failure or Not found");
-                    }
+                    return movie;
                 }
             }
         }
