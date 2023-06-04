@@ -1,0 +1,45 @@
+[[sources.kin8.number_pre_handle]]
+name = "kin8"
+rule = [{ action = "replace", args = ["kin8-", ""] }, { action = "append", args = ["/index.html"] }]
+
+[sources.kin8]
+name = "kin8"
+source_detail_url = ["https://www.kin8tengoku.com/moviepages/"]
+source_max_user_rating = ""
+source_allow_use_site_number = false
+expr_number = '//*[@id="MovieReview_2"]/p[1]/a[1]/@href'
+expr_title = '//*[@id="sub_main"]/p/text()'
+expr_actor_name = '//*[@id="main"]/div[2]/table/tbody/tr[1]/td[2]/div/a/text()'
+expr_actor_photo = ''
+expr_studio = ''
+expr_runtime = '//*[@id="main"]/div[2]/table/tbody/tr[3]/td[2]/text()'
+expr_release = '//*[@id="main"]/div[2]/table/tbody/tr[4]/td[2]/text()'
+expr_outline = '//*[@id="comment"]/text()'
+expr_director = ''
+expr_tags = '//*[@id="main"]/div[2]/table/tbody/tr[2]/td[2]/div/a/text()'
+expr_label = ''
+expr_series = ''
+expr_cover = '//*[@id="movie"]/script[3]/text()'
+expr_small_cover = ''
+expr_extra_fanart = '//*[@id="gallery"]/div[@class="gallery_box "]/a/img/@src'
+expr_trailer = ''
+expr_uncensored = '//*[@id="header"]/h1/text()'
+expr_user_rating = ''
+expr_user_votes = ''
+replace_number = [{ action = "between", args = ["movie_id : ", ", movie_seq"] }, { action = "insert", args = ["0", "KIN8-"] }]
+replace_title = []
+replace_outline = []
+replace_studio = [{ action = "insert", args = ["0", "kin8tengoku"] }]
+replace_director = []
+replace_cover = [{ action = "between", args = ["var imgurl = ", ";"] }, { action = "substring", args = ["www", ""] }]
+replace_small_cover = []
+replace_extra_fanart = [{ action = "substring", args = ["www", ""] }]
+replace_actor_photo = []
+replace_runtime = [{ action = "trim", args = [] }]
+replace_release = []
+replace_tags = []
+replace_label = []
+replace_series = []
+replace_user_rating = []
+replace_user_votes = []
+

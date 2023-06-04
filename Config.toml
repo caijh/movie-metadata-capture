@@ -105,3 +105,7 @@ sources = ["H4610"]
 name = "heydouga"
 regex = '\d{4}(-|_)\d{4}'
 sources = ["heydouga"]
+[[number_extractor]]
+name = "kin8"
+regex = '(?i)\bkin8-?\d+'
+sources = ["kin8"]

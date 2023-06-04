@@ -1,7 +1,8 @@
-use regex::Regex;
+use std::ops::Not;
 
+use regex::Regex;
+use serde::{Deserialize, Serialize};
 use sxd_document::dom::Document;
-use sxd_xpath::Value::Boolean;
 use url::Url;
 
 use crate::config::{Parser, StringFlow};
@@ -9,7 +10,6 @@ use crate::request::get_html_content;
 use crate::xpath::{
     evaluate_xpath_node, value_to_string_use_handle, value_to_vec, value_to_vec_use_handle,
 };
-use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
 pub struct Movie {
@@ -192,15 +192,17 @@ impl Parser {
         let user_votes = value_to_string_use_handle(user_votes, &self.replace_user_votes);
         let max_user_rating = self.source_max_user_rating.clone().unwrap_or_default();
 
-        let uncensored =
-            evaluate_xpath_node(document.root(), self.expr_uncensored.as_str()).unwrap();
-        let uncensored = match uncensored {
-            Boolean(b) => b,
-            _ => {
-                tags.contains(&"無码".to_string())
-                    || tags.contains(&"無修正".to_string())
-                    || tags.contains(&"uncensored".to_string())
-            }
+        let uncensored = evaluate_xpath_node(document.root(), self.expr_uncensored.as_str())
+            .unwrap()
+            .string();
+        let uncensored = if uncensored.is_empty().not() {
+            uncensored.contains(&"無码".to_string())
+                || uncensored.contains(&"無修正".to_string())
+                || uncensored.contains(&"uncensored".to_string())
+        } else {
+            tags.contains(&"無码".to_string())
+                || tags.contains(&"無修正".to_string())
+                || tags.contains(&"uncensored".to_string())
         };
         Some(Movie {
             number,
