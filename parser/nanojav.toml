@@ -3,7 +3,7 @@ name = "nanojav"
 source_detail_url = ["https://www.nanojav.com/jav/"]
 expr_number = '//div[@class="container"]//h1/a/text()'
 expr_title = '//div[@class="container"]//h1/../p[2]/text()'
-expr_actor_name = ''
+expr_actor_name = '//*[@id="content"]/div/div/div[2]/div/div/div/div/div[2]/div/div[2]/a/text()'
 expr_actor_photo = ''
 expr_studio = ''
 expr_runtime = ''
@@ -20,12 +20,13 @@ expr_trailer = ''
 expr_uncensored = ''
 expr_user_votes = ''
 expr_user_rating = ''
-replace_number = [{action = "trim", args = []}]
+replace_number = [{ action = "trim", args = [] }]
 replace_cover = []
 replace_extra_fanart = []
+replace_actor_name = [{ action = "trim", args = [] }]
 replace_actor_photo = []
-replace_release = [{action = "trim", args = []}]
-replace_tags = [{action = "trim", args = []}]
+replace_release = [{ action = "trim", args = [] }]
+replace_tags = [{ action = "trim", args = [] }]
 [[sources.nanojav.number_pre_handle]]
 name = "fc2"
-rule = [{ action = "lowercase", args = [] }, { action = "replace", args = ["fc2-ppv-", ""] }, { action = "replace", args = ["fc2-", ""] }, { action = "replace", args = ["fc2ppv ", ""] }, { action = "insert", args = ["0","FC2-PPV-"] }]
+rule = [{ action = "lowercase", args = [] }, { action = "replace", args = ["fc2-ppv-", ""] }, { action = "replace", args = ["fc2-", ""] }, { action = "replace", args = ["fc2ppv ", ""] }, { action = "insert", args = ["0", "FC2-PPV-"] }]

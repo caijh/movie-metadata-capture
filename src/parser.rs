@@ -131,7 +131,7 @@ impl Parser {
 
         let actor_name =
             evaluate_xpath_node(document.root(), self.expr_actor_name.as_str()).unwrap();
-        let actor_name: Vec<String> = value_to_vec(actor_name);
+        let actor_name: Vec<String> = value_to_vec_use_handle(actor_name, &self.replace_actor_name);
         let actor_photo =
             evaluate_xpath_node(document.root(), self.expr_actor_photo.as_str()).unwrap();
         let actor_photo: Vec<String> =

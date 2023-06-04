@@ -109,3 +109,7 @@ sources = ["heydouga"]
 name = "kin8"
 regex = '(?i)\bkin8-?\d+'
 sources = ["kin8"]
+[[number_extractor]]
+name = "msfh"
+regex = '(?i)\bMSFH-?\d+'
+sources = ["nanojav"]

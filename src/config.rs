@@ -97,6 +97,7 @@ pub struct Parser {
     pub replace_cover: Option<Vec<Rule>>,
     pub replace_small_cover: Option<Vec<Rule>>,
     pub replace_extra_fanart: Option<Vec<Rule>>,
+    pub replace_actor_name: Option<Vec<Rule>>,
     pub replace_actor_photo: Option<Vec<Rule>>,
     pub replace_runtime: Option<Vec<Rule>>,
     pub replace_tags: Option<Vec<Rule>>,
