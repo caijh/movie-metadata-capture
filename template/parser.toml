@@ -1,3 +1,4 @@
+# 通过站内搜索
 [sources.fanza.site_search]
 url = "https://javdb.com/search?q="
 site_number_pre_handle = []
@@ -5,9 +6,11 @@ expr_number = ''
 expr_id = ''
 site_number_post_handle = []
 site_id_post_handle = []
+# 将文件提取的号转成站内的号
 [[sources.fanza.number_pre_handle]]
 name = "rebd"
 rule = []
+# 视频源配置
 [sources.fanza]
 name = "fanza"
 source_age_check = { url = "", target_name = "", target_url = "" }
