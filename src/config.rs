@@ -366,6 +366,19 @@ impl AppConfig {
             println!("[+]Enable debug");
         }
 
+        // Print main working mode
+        let main_mode = self.common.main_mode;
+        println!(
+            "{}",
+            format_args!(
+                "[+]Main Working mode ## {}: {} ##",
+                main_mode,
+                ["Scraping", "Organizing", "Scraping in analysis folder"]
+                    .get(main_mode - 1)
+                    .unwrap(),
+            )
+        );
+
         // Print link mode
         match self.common.link_mode {
             1 | 2 => {
@@ -380,19 +393,6 @@ impl AppConfig {
         if args.len() > 1 {
             println!("[!]CmdLine: {}", args[1..].join(" "));
         }
-
-        // Print main working mode
-        let main_mode = self.common.main_mode;
-        println!(
-            "{}",
-            format_args!(
-                "[+]Main Working mode ## {}: {} ##",
-                main_mode,
-                ["Scraping", "Organizing", "Scraping in analysis folder"]
-                    .get(main_mode - 1)
-                    .unwrap(),
-            )
-        );
     }
 
     pub async fn create_failed_folder(&self) -> io::Result<()> {
