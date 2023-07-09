@@ -395,6 +395,14 @@ impl AppConfig {
         }
     }
 
+    pub fn check_config(&self) -> Result<(), Box<dyn Error>> {
+        let main_mode = self.common.main_mode;
+        if ![1, 2, 3].contains(&main_mode) {
+            return Err("[-] Main mode must be 1 or 2 or 3!".into());
+        }
+        Ok(())
+    }
+
     pub async fn create_failed_folder(&self) -> io::Result<()> {
         let failed_folder = &self.common.failed_output_folder;
         match fs::create_dir_all(failed_folder) {

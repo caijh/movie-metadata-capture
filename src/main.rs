@@ -24,9 +24,9 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let config = AppConfig::get_app_config();
     config.print_config_and_args();
 
-    let main_mode = config.common.main_mode;
-    if ![1, 2, 3].contains(&main_mode) {
-        return Err("[-] Main mode must be 1 or 2 or 3!".into());
+    let check_config_result = config.check_config();
+    if check_config_result.is_err() {
+        return Err(check_config_result.err().unwrap());
     }
 
     let start_time = time::Instant::now();
