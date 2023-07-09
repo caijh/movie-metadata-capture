@@ -1,7 +1,15 @@
+[sources.fanza.site_search]
+url = "https://www.dmm.co.jp/mono/dvd/-/search/=/searchstr="
+site_number_pre_handle = [{ action = "lowercase", args = [] }, { action = "replace", args = ["-", ""] }]
+expr_number = '//*[@id="list"]/li[1]/div/p[2]/a/@href'
+expr_id = '//*[@id="list"]/li[1]/div/p[2]/a/@href'
+site_number_post_handle = [{ action = "between", args = ["cid=", "/"] }]
+site_id_post_handle = [{ action = "between", args = ["cid=", "/"] }]
+
 [sources.fanza]
 name = "fanza"
-source_age_check = { url = "https://www.dmm.co.jp/source_age_check/=/declared=yes/", target_name = "rurl", target_url = "https://www.dmm.co.jp/top/" }
-source_detail_url = ["https://www.dmm.co.jp/digital/videoa/-/detail/=/cid=", "https://www.dmm.co.jp/mono/dvd/-/detail/=/cid=", "https://www.dmm.co.jp/digital/anime/-/detail/=/cid=", "https://www.dmm.co.jp/mono/anime/-/detail/=/cid=", "https://www.dmm.co.jp/digital/videoc/-/detail/=/cid=", "https://www.dmm.co.jp/digital/nikkatsu/-/detail/=/cid=", "https://www.dmm.co.jp/rental/-/detail/=/cid="]
+source_age_check = { url = "https://www.dmm.co.jp/age_check/=/declared=yes/", target_name = "rurl", target_url = "https://www.dmm.co.jp/top/" }
+source_detail_url = ["https://www.dmm.co.jp/mono/dvd/-/detail/=/cid="]
 source_max_user_rating = "50"
 source_allow_use_site_number = false
 expr_number = "//td[contains(text(),'品番：')]/following-sibling::td/text()"
@@ -28,20 +36,20 @@ replace_cover = []
 replace_extra_fanart = [{ action = "insert", args = ["-", "jp"] }]
 replace_actor_photo = []
 replace_runtime = [{ action = "replace", args = ["分", ""] }]
-replace_release = [{ action = "replace", args = ["/", "-"]}]
-replace_user_rating = [{action = "substring", args = ["/pc/", ".gif"]}, {action = "replace", args = ["/pc/", ""]}, {action = "replace", args = [".gif", ""]}]
+replace_release = [{ action = "replace", args = ["/", "-"] }]
+replace_user_rating = [{ action = "substring", args = ["/pc/", ".gif"] }, { action = "replace", args = ["/pc/", ""] }, { action = "replace", args = [".gif", ""] }]
 [[sources.fanza.number_pre_handle]]
 name = "rebd"
-rule = [{ action = "lowercase", args = [] }, { action = "replace", args = ["-", ""] }, { action = "insert", args = ["0", "h_346"] }]
+rule = []
 [[sources.fanza.number_pre_handle]]
 name = "oae"
-rule = [{ action = "lowercase", args = [] }, { action = "replace", args = ["-", ""] }]
+rule = []
 [[sources.fanza.number_pre_handle]]
 name = "sprl"
-rule = [{ action = "lowercase", args = [] }, { action = "replace", args = ["-", ""] }, { action = "insert", args = ["0", "n_1498"] }]
+rule = []
 [[sources.fanza.number_pre_handle]]
 name = "higr"
-rule = [{ action = "lowercase", args = [] }, { action = "replace", args = ["-", ""] }, { action = "insert", args = ["0", "n_1463"] }]
+rule = []
 [[sources.fanza.number_pre_handle]]
 name = "mbdd"
-rule = [{ action = "lowercase", args = [] }, { action = "replace", args = ["-", ""] }]
+rule = []

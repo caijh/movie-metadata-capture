@@ -10,6 +10,7 @@ use rand::Rng;
 use std::error::Error;
 use std::ops::Not;
 use std::path::Path;
+use std::sync::RwLockReadGuard;
 use std::time::Duration;
 use std::{thread, time};
 
@@ -21,7 +22,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
     println!("[+]Load AppConfig from config file '{}'.", config_path);
     AppConfig::load_config_file(&config_path).await?;
 
-    let config = AppConfig::get_app_config();
+    let config: RwLockReadGuard<AppConfig> = AppConfig::get_app_config();
     config.print_config_and_args();
 
     let check_config_result = config.check_config();

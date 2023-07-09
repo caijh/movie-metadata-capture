@@ -7,9 +7,7 @@ use url::Url;
 
 use crate::config::{Parser, StringFlow};
 use crate::request::get_html_content;
-use crate::xpath::{
-    evaluate_xpath_node, value_to_string_use_handle, value_to_vec, value_to_vec_use_handle,
-};
+use crate::xpath::{evaluate_xpath_node, value_to_string_use_handle, value_to_vec_use_handle};
 
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
 pub struct Movie {
@@ -42,23 +40,23 @@ pub struct Actor {
 }
 
 impl Parser {
-    pub async fn search(&self, number: &str, debug: bool) -> Option<Movie> {
+    pub async fn search(&self, file_number: &str, debug: bool) -> Option<Movie> {
         if let Some(age_check) = &self.source_age_check {
             let mut url = Url::parse(&age_check.url).unwrap();
             url.query_pairs_mut()
                 .append_pair(&age_check.target_name, &age_check.target_url);
+            if debug {
+                println!("[+]Age Check {}", url);
+            }
             let _ = get_html_content(url.as_str()).await;
         }
 
-        let mut number = number.to_string();
+        let mut number = file_number.to_string();
         if let Some(site_search) = &self.site_search {
             let site_number = site_search.search(number.as_str()).await;
-            site_number.as_ref()?;
-            number = if let Some(num) = site_number {
-                num
-            } else {
-                number.to_owned()
-            };
+            if let Some(num) = site_number {
+                number = num
+            }
         }
 
         let detail_urls = &self.source_detail_url;
@@ -73,19 +71,16 @@ impl Parser {
                             .contains(x.name.to_lowercase().as_str())
                 })
                 .last();
-
-            let search_number = if let Some(number_search) = &number_search {
+            let mut search_number = number.clone();
+            if let Some(number_search) = &number_search {
                 let string_flow = StringFlow::new(&number_search.rule);
-                let search_number = string_flow.process_string(number.as_str());
-                search_number
-            } else {
-                number.to_owned()
+                search_number = string_flow.process_string(number.as_str());
             };
 
             let detail_url = _url.to_string() + search_number.as_str();
             let url = Url::parse(&detail_url).unwrap();
             if debug {
-                println!("[+]{}", url);
+                println!("[+]Movie url: {}", url);
             }
             if let Ok(content) = get_html_content(url.as_str()).await {
                 let package = sxd_html::parse_html(&content);
@@ -95,7 +90,7 @@ impl Parser {
                     if let Some(allow_use_site_number) = self.source_allow_use_site_number {
                         if !allow_use_site_number {
                             let mut movie = movie.unwrap();
-                            movie.number = number;
+                            movie.number = file_number.to_string();
                             return Some(movie);
                         }
                     }

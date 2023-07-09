@@ -43,7 +43,7 @@ impl SiteSearch {
         }
 
         for x in number_ids {
-            if x.0.as_str() == number {
+            if x.0.contains(search_number.as_str()) {
                 return Some(x.1);
             }
         }
