@@ -108,7 +108,7 @@ impl Scraping {
             self.get_reorder_sources(sources, number_extractor)
         };
         if self.debug {
-            println!("[+]sources {:?}", _sources);
+            println!("[+]Using sources {:?}", _sources);
         }
 
         let mut movie = None;
@@ -116,7 +116,7 @@ impl Scraping {
             match self.parsers.get(source.as_str()) {
                 Some(parser) => {
                     if self.debug {
-                        println!("[+]select source: {}", source);
+                        println!("[+]Select source: {}", source);
                     }
                     movie = parser.search(file_number, self.debug).await;
                     if movie.is_some() {
