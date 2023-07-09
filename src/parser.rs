@@ -37,6 +37,24 @@ pub struct Movie {
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
 pub struct Actor {
     pub name: String,
+    pub thumb: String,
+}
+
+#[derive(Serialize)]
+pub struct Tag {
+    #[serde(rename = "$value")]
+    pub content: String,
+}
+
+impl Movie {
+    pub fn get_tags(&self) -> Vec<Tag> {
+        self.tag
+            .iter()
+            .map(|tag| Tag {
+                content: tag.to_string(),
+            })
+            .collect()
+    }
 }
 
 impl Parser {

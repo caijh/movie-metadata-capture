@@ -11,7 +11,7 @@ use std::ops::Not;
 use std::path::{Path, PathBuf};
 use std::str::FromStr;
 
-use crate::parser::Movie;
+use crate::parser::{Actor, Movie, Tag};
 use dlib_face_recognition::{
     FaceDetector, FaceDetectorCnn, FaceDetectorTrait, FaceLocations, ImageMatrix,
 };
@@ -801,13 +801,7 @@ async fn write_nfo_file(
         })
         .collect();
 
-    let mut tag: Vec<Tag> = movie
-        .tag
-        .iter()
-        .map(|tag| Tag {
-            content: tag.to_string(),
-        })
-        .collect();
+    let mut tag: Vec<Tag> = movie.get_tags();
     if tag.is_empty() {
         if c_word.is_empty().not() {
             tag.push(Tag {
@@ -934,17 +928,6 @@ struct MovieNFO {
     cover: String,
     trailer: String,
     website: String,
-}
-#[derive(Serialize)]
-struct Actor {
-    name: String,
-    thumb: String,
-}
-
-#[derive(Serialize)]
-struct Tag {
-    #[serde(rename = "$value")]
-    content: String,
 }
 
 #[derive(Serialize)]
