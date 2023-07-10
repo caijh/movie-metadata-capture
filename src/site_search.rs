@@ -42,12 +42,11 @@ impl SiteSearch {
             number_ids = self.parse_search_result(&document);
         }
 
-        for x in number_ids {
-            if x.0.contains(search_number.as_str()) {
-                return Some(x.1);
-            }
-        }
-        None
+        number_ids
+            .iter()
+            .filter(|(id, _)| id.contains(search_number.as_str()))
+            .map(|(_, value)| value.to_string())
+            .next()
     }
 
     fn parse_search_result(&self, document: &Document) -> Vec<(String, String)> {
