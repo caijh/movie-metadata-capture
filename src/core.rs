@@ -1,31 +1,28 @@
-use crate::config::{AppConfig, NumberExtractor};
-use crate::files::{create_soft_link, file_exit_and_not_empty};
-use crate::request::{download_file, parallel_download_files};
-use crate::scraping::Scraping;
 use std::collections::HashSet;
-
 use std::error::Error;
+use std::fs;
 use std::fs::{hard_link, OpenOptions};
-
+use std::io::Write;
 use std::ops::Not;
 use std::path::{Path, PathBuf};
 use std::str::FromStr;
 
-use crate::parser::{Actor, Movie, Tag};
+use chrono::Local;
 use dlib_face_recognition::{
     FaceDetector, FaceDetectorCnn, FaceDetectorTrait, FaceLocations, ImageMatrix,
 };
-
-use chrono::Local;
 use image::{open, DynamicImage};
 use quick_xml::se::to_string;
 use serde::Serialize;
-use std::fs;
-use std::io::Write;
+use walkdir::WalkDir;
 use xmlem::{display, Document};
 
+use crate::config::{AppConfig, NumberExtractor};
+use crate::files::{create_soft_link, file_exit_and_not_empty};
 use crate::number_parser::get_number;
-use walkdir::WalkDir;
+use crate::parser::{Actor, Movie, Tag};
+use crate::request::{download_file, parallel_download_files};
+use crate::scraping::Scraping;
 
 pub async fn core_main(
     file_path: &str,
@@ -1124,7 +1121,12 @@ pub async fn scraping_data_and_move_movie(
     movie_path: &str,
     config: &AppConfig,
 ) -> Result<(), Box<dyn Error>> {
-    let (n_number, number_extractor) = get_number(config, movie_path).unwrap();
+    let result = get_number(config, movie_path);
+    if result.is_none() {
+        return Err(Box::try_from(String::from("can not extract number")).unwrap());
+    }
+
+    let (n_number, number_extractor) = result.unwrap();
     let movie_path = Path::new(movie_path);
     let movie_path = movie_path.to_string_lossy();
     let movie_path = movie_path.as_ref();
