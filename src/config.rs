@@ -5,17 +5,15 @@ use std::sync::{Arc, RwLock};
 use std::{env, fs, io};
 
 use config::{Config, File};
+use glob::glob;
 use lazy_static::lazy_static;
 use regex::Regex;
 use serde::{Deserialize, Serialize};
 
-use glob::glob;
-
 use crate::files::rm_empty_folder;
-
 use crate::request::Request;
 use crate::site_search::SiteSearch;
-use crate::strings::{get_end_index, get_start_index};
+use crate::strings::{between, insert, substring};
 
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
 pub struct AppConfig {
@@ -259,47 +257,16 @@ impl StringFlow {
             }
             let action = rule.action.as_str();
             match action {
-                "append" => {
-                    result.push_str(rule.args[0].as_str());
-                }
-                "replace" => {
-                    result = result.replace(rule.args[0].as_str(), rule.args[1].as_str());
-                }
-                "substring" => {
-                    let start = get_start_index(result.as_str(), rule.args[0].as_str());
-                    let end = get_end_index(result.as_str(), rule.args[1].as_str());
-                    result = result[start..end].to_string();
-                }
-                "insert" => {
-                    let start = get_start_index(result.as_str(), rule.args[0].as_str());
-                    let index = result.find(rule.args[1].as_str());
-                    if let Some(index) = index {
-                        if index != start {
-                            result.insert_str(start, rule.args[1].as_str());
-                        }
-                    } else {
-                        result.insert_str(start, rule.args[1].as_str());
-                    }
-                }
-                "between" => {
-                    if let Some(start_idx) = result.find(rule.args[0].as_str()) {
-                        let start_pos = start_idx + rule.args[0].len();
-                        if let Some(end_idx) = result[start_pos..].find(rule.args[1].as_str()) {
-                            let end_pos = start_pos + end_idx;
-                            result = result[start_pos..end_pos].to_string();
-                        }
-                    }
-                }
-                "lowercase" => {
-                    result = result.to_lowercase();
-                }
-                "trim" => {
-                    result = result.trim().to_string();
-                }
+                "append" => result.push_str(rule.args[0].as_str()),
+                "replace" => result = result.replace(rule.args[0].as_str(), rule.args[1].as_str()),
+                "substring" => result = substring(result.as_str(), rule),
+                "insert" => result = insert(result.as_str(), rule),
+                "between" => result = between(result.as_str(), rule),
+                "lowercase" => result = result.to_lowercase(),
+                "trim" => result = result.trim().to_string(),
                 _ => {}
             }
         }
-
         result
     }
 }
