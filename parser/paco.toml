@@ -1,7 +1,7 @@
 [sources.paco]
 name = "paco"
 source_detail_url = ["https://www.pacopacomama.com/movies/"]
-expr_number = '//*[@id="movies"]/div/div[1]/div[1]//video@poster'
+expr_number = '//*[@id="video-player-0_html5_api"]@poster'
 expr_title = '//*[@id="movies"]/div/div[1]/div[2]/div[1]/div/h1/text()'
 expr_actor_name = '//*[@id="movies"]/div/div[1]/div[2]/div[1]/ul/li[3]/span[2]/span/a/text()'
 expr_actor_photo = ''
