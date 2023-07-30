@@ -1,12 +1,11 @@
 use std::collections::HashMap;
 use std::ops::Not;
 
-use crate::translator::AzureTranslator;
-
 use serde_json::Value;
 
 use crate::config::{AppConfig, NumberExtractor, Parser, Translate};
 use crate::parser::Movie;
+use crate::translator::AzureTranslator;
 
 #[derive(Default)]
 pub struct Scraping {
@@ -30,6 +29,10 @@ impl Scraping {
             parsers,
             translate,
         }
+    }
+
+    pub fn enable_debug(&self) -> bool {
+        self.debug
     }
 
     pub async fn search(

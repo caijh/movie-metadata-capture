@@ -1,18 +1,20 @@
-use chrono::Local;
-use clap::{arg, Parser, Subcommand};
-use movie_metadata_capture::config::AppConfig;
-use movie_metadata_capture::core::{
-    movie_lists, scraping_data_and_move_movie, scraping_data_and_move_movie_with_custom_number,
-};
-use movie_metadata_capture::number_parser::{get_number, DEFAULT_NUMBER_EXTRACTOR};
-use movie_metadata_capture::scraping::Scraping;
-use rand::Rng;
 use std::error::Error;
 use std::ops::Not;
 use std::path::Path;
 use std::sync::RwLockReadGuard;
 use std::time::Duration;
 use std::{thread, time};
+
+use chrono::Local;
+use clap::{arg, Parser, Subcommand};
+use rand::Rng;
+
+use movie_metadata_capture::config::AppConfig;
+use movie_metadata_capture::core::{
+    movie_lists, scraping_data_and_move_movie, scraping_data_and_move_movie_with_custom_number,
+};
+use movie_metadata_capture::number_parser::{get_number, DEFAULT_NUMBER_EXTRACTOR};
+use movie_metadata_capture::scraping::Scraping;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
@@ -44,7 +46,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
             let movie = scraping
                 .search(&number, &number_extractor, None, Some(info_args.source))
                 .await;
-            if movie.is_some() && !config.debug_mode.switch {
+            if movie.is_some() && scraping.enable_debug() {
                 println!("{:?}", movie);
             }
         }
