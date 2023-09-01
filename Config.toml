@@ -113,3 +113,7 @@ sources = ["kin8"]
 name = "msfh"
 regex = '(?i)\bMSFH-?\d+'
 sources = ["nanojav"]
+[[number_extractor]]
+name = "ss"
+regex = '(?i)\SS-?\d+'
+sources = ["fanza"]

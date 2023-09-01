@@ -53,3 +53,6 @@ rule = []
 [[sources.fanza.number_pre_handle]]
 name = "mbdd"
 rule = []
+[[sources.fanza.number_pre_handle]]
+name = "ss"
+rule = [{ action = "lowercase", args = [] }, { action = "replace", args = ["-", ""] }, { action = "insert", args = ["0", "n_1428"] }]
