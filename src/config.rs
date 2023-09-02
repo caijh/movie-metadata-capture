@@ -10,7 +10,6 @@ use lazy_static::lazy_static;
 use regex::Regex;
 use serde::{Deserialize, Serialize};
 
-use crate::files::rm_empty_folder;
 use crate::request::Request;
 use crate::site_search::SiteSearch;
 use crate::strings::{between, insert, substring};
@@ -387,9 +386,9 @@ impl AppConfig {
 
     pub async fn delete_empty_folder(&self) -> Result<(), io::Error> {
         if self.common.del_empty_folder {
-            rm_empty_folder(self.common.source_folder.as_str()).await?;
-            rm_empty_folder(self.common.success_output_folder.as_str()).await?;
-            rm_empty_folder(self.common.failed_output_folder.as_str()).await?;
+            util::files::rm_empty_folder(self.common.source_folder.as_str()).await?;
+            util::files::rm_empty_folder(self.common.success_output_folder.as_str()).await?;
+            util::files::rm_empty_folder(self.common.failed_output_folder.as_str()).await?;
         }
 
         Ok(())

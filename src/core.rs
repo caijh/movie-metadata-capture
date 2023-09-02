@@ -16,9 +16,9 @@ use quick_xml::se::to_string;
 use serde::Serialize;
 use walkdir::WalkDir;
 use xmlem::{display, Document};
+use util::files::{create_soft_link, file_exit_and_not_empty};
 
 use crate::config::{AppConfig, NumberExtractor};
-use crate::files::{create_soft_link, file_exit_and_not_empty};
 use crate::number_parser::get_number;
 use crate::parser::{Actor, Movie, Tag};
 use crate::request::{download_file, parallel_download_files};
@@ -515,9 +515,9 @@ pub async fn paste_file_to_folder(
         let file_rel_path = file_path.strip_prefix(dir).ok().and_then(|p| p.to_str());
         if file_rel_path.is_some() {
             let symlink_result =
-                create_soft_link(Path::new(file_rel_path.unwrap()), &target_path_clone);
+                util::files::create_soft_link(Path::new(file_rel_path.unwrap()), &target_path_clone);
             if symlink_result.is_err() {
-                create_soft_link(file_path, &target_path_clone).unwrap();
+                util::files::create_soft_link(file_path, &target_path_clone).unwrap();
             }
         }
     } else {
@@ -529,7 +529,7 @@ pub async fn paste_file_to_folder(
 pub fn cut_image(config: &AppConfig, dir: &str, thumb_path: &str, poster_path: &str) {
     let full_path_thumb = Path::new(dir).join(thumb_path);
     let full_path_poster = Path::new(dir).join(poster_path);
-    if config.common.download_only_missing_images && file_exit_and_not_empty(&full_path_poster) {
+    if config.common.download_only_missing_images && util::files::file_exit_and_not_empty(&full_path_poster) {
         return;
     }
 
